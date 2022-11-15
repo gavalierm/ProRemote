@@ -70,6 +70,55 @@ body {
     background-color: var(--primary);
 }
 
+#status_message {
+    font-weight: bold;
+    transition: top 400ms cubic-bezier(0.17, 0.04, 0.03, 0.94);
+    padding: 12px;
+    padding-top: calc(10px + env(safe-area-inset-top));
+    position: absolute;
+    width: 100%;
+    height: auto;
+    z-index: 5000;
+    top: -50vw;
+    bottom: auto;
+    display: flex;
+}
+
+#status_message .status_message_wrapper {
+    padding-top: 0;
+    padding-bottom: 0;
+    border-radius: 20px;
+    background: var(--primary);
+    color: var(--primary-oposit);
+    line-height: 1;
+    flex: 1;
+}
+
+.status_message #warr_message {
+    padding: 12px 17px;
+    font-size: 17px;
+}
+
+.status_message.red .status_message_wrapper {
+    background: red;
+}
+
+.status_message.white .status_message_wrapper {
+    background: white;
+    color: black;
+}
+
+.status_message.green .status_message_wrapper {
+    background: #8bc34a;
+}
+
+.status_message.blue .status_message_wrapper {
+    background: #2196f3;
+}
+
+body.show_warr #status_message {
+    top: 0 !important;
+}
 
 input,
 textarea {
@@ -140,15 +189,15 @@ i.fa-solid {
 }
 
 .btn {
-    font-size: 14px;
+    font-size: 0.8rem;
     background-color: var(--primary);
-    padding: 7px 8px 4px 8px;
+    padding: 0.5rem 0.8rem 0.4rem 0.8rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 6px;
+    margin: 0.6rem;
     font-weight: 600;
-    margin-right: -5px;
+    margin-right: -0.5rem;
     cursor: pointer;
     background-image: linear-gradient(var(--secondary), var(--secondary));
     background-position: 50% 50%;
@@ -157,6 +206,17 @@ i.fa-solid {
     transition: background-size .2s;
     user-select: none;
     text-align: center;
+    border-radius: 1rem;
+}
+
+.btn.round {
+    border-radius: 100%;
+    padding: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.btn.decent {
+    background-color: transparent;
 }
 
 
@@ -274,6 +334,117 @@ body._loader #loader {
 }
 
 
+.search {}
+
+.search .search_input_cont {
+    display: flex;
+    flex-wrap: nowrap;
+    background: var(--secondary);
+    color: var(--secondary-oposit);
+    border-radius: 1.3rem;
+    font-size: 1.3rem;
+    border-color: transparent;
+    margin: 0 1rem;
+    overflow: hidden;
+}
+
+.search .prefix,
+.search .search_input_cont input {
+    border: none;
+    font-size: 0.9em;
+    padding: 0.7rem 1rem 0.6rem 1rem;
+    background: var(--secondary);
+    color: var(--secondary-oposit);
+    border-radius: 0;
+}
+
+body.edit_song .search .prefix,
+body.edit_song .search .search_input_cont input,
+body.edit_setlist .search .prefix,
+body.edit_setlist .search .search_input_cont input {
+    background: var(--edit-oposit);
+    color: var(--black);
+}
+
+.search .prefix {
+    user-select: none;
+    cursor: pointer;
+    flex: 1;
+}
+
+.search .prefix i {
+    opacity: .8;
+}
+
+.search .prefix {
+    padding-right: 0.3rem;
+}
+
+.search .search_input_cont input {
+    padding-left: 0.3rem;
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    height: 1em;
+    width: 1em;
+    border-radius: 50em;
+    background: url('../fonts/fontawesome-free-6.2.0-web/svgs/solid/circle-xmark.svg') no-repeat 50% 50%;
+    background-size: contain;
+    opacity: 0;
+    pointer-events: none;
+    filter: invert(1);
+}
+
+input[type="search"]:focus::-webkit-search-cancel-button {
+    opacity: .8;
+    pointer-events: all;
+}
+
+.vertical_slider {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    /* Hide scrollbars */
+    overflow-x: scroll;
+}
+
+.vertical_slider .vertical_slider_cont {
+    position: relative;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-start;
+    white-space: nowrap;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.vertical_slider::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.vertical_slider {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+/* Optional: show position indicator in red */
+.vertical_slider::-webkit-scrollbar-thumb {
+    background: transparent;
+}
+
+.vertical_slider .vertical_slider_cont:after {
+    display: block;
+    flex: 1 0 auto;
+    content: ' ';
+    width: 30vw;
+    height: 1rem;
+}
+
 
 #bottom_bar {
     transition: bottom 0.3s;
@@ -317,6 +488,8 @@ body._loader #loader {
 }
 
 
+
+
 body._panel_settings #panel_settings,
 body._panel_library #panel_library,
 body._panel_playlists #panel_playlists,
@@ -325,6 +498,6 @@ body._panel_control #panel_control {
 }
 
 body._panel_settings #bottom_bar,
-body._panel_control #bottom_bar{
+body._panel_control #bottom_bar {
     bottom: -100px;
 }

@@ -8,7 +8,7 @@ $(document).on("click", "._open", async function(event) {
     var target = $(this).data("open");
     console.log(target);
 
-    if (checkAttr(target)) {
+    if (isNa(target)) {
         console.log("_open", "Undefined target");
         return false;
     }
@@ -23,7 +23,7 @@ $(document).on("click", "._open", async function(event) {
 var global_back_steps = new Array('_panel_library');
 
 async function openPanel(target) {
-    if (checkAttr(target)) {
+    if (isNa(target)) {
         console.log("openPanel", "Undefined target");
         return false;
     }
@@ -57,8 +57,8 @@ async function openPanel(target) {
     //console.log(global_back_steps);
 }
 
-function checkAttr(target) {
-    if (target === undefined || target == '') {
+function isNa(target) {
+    if (target === undefined || target == '' || target == null) {
         return true
     }
     return false;

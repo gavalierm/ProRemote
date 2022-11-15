@@ -8,6 +8,7 @@
     <link href="app/fonts/fontawesome-free-6.2.0-web/css/fontawesome.min.css" rel="stylesheet" type="text/css" />
     <link href="app/fonts/fontawesome-free-6.2.0-web/css/solid.css" rel="stylesheet" type="text/css" />
     <link href="app/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="app/css/list.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body class="_panel_control">
@@ -32,8 +33,32 @@
                         <div class="panel_title">Library</div>
                         <div class="space_holder"></div>
                     </div>
+                    <div class="search" id="search">
+                        <div class="search_input_cont">
+                            <div class="prefix"><i class="fa-solid fa-magnifying-glass"></i></div>
+                            <input class="input" name="spe_search" placeholder="Search ..." type="search" />
+                        </div>
+                    </div>
+                    <div class="filter vertical_slider" id="filter">
+                        <div class="vertical_slider_cont">
+                            <div class='btn round rounded  _do' data-do="_fill_search" data-fill="">
+                                <i class="fa-solid fa-xmark"></i>
+                            </div>
+                            <div class='btn rounded decent _do' data-do="_fill_search" data-fill="pomalé">
+                                <div class="inner">Pomalé</div>
+                            </div>
+                            <div class='btn rounded decent _do' data-do="_fill_search" data-fill="stredné">
+                                <div class="inner">Stredné</div>
+                            </div>
+                            <div class='btn rounded decent _do' data-do="_fill_search" data-fill="rýchle">
+                                <div class="inner">Rýchle</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="panel_content"></div>
+                <div class="panel_content">
+                    <div id="library_target" class="list"></div>
+                </div>
             </div>
         </div>
         <div id="panel_playlists" class="panel">
@@ -91,17 +116,15 @@
             </div>
         </div>
     </div>
-    <div id="status_message" class="panel status_message">
-        <div class="panel_wrapper">
-            <div class="panel_header">
-                <div class="head">
-                    <div id="warr_message">Message</div>
-                </div>
-            </div>
+    <div id="status_message" class="status_message">
+        <div class="status_message_wrapper">
+            <div id="warr_message">Message</div>
         </div>
     </div>
 </body>
 <script src="app/js/jquery-3.6.0.min.js" type="text/javascript"></script>
 <script src="app/config.js" type="text/javascript"></script>
 <script src="app/js/app.js" type="text/javascript"></script>
+<script src="app/js/api.js" type="text/javascript"></script>
+
 </html>

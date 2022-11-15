@@ -1,0 +1,49 @@
+:root {
+    --list-item: #000;
+    --list-item-oposit: #fff;
+    --list-child: #111;
+    --list-child-oposit: #fff;
+    /** https://flatuicolors.com/palette/de **/
+}
+
+.list{
+    max-width: 600px;
+    margin: 0px auto;
+    padding-left: calc(env(safe-area-inset-left, 0px) + 5px);
+    padding-right: calc(env(safe-area-inset-right, 0px) + 5px);
+}
+
+.list .item {
+    background-color: var(--list-item);
+    color: var(--list-item-oposit);
+}
+
+.list .item.selected {
+    background-color: var(--selected);
+    border-color: var(--selected);
+    color: var(--selected-oposit);
+}
+
+.list .item {
+    position: relative;
+    color: white;
+    margin: 14px 0;
+    padding: 22px;
+    cursor: pointer;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.list .item .item_content .item_title {
+    font-size: 1.2rem;
+    line-height: 1.4rem;
+    flex: 1 0 100%;
+}
+
+.list .item .item_title::first-letter {
+    font-weight: normal;
+    font-size: 1.2em;
+    margin-right: 1px;
+}
