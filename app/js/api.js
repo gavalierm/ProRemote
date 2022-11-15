@@ -69,10 +69,11 @@ function onMessage(evt) {
         getLibrary();
     } else if (obj.action == "libraryRequest") {
         var data = "";
-        obj.library.forEach(function(item) {
-            // Add the library if required
-            data += createLibrary(item);
-        });
+
+        var library = createLibrary(obj.library);
+        if (library) {
+            data = library;
+        }
         $("#library_target").html(data);
     }
 }
@@ -81,33 +82,56 @@ function getLibrary() {
     remoteWebSocket.send('{"action":"libraryRequest"}');
 }
 
-function createLibrary(obj) {
-    // Variable to hold the unique status of the library in the array
-    var unique = true;
-    // Variable to hold the split string of the presentation path
-    var pathSplit = obj.split("/");
-    // Variable to hold the name of the library, retrieved from the presentation path
-    var libraryName = "";
-    // Variable to hold the data of the library
-    var libraryData = "";
-    // Iterate through each item in the split path to retrieve the library name
-    pathSplit.forEach(function(item, index) {
-        if (item == "Libraries") {
-            libraryName = pathSplit[index + 1];
+function createLibrary(library) {
+
+    library.sort();
+
+    //console.log(library);
+
+    var groups = new Array();
+    var groups_helper = new Array();
+    //crate gourps
+    for (var i = 0; i <= library.length - 1; i++) {
+        var group = library[i];
+        //
+        var pathSplit = group.split("/");
+        pathSplit.reverse();
+        hash = md5(pathSplit[1]);
+
+        //console.log(groups_helper.indexOf(hash));
+        var item = { 'title': pathSplit[0].replace(/\.pro6/g, '').replace(/\.pro7/g, '').replace(/\.pro/g, ''), 'filename': pathSplit[0], 'path': item, 'library': { 'title': pathSplit[1], 'uuid': hash } };
+        if (groups_helper.indexOf(hash) === -1) {
+            groups_helper.push(hash);
+            groups.push({ 'title': pathSplit[1], 'uuid': hash, 'counter': 1, 'items': [item] }); //Library name
+        } else {
+            groups[groups_helper.indexOf(hash)]['items'].push(item);
+            groups[groups_helper.indexOf(hash)]['counter'] = groups[groups_helper.indexOf(hash)]['counter'] + 1;
         }
-    });
-    var title = pathSplit.reverse()[0];
-    title = title.replace(/\.pro6/g, '').replace(/\.pro/g, '');
-    var id = title;
-    // Check if the library is unique and can be added in the array
-    // If the library is unique
-    if (unique) {
-        // Add the library name to the library list
-        //libraryList.push(libraryName);
-        // Create the library data
-        libraryData = '<div class="item library_item _select" data-select="_library" data-id="' + id + '"><div class="item_content"><div class="item_title">' + title + '</div></div></div>';
     }
-    return libraryData;
+
+    var group_html = '';
+    for (var i = 0; i <= groups.length - 1; i++) {
+        var group = groups[i];
+        // Add the library if required
+        console.log(group);
+        var item_html = '';
+        for (var x = 0; x <= group.items.length - 1; x++) {
+            var item = group.items[x];
+            var item_html = item_html + `<div class="item library_item _select" data-select="_item" data-id="' + id + '"><div class="item_content"><div class="item_title">${item.title}</div><div class="item_group_title">${item.library.title}</div></div></div>`;
+        }
+
+        group_html = group_html + `<div class='group'><div class="group_title">${group.title}</div><div class="items">${item_html}</div></div>`;
+    }
+
+    //console.log(group_html);
+    return group_html;
+}
+
+function SortPresentationByName(a, b) {
+    // If set to only get names from ProPresenter libraries
+    var aName = a.presentation.presentationName.toLowerCase();
+    var bName = b.presentation.presentationName.toLowerCase();
+    return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
 }
 
 async function showWarr(warr = null, response = null) {
