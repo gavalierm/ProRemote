@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Simple ProRemote</title>
+    <link href="app/fonts/fontawesome-free-6.2.0-web/css/fontawesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="app/fonts/fontawesome-free-6.2.0-web/css/solid.css" rel="stylesheet" type="text/css" />
+    <link href="app/css/main.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body class="_panel_control">
+    <div id="app">
+        <div id="panel_settings" class="panel">
+            <div class="panel_wrapper">
+                <div class="panel_header">
+                    <div class="header">
+                        <div class="space_holder"></div>
+                        <div class="panel_title">Settings</div>
+                        <div class="space_holder"></div>
+                    </div>
+                </div>
+                <div class="panel_content"></div>
+            </div>
+        </div>
+        <div id="panel_library" class="panel">
+            <div class="panel_wrapper">
+                <div class="panel_header">
+                    <div class="header">
+                        <div class="space_holder"></div>
+                        <div class="panel_title">Library</div>
+                        <div class="space_holder"></div>
+                    </div>
+                </div>
+                <div class="panel_content"></div>
+            </div>
+        </div>
+        <div id="panel_playlists" class="panel">
+            <div class="panel_wrapper">
+                <div class="panel_header">
+                    <div class="header">
+                        <div class="space_holder"></div>
+                        <div class="panel_title">Playlists</div>
+                        <div class="space_holder"></div>
+                    </div>
+                </div>
+                <div class="panel_content"></div>
+            </div>
+        </div>
+        <div id="panel_control" class="panel">
+            <div class="panel_wrapper">
+                <div class="panel_header">
+                    <div class="header">
+                        <div class="_open icon" data-open="_panel_close">
+                            <div class="icon_cont"><i class="fa-solid fa-chevron-left"></i></div>
+                        </div>
+                        <div class="panel_title">Control</div>
+                        <div class="space_holder"></div>
+                    </div>
+                </div>
+                <div class="panel_content"></div>
+            </div>
+        </div>
+        <div id="bottom_bar" class="bar">
+            <div class="wrapper">
+                <div class="bottom_bar_button">
+                    <div class="icon _open" data-open="_panel_library">
+                        <div class="icon_cont">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </div>
+                        <div class="icon_title">Library</div>
+                    </div>
+                </div>
+                <div class="bottom_bar_button">
+                    <div class="icon _open" data-open="_panel_playlists">
+                        <div class="icon_cont">
+                            <i class="fa-solid fa-list-ol"></i>
+                        </div>
+                        <div class="icon_title">Playlists</div>
+                    </div>
+                </div>
+                <div class="bottom_bar_button">
+                    <div class="icon _open" data-open="_panel_remote">
+                        <div class="icon_cont">
+                            <i class="fa-solid fa-gamepad"></i>
+                        </div>
+                        <div class="icon_title">Remote</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="status_message" class="panel status_message">
+        <div class="panel_wrapper">
+            <div class="panel_header">
+                <div class="head">
+                    <div id="warr_message">Message</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
