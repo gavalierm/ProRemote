@@ -95,6 +95,10 @@ body {
 }
 
 .status_message #warr_message {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-start;
     padding: 12px 17px;
     font-size: 17px;
 }

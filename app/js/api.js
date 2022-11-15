@@ -66,7 +66,8 @@ function onMessage(evt) {
     }
     console.log(obj);
     if (obj.action == "authenticate" && obj.authenticated == "1") {
-        getLibrary();
+        showWarr("login_success");
+        return getLibrary();
     } else if (obj.action == "libraryRequest") {
         var data = "";
 
@@ -127,16 +128,9 @@ function createLibrary(library) {
     return group_html;
 }
 
-function SortPresentationByName(a, b) {
-    // If set to only get names from ProPresenter libraries
-    var aName = a.presentation.presentationName.toLowerCase();
-    var bName = b.presentation.presentationName.toLowerCase();
-    return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
-}
-
 async function showWarr(warr = null, response = null) {
     clearTimeout(global_warr_timer);
-    var time = 5000;
+    var time = 2000;
     //show error message;
     $("#status_message").removeClass(["white", "red", "green", "blue", "orange"]);
     switch (warr) {
@@ -171,7 +165,7 @@ async function showWarr(warr = null, response = null) {
 }
 
 async function warrDismiss() {
-    $("#warr_message").html("Message");
+    $("#warr_message").html('<i class="fa-solid fa-info"></i>Message');
     $("body").removeClass("show_warr");
 }
 
