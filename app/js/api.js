@@ -20,6 +20,12 @@ if (isNa(pass)) {
         pass = localStorage.getItem("_pass");
     }
 }
+if (isNa(quality)) {
+    var quality = '400';
+    if (localStorage.getItem("_quality")) {
+        quality = localStorage.getItem("_quality");
+    }
+}
 
 function connect() {
     // Hide authenticate segment
