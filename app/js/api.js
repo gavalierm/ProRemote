@@ -243,7 +243,7 @@ function createItem(presentation) {
                 var borderColor = `style="border-color:rgb(${slideColor})"`;
                 var labelColor = `style="background-color:rgb(${slideColor})"`;
             }
-            var item_html = `<div id="index_${slideIndex}" class="item ${item_classes.join(' ')||''} _trigger" data-index="${slideIndex}" ${borderColor}><div class="thumb">${image||''}</div><div class="text">${slide.slideText||''}</div><div class="label" ${labelColor}><span class="index">${slideIndex}</span><span class="group_label">${groupName}</span><span class="slide_label">${slide.slideLabel}</span></div></div>`;
+            var item_html = `<div id="index_${slideIndex}" class="item ${item_classes.join(' ')||''} _trigger" data-index="${slideIndex}"><div class="cont" ${borderColor}><div class="thumb">${image||''}</div><div class="text">${slide.slideText||''}</div><div class="label" ${labelColor}><span class="index">${slideIndex}</span><span class="group_label">${groupName}</span><span class="slide_label">${slide.slideLabel}</span></div></div></div>`;
             presentation_html.push(item_html);
             slideIndex = slideIndex + 1;
         }

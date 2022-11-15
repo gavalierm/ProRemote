@@ -7,20 +7,25 @@
 .presentation {}
 
 .presentation .item {
-    border-radius: 0.5rem;
-    margin: 2px;
-    margin-bottom: 2rem;
-    border: 1px solid gray;
+    border-radius: 13px;
+    margin: 3px 3px 23px 3px;
+    overflow: hidden;
+    border: 3px solid transparent;
 }
 
 .presentation .item.disabled {
     opacity: 0.25;
 }
 
-.presentation .item.selected {
-    border-width: 3px !important;
+.presentation .item.selected,
+.presentation .item.selected .cont {
     border-color: var(--slide-selected) !important;
-    padding: 0.5rem !important;
+}
+
+.presentation .item .cont {
+    overflow: hidden;
+    border-radius: 10px;
+    border: 1px solid gray;
 }
 
 .presentation .item .text {
