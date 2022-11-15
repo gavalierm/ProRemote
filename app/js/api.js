@@ -4,12 +4,21 @@ var global_warr_timer;
 
 if (isNa(host)) {
     var host = 'localhost';
+    if (localStorage.getItem("_host")) {
+        host = localStorage.getItem("_host");
+    }
 }
 if (isNa(port)) {
     var port = '50000';
+    if (localStorage.getItem("_port")) {
+        port = localStorage.getItem("_port");
+    }
 }
 if (isNa(pass)) {
     var pass = 'control';
+    if (localStorage.getItem("_pass")) {
+        pass = localStorage.getItem("_pass");
+    }
 }
 
 function connect() {
@@ -76,13 +85,13 @@ function createLibrary(obj) {
     // Variable to hold the data of the library
     var libraryData = "";
     // Iterate through each item in the split path to retrieve the library name
-    pathSplit.forEach(function (item, index) {
+    pathSplit.forEach(function(item, index) {
         if (item == "Libraries") {
             libraryName = pathSplit[index + 1];
         }
     });
     var title = pathSplit.reverse()[0];
-    title = title.replace(/\.pro6/g,'').replace(/\.pro/g,'');
+    title = title.replace(/\.pro6/g, '').replace(/\.pro/g, '');
     var id = title;
     // Check if the library is unique and can be added in the array
     // If the library is unique
@@ -90,7 +99,7 @@ function createLibrary(obj) {
         // Add the library name to the library list
         //libraryList.push(libraryName);
         // Create the library data
-        libraryData = '<div class="item library_item _select" data-select="_library" data-id="'+id+'"><div class="item_content"><div class="item_title">' + title + '</div></div></div>';
+        libraryData = '<div class="item library_item _select" data-select="_library" data-id="' + id + '"><div class="item_content"><div class="item_title">' + title + '</div></div></div>';
     }
     return libraryData;
 }
