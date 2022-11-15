@@ -82,7 +82,7 @@ function onMessage(evt) {
 
         var presentation = createItem(obj.presentation);
         if (presentation) {
-            data = '<div class="presentation">' + presentation + '</div>';
+            data = '<div class="presentation padder">' + presentation + '</div>';
         }
         $("#presentation_target").html(data);
         return openPanel('_panel_control');
@@ -161,24 +161,57 @@ function createItem(presentation) {
 
     var item_html = '';
 
+    var slideIndex = 1;
+
     for (var i = 0; i <= presentation.presentationSlideGroups.length - 1; i++) {
         var group = presentation.presentationSlideGroups[i];
         console.log(group);
+
+        var groupName = null;
+        if (!isNa(group.groupName)) {
+            groupName = group.groupName;
+        }
+        var groupColor = null;
+        if (!isNa(group.groupColor)) {
+            groupColor = group.groupColor.split(' ');
+            groupColor[0] = getRGBValue(groupColor[0]);
+            groupColor[1] = getRGBValue(groupColor[1]);
+            groupColor[2] = getRGBValue(groupColor[2]);
+            groupColor = groupColor.join(',');
+        }
         //group slides
         //group colors
         //group labels atc
         for (var x = 0; x <= group.groupSlides.length - 1; x++) {
             var item = group.groupSlides[x];
-            console.log(item);
-            var image = null;
             var item_classes = new Array();
-            if (item.slideImage) {
-                image = `<img src="data:image/png;base64,${item.slideImage}">`;
-            }
+            console.log(item);
             if (!isNa(item.slideText)) {
                 item_classes.push('has_text');
             }
-            item_html = item_html + `<div class="item ${item_classes.join(' ')||''}"><div class="thumb">${image||''}</div><div class="text">${item.slideText||''}</div><div class="label"><span class="index">${item.slideIndex}</span><span class="slide_label">${item.slideLabel}</span></div></div>`;
+
+            var image = null;
+            if (item.slideImage) {
+                image = `<img src="data:image/png;base64,${item.slideImage}">`;
+            }
+            var slideColor = null;
+            if (!isNa(item.slideColor)) {
+                slideColor = item.slideColor.split(' ');
+                slideColor[0] = getRGBValue(slideColor[0]);
+                slideColor[1] = getRGBValue(slideColor[1]);
+                slideColor[2] = getRGBValue(slideColor[2]);
+                slideColor = slideColor.join(',');
+            } else if (groupColor) {
+                slideColor = groupColor;
+            }
+            var borderColor = null;
+            var labelColor = null;
+            if (slideColor) {
+                var borderColor = `style="border-color:rgb(${slideColor})"`;
+                var labelColor = `style="background-color:rgb(${slideColor})"`;
+            }
+            item_html = item_html + `<div class="item ${item_classes.join(' ')||''}" ${borderColor}><div class="thumb">${image||''}</div><div class="text">${item.slideText||''}</div><div class="label" ${labelColor}><span class="index">${slideIndex}</span><span class="group_label">${groupName}</span><span class="slide_label">${item.slideLabel}</span></div></div>`;
+            slideIndex = slideIndex + 1;
         }
     }
 
@@ -205,7 +238,9 @@ function selectItem(uuid) {
 
 
 
-
+function getRGBValue(int) {
+    return Math.round(255 * int);
+}
 
 async function showWarr(warr = null, response = null) {
     clearTimeout(global_warr_timer);

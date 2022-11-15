@@ -27,11 +27,21 @@
 }
 
 .presentation .item .label {
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
     background-color: gray;
-    padding: 2px;
+    padding: 4px;
 }
-
-.presentation .item .label:before {
-    content: " ";
-    display: inline-block;
+.presentation .item .label span{
+    padding: 0px 4px;
+}
+.presentation .item .label .index{
+    font-weight: bold;
+}
+.presentation .item .label .slide_label {
+    margin-left: auto;
 }
