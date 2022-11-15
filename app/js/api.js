@@ -290,6 +290,7 @@ function selectSlide(path, slideIndex) {
     var item = parsePath(path);
     var target = "#uuid_" + item.uuid + " #index_" + (slideIndex + 1);
     console.log(target);
+    $("#uuid_" + item.uuid + " .item.selected").removeClass("selected");
     $(target).addClass("selected");
 }
 
