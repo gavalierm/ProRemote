@@ -84,7 +84,7 @@ body {
     display: flex;
 }
 
-#status_message .status_message_wrapper {
+.status_message .status_message_wrapper {
     padding-top: 0;
     padding-bottom: 0;
     border-radius: 20px;

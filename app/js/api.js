@@ -1,6 +1,7 @@
 //api
 var remoteWebSocket;
 var global_warr_timer;
+var global_connection_timer;
 var global_path_helper = new Array();
 
 if (isNa(host)) {
@@ -32,7 +33,7 @@ function connect() {
     // Hide authenticate segment
     $("#authenticate").hide();
     // Display connecting to host text
-    $("#connecting-to").text("Connecting to " + host);
+    showWarr("Connecting to " + host,'');
     // Fade-in the loader and text
     $("#connecting-loader").fadeIn();
     // Show disconnected status
@@ -46,9 +47,29 @@ function connect() {
     remoteWebSocket.onerror = function(evt) { onError(evt); };
 }
 
+function onError(evt) {
+    authenticated = false;
+    if (remoteWebSocket) {
+        console.error('Socket encountered error: ', evt.message, 'Closing socket');
+        remoteWebSocket.close();
+    }
+    showWarr("offline");
+}
+
+function onClose() {
+    authenticated = false;
+    // Show disconnected status
+    $("#status").attr("class", "disconnected");
+    // If retry connection is enabled
+    clearTimeout(global_connection_timer);
+    global_connection_timer = setTimeout(function() {
+        connect();
+    }, 5000);
+}
 
 function onOpen() {
     //if (!authenticated) {
+    clearTimeout(global_connection_timer);
     remoteWebSocket.send('{"action":"authenticate","protocol":"701","password":"' + pass + '"}');
     //}
 }
