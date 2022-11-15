@@ -190,6 +190,10 @@ function createItem(presentation) {
                 item_classes.push('has_text');
             }
 
+            if (!item.slideEnabled) {
+                item_classes.push('disabled');
+            }
+
             var image = null;
             if (item.slideImage) {
                 image = `<img src="data:image/png;base64,${item.slideImage}">`;

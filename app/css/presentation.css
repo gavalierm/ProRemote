@@ -2,8 +2,12 @@
 
 .presentation .item {
     margin: 2px;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
     border: 1px solid gray;
+}
+
+.presentation .item.disabled {
+    opacity: 0.25;
 }
 
 .presentation .item.selected {
@@ -23,7 +27,7 @@
 }
 
 .presentation .item .text {
-    padding: 3rem;
+    padding: 3rem 1rem;
 }
 
 .presentation .item .label {
