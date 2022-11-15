@@ -323,3 +323,8 @@ body._panel_playlists #panel_playlists,
 body._panel_control #panel_control {
     display: flex;
 }
+
+body._panel_settings #bottom_bar,
+body._panel_control #bottom_bar{
+    bottom: -100px;
+}
