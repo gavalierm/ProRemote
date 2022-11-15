@@ -5,7 +5,7 @@ $(document).on("click", "._open", async function(event) {
     if ($(this).hasClass("no-prop")) {
         event.stopPropagation();
     }
-    var target = $(this).data("open");
+    var target = $(this).data("open") + '';
     //console.log(target);
 
     if (isNa(target)) {
@@ -22,7 +22,7 @@ $(document).on("click", "._select", async function(event) {
     if ($(this).hasClass("no-prop")) {
         event.stopPropagation();
     }
-    var uuid = $(this).data("id");
+    var uuid = $(this).data("id") + '';
     //console.log(uuid);
 
     if (isNa(uuid)) {
@@ -32,6 +32,23 @@ $(document).on("click", "._select", async function(event) {
     uuid = uuid.trim();
 
     return selectItem(uuid); //true slick true push_state
+});
+
+$(document).on("click", "._trigger", async function(event) {
+    event.preventDefault();
+    if ($(this).hasClass("no-prop")) {
+        event.stopPropagation();
+    }
+    var index = $(this).data("index") + '';
+    console.log(index);
+
+    if (isNa(index)) {
+        console.log("_trigger", "Undefined index");
+        return false;
+    }
+    index = index.trim();
+
+    return triggerSlide(index, this); //true slick true push_state
 });
 
 

@@ -33,7 +33,7 @@ function connect() {
     // Hide authenticate segment
     $("#authenticate").hide();
     // Display connecting to host text
-    showWarr("Connecting to " + host,'');
+    showWarr("Connecting to " + host, '');
     // Fade-in the loader and text
     $("#connecting-loader").fadeIn();
     // Show disconnected status
@@ -103,10 +103,12 @@ function onMessage(evt) {
 
         var presentation = createItem(obj.presentation);
         if (presentation) {
-            data = '<div class="presentation padder">' + presentation + '</div>';
+            data = presentation;
         }
         $("#presentation_target").html(data);
         return openPanel('_panel_control');
+    } else if (obj.action == "presentationTriggerIndex") {
+        return selectSlide(obj.presentationPath, obj.slideIndex);
     }
 }
 
@@ -140,21 +142,16 @@ function createLibrary(library) {
     for (var i = 0; i <= library.length - 1; i++) {
         var group = library[i];
         //
-        var pathSplit = group.split("/");
-        pathSplit.reverse();
-        var hash = md5(pathSplit[1]);
-        var uuid = md5(pathSplit[0]);
-
+        var item = parsePath(group);
         //store into global helper
-        global_path_helper[uuid] = group;
+        global_path_helper[item.uuid] = item.path;
         //console.log(groups_helper.indexOf(hash));
-        var item = { 'title': pathSplit[0].replace(/\.pro6/g, '').replace(/\.pro7/g, '').replace(/\.pro/g, ''), 'filename': pathSplit[0], 'path': group, 'uuid': uuid, 'library': { 'title': pathSplit[1], 'uuid': hash } };
-        if (groups_helper.indexOf(hash) === -1) {
-            groups_helper.push(hash);
-            groups.push({ 'title': pathSplit[1], 'uuid': hash, 'counter': 1, 'items': [item] }); //Library name
+        if (groups_helper.indexOf(item.library.uuid) === -1) {
+            groups_helper.push(item.library.uuid);
+            groups.push({ 'title': item.library.title, 'uuid': item.library.uuid, 'counter': 1, 'items': [item] }); //Library name
         } else {
-            groups[groups_helper.indexOf(hash)]['items'].push(item);
-            groups[groups_helper.indexOf(hash)]['counter'] = groups[groups_helper.indexOf(hash)]['counter'] + 1;
+            groups[groups_helper.indexOf(item.library.uuid)]['items'].push(item);
+            groups[groups_helper.indexOf(item.library.uuid)]['counter'] = groups[groups_helper.indexOf(item.library.uuid)]['counter'] + 1;
         }
     }
 
@@ -164,7 +161,7 @@ function createLibrary(library) {
     for (var i = 0; i <= groups.length - 1; i++) {
         var group = groups[i];
         // Add the library if required
-        console.log(group);
+        //console.log(group);
         var item_html = '';
         for (var x = 0; x <= group.items.length - 1; x++) {
             var item = group.items[x];
@@ -180,13 +177,24 @@ function createLibrary(library) {
 
 function createItem(presentation) {
 
-    var item_html = '';
+    console.log(presentation);
+
+    var presentation_html = new Array();
 
     var slideIndex = 1;
 
+    if (isNa(presentation.presentationCurrentLocation)) {
+        console.log("createItem", "no location");
+        return false;
+    }
+
+    var item = parsePath(presentation.presentationCurrentLocation);
+
+    var uuid = item.uuid;
+
     for (var i = 0; i <= presentation.presentationSlideGroups.length - 1; i++) {
         var group = presentation.presentationSlideGroups[i];
-        console.log(group);
+        //console.log(group);
 
         var groupName = null;
         if (!isNa(group.groupName)) {
@@ -204,24 +212,24 @@ function createItem(presentation) {
         //group colors
         //group labels atc
         for (var x = 0; x <= group.groupSlides.length - 1; x++) {
-            var item = group.groupSlides[x];
+            var slide = group.groupSlides[x];
             var item_classes = new Array();
-            console.log(item);
-            if (!isNa(item.slideText)) {
+            //console.log(slide);
+            if (!isNa(slide.slideText)) {
                 item_classes.push('has_text');
             }
 
-            if (!item.slideEnabled) {
+            if (!slide.slideEnabled) {
                 item_classes.push('disabled');
             }
 
             var image = null;
-            if (item.slideImage) {
-                image = `<img src="data:image/png;base64,${item.slideImage}">`;
+            if (slide.slideImage) {
+                image = `<img src="data:image/png;base64,${slide.slideImage}">`;
             }
             var slideColor = null;
-            if (!isNa(item.slideColor)) {
-                slideColor = item.slideColor.split(' ');
+            if (!isNa(slide.slideColor)) {
+                slideColor = slide.slideColor.split(' ');
                 slideColor[0] = getRGBValue(slideColor[0]);
                 slideColor[1] = getRGBValue(slideColor[1]);
                 slideColor[2] = getRGBValue(slideColor[2]);
@@ -235,12 +243,16 @@ function createItem(presentation) {
                 var borderColor = `style="border-color:rgb(${slideColor})"`;
                 var labelColor = `style="background-color:rgb(${slideColor})"`;
             }
-            item_html = item_html + `<div class="item ${item_classes.join(' ')||''}" ${borderColor}><div class="thumb">${image||''}</div><div class="text">${item.slideText||''}</div><div class="label" ${labelColor}><span class="index">${slideIndex}</span><span class="group_label">${groupName}</span><span class="slide_label">${item.slideLabel}</span></div></div>`;
+            var item_html = `<div id="index_${slideIndex}" class="item ${item_classes.join(' ')||''} _trigger" data-index="${slideIndex}" ${borderColor}><div class="thumb">${image||''}</div><div class="text">${slide.slideText||''}</div><div class="label" ${labelColor}><span class="index">${slideIndex}</span><span class="group_label">${groupName}</span><span class="slide_label">${slide.slideLabel}</span></div></div>`;
+            presentation_html.push(item_html);
             slideIndex = slideIndex + 1;
         }
     }
+    if (presentation_html.length > 0) {
+        return `<div id="uuid_${uuid}" class="presentation padder" data-path="${presentation.presentationCurrentLocation}">` + presentation_html.join('') + `</div>`;
+    }
 
-    return item_html;
+    return false;
 }
 
 function selectItem(uuid) {
@@ -252,16 +264,50 @@ function selectItem(uuid) {
 }
 
 
+function triggerSlide(index, obj) {
+    // Get the slide location
+    var location = $(obj).parents('.presentation').data("path");
+    if (isNa(location)) {
+        return showWarr('_no_path', location);
+    }
+    // Get the slide index
+    index = parseInt(index, 10) - 1;
+    // Check if this is a playlist or library presentation
+    if (!isNaN(location.charAt(0))) {
+        // Sent the request to ProPresenter
+        remoteWebSocket.send('{"action":"presentationTriggerIndex","slideIndex":"' + index + '","presentationPath":"' + location + '"}');
+        // Check if we should follow ProPresenter
+    } else {
+        // Sent the request to ProPresenter
+        remoteWebSocket.send('{"action":"presentationTriggerIndex","slideIndex":"' + index + '","presentationPath":"' + location.replace(/\//g, "\\/") + '"}');
+        // Check if we should follow ProPresenter
+    }
+}
 
 
 
+function selectSlide(path, slideIndex) {
+    var item = parsePath(path);
+    var target = "#uuid_" + item.uuid + " #index_" + (slideIndex + 1);
+    console.log(target);
+    $(target).addClass("selected");
+}
 
+function parsePath(path, library_only = false) {
+    if (isNa(path)) {
+        console.log("parsePath", "invalid path", path);
+        return false;
+    }
+    var pathSplit = path.split("/").reverse();
 
+    var library = { 'title': pathSplit[1], 'uuid': md5(pathSplit[1]) };
+    var item = { 'title': pathSplit[0].replace(/\.pro6/g, '').replace(/\.pro7/g, '').replace(/\.pro/g, ''), 'filename': pathSplit[0], 'path': path, 'uuid': md5(pathSplit[0]), 'library': library }
 
-
-
-
-
+    if (library_only) {
+        return library;
+    }
+    return item;
+}
 
 function getRGBValue(int) {
     return Math.round(255 * int);

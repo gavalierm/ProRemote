@@ -1,6 +1,13 @@
+:root {
+    --slide-selected: #ff7c00;
+    --slide-selected-oposit: #fff;
+    /** https://flatuicolors.com/palette/de **/
+}
+
 .presentation {}
 
 .presentation .item {
+    border-radius: 0.5rem;
     margin: 2px;
     margin-bottom: 2rem;
     border: 1px solid gray;
@@ -11,7 +18,9 @@
 }
 
 .presentation .item.selected {
-    border-color: var(--selected);
+    border-width: 3px !important;
+    border-color: var(--slide-selected) !important;
+    padding: 0.5rem !important;
 }
 
 .presentation .item .text {
@@ -32,7 +41,7 @@
 
 .presentation .item .label {
     font-weight: bold;
-    text-shadow: 0 0 5px rgba(0,0,0,0.4);
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -40,12 +49,15 @@
     background-color: gray;
     padding: 4px;
 }
-.presentation .item .label span{
+
+.presentation .item .label span {
     padding: 0px 4px;
 }
-.presentation .item .label .index{
+
+.presentation .item .label .index {
     font-weight: bold;
 }
+
 .presentation .item .label .slide_label {
     margin-left: auto;
 }
