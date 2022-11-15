@@ -1,6 +1,7 @@
 //api
 var remoteWebSocket;
 var global_warr_timer;
+var global_path_helper = new Array();
 
 if (isNa(host)) {
     var host = 'localhost';
@@ -76,12 +77,35 @@ function onMessage(evt) {
             data = library;
         }
         $("#library_target").html(data);
+    } else if (obj.action == "presentationCurrent") {
+        var data = "<div>No data</div>";
+
+        var presentation = createItem(obj.presentation);
+        if (presentation) {
+            data = '<div class="presentation">' + presentation + '</div>';
+        }
+        $("#presentation_target").html(data);
+        return openPanel('_panel_control');
     }
 }
 
+
+//API
 function getLibrary() {
     remoteWebSocket.send('{"action":"libraryRequest"}');
 }
+
+function getPresentation(path = null) {
+    console.log(path);
+    if (path === null) {
+        remoteWebSocket.send('{"action":"presentationCurrent", "presentationSlideQuality": "' + quality + '"}');
+    } else {
+        remoteWebSocket.send('{"action": "presentationRequest","presentationPath": "' + path + '", "presentationSlideQuality": "' + quality + '"}');
+    }
+}
+
+
+
 
 function createLibrary(library) {
 
@@ -100,8 +124,10 @@ function createLibrary(library) {
         var hash = md5(pathSplit[1]);
         var uuid = md5(pathSplit[0]);
 
+        //store into global helper
+        global_path_helper[uuid] = group;
         //console.log(groups_helper.indexOf(hash));
-        var item = { 'title': pathSplit[0].replace(/\.pro6/g, '').replace(/\.pro7/g, '').replace(/\.pro/g, ''), 'filename': pathSplit[0], 'path': item, 'uuid': uuid, 'library': { 'title': pathSplit[1], 'uuid': hash } };
+        var item = { 'title': pathSplit[0].replace(/\.pro6/g, '').replace(/\.pro7/g, '').replace(/\.pro/g, ''), 'filename': pathSplit[0], 'path': group, 'uuid': uuid, 'library': { 'title': pathSplit[1], 'uuid': hash } };
         if (groups_helper.indexOf(hash) === -1) {
             groups_helper.push(hash);
             groups.push({ 'title': pathSplit[1], 'uuid': hash, 'counter': 1, 'items': [item] }); //Library name
@@ -110,6 +136,8 @@ function createLibrary(library) {
             groups[groups_helper.indexOf(hash)]['counter'] = groups[groups_helper.indexOf(hash)]['counter'] + 1;
         }
     }
+
+
 
     var group_html = '';
     for (var i = 0; i <= groups.length - 1; i++) {
@@ -128,6 +156,56 @@ function createLibrary(library) {
     //console.log(group_html);
     return group_html;
 }
+
+function createItem(presentation) {
+
+    var item_html = '';
+
+    for (var i = 0; i <= presentation.presentationSlideGroups.length - 1; i++) {
+        var group = presentation.presentationSlideGroups[i];
+        console.log(group);
+        //group slides
+        //group colors
+        //group labels atc
+        for (var x = 0; x <= group.groupSlides.length - 1; x++) {
+            var item = group.groupSlides[x];
+            console.log(item);
+            var image = null;
+            var item_classes = new Array();
+            if (item.slideImage) {
+                image = `<img src="data:image/png;base64,${item.slideImage}">`;
+            }
+            if (!isNa(item.slideText)) {
+                item_classes.push('has_text');
+            }
+            item_html = item_html + `<div class="item ${item_classes.join(' ')||''}"><div class="thumb">${image||''}</div><div class="text">${item.slideText||''}</div><div class="label"><span class="index">${item.slideIndex}</span><span class="slide_label">${item.slideLabel}</span></div></div>`;
+        }
+    }
+
+    return item_html;
+}
+
+function selectItem(uuid) {
+    console.log(uuid);
+    if (global_path_helper[uuid]) {
+        return getPresentation(global_path_helper[uuid]);
+    }
+    return showWarr("uknown_path", uuid);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 async function showWarr(warr = null, response = null) {
     clearTimeout(global_warr_timer);
@@ -164,12 +242,6 @@ async function showWarr(warr = null, response = null) {
     }
     return false;
 }
-
-
-function selectItem(uuid){
-    console.log(uuid);
-}
-
 
 async function warrDismiss() {
     $("#warr_message").html('<i class="fa-solid fa-info"></i>Message');

@@ -1,0 +1,37 @@
+.presentation {}
+
+.presentation .item {
+    margin: 2px;
+    margin-bottom: 1rem;
+    border: 1px solid gray;
+}
+
+.presentation .item.selected {
+    border-color: var(--selected);
+}
+
+.presentation .item .text {
+    display: none;
+}
+
+.presentation .item.has_text .thumb {
+    display: none;
+}
+
+.presentation .item.has_text .text {
+    display: block;
+}
+
+.presentation .item .text {
+    padding: 3rem;
+}
+
+.presentation .item .label {
+    background-color: gray;
+    padding: 2px;
+}
+
+.presentation .item .label:before {
+    content: " ";
+    display: inline-block;
+}
