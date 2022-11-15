@@ -97,10 +97,11 @@ function createLibrary(library) {
         //
         var pathSplit = group.split("/");
         pathSplit.reverse();
-        hash = md5(pathSplit[1]);
+        var hash = md5(pathSplit[1]);
+        var uuid = md5(pathSplit[0]);
 
         //console.log(groups_helper.indexOf(hash));
-        var item = { 'title': pathSplit[0].replace(/\.pro6/g, '').replace(/\.pro7/g, '').replace(/\.pro/g, ''), 'filename': pathSplit[0], 'path': item, 'library': { 'title': pathSplit[1], 'uuid': hash } };
+        var item = { 'title': pathSplit[0].replace(/\.pro6/g, '').replace(/\.pro7/g, '').replace(/\.pro/g, ''), 'filename': pathSplit[0], 'path': item, 'uuid': uuid, 'library': { 'title': pathSplit[1], 'uuid': hash } };
         if (groups_helper.indexOf(hash) === -1) {
             groups_helper.push(hash);
             groups.push({ 'title': pathSplit[1], 'uuid': hash, 'counter': 1, 'items': [item] }); //Library name
@@ -118,7 +119,7 @@ function createLibrary(library) {
         var item_html = '';
         for (var x = 0; x <= group.items.length - 1; x++) {
             var item = group.items[x];
-            var item_html = item_html + `<div class="item library_item _select" data-select="_item" data-id="' + id + '"><div class="item_content"><div class="item_title">${item.title}</div><div class="item_group_title">${item.library.title}</div></div></div>`;
+            var item_html = item_html + `<div class="item library_item _select" data-select="_item" data-id="${item.uuid}"><div class="item_content"><div class="item_title">${item.title}</div><div class="item_group_title">${item.library.title}</div></div></div>`;
         }
 
         group_html = group_html + `<div class='group'><div class="group_title">${group.title}</div><div class="items">${item_html}</div></div>`;
@@ -163,6 +164,12 @@ async function showWarr(warr = null, response = null) {
     }
     return false;
 }
+
+
+function selectItem(uuid){
+    console.log(uuid);
+}
+
 
 async function warrDismiss() {
     $("#warr_message").html('<i class="fa-solid fa-info"></i>Message');

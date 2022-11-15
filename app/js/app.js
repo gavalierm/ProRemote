@@ -6,7 +6,7 @@ $(document).on("click", "._open", async function(event) {
         event.stopPropagation();
     }
     var target = $(this).data("open");
-    console.log(target);
+    //console.log(target);
 
     if (isNa(target)) {
         console.log("_open", "Undefined target");
@@ -15,6 +15,23 @@ $(document).on("click", "._open", async function(event) {
     target = target.trim();
 
     return openPanel(target); //true slick true push_state
+});
+
+$(document).on("click", "._select", async function(event) {
+    event.preventDefault();
+    if ($(this).hasClass("no-prop")) {
+        event.stopPropagation();
+    }
+    var uuid = $(this).data("id");
+    //console.log(uuid);
+
+    if (isNa(uuid)) {
+        console.log("_select", "Undefined uuid");
+        return false;
+    }
+    uuid = uuid.trim();
+
+    return selectItem(uuid); //true slick true push_state
 });
 
 
