@@ -6,40 +6,33 @@ var global_library = new Array(); //used for search
 
 if (isNa(host)) {
     var host = 'localhost';
-    if (localStorage.getItem("_host")) {
-        host = localStorage.getItem("_host");
-    }
 }
 if (isNa(port)) {
     var port = '50000';
-    if (localStorage.getItem("_port")) {
-        port = localStorage.getItem("_port");
-    }
 }
 if (isNa(pass)) {
     var pass = 'control';
-    if (localStorage.getItem("_pass")) {
-        pass = localStorage.getItem("_pass");
-    }
 }
 if (isNa(quality)) {
     var quality = '400';
-    if (localStorage.getItem("_quality")) {
-        quality = localStorage.getItem("_quality");
-    }
 }
+
+localStorage.setItem("_host", host);
+localStorage.setItem("_port", port);
+localStorage.setItem("_pass", pass);
+localStorage.setItem("_quality", quality);
 
 function connect() {
     // Hide authenticate segment
     $("#authenticate").hide();
     // Display connecting to host text
-    showWarr("Connecting to " + host, '');
+    showWarr("Connecting to " + localStorage.getItem("_host"), '');
     // Fade-in the loader and text
     $("#connecting-loader").fadeIn();
     // Show disconnected status
     $("#status").attr("class", "disconnected");
     // Set WebSocket uri
-    wsUri = "ws://" + host + ":" + port;
+    wsUri = "ws://" + localStorage.getItem("_host") + ":" + localStorage.getItem("_port");
     remoteWebSocket = new WebSocket(wsUri + "/remote");
     remoteWebSocket.onopen = function() { onOpen(); };
     remoteWebSocket.onclose = function() { onClose(); };
@@ -198,9 +191,9 @@ function getPresentation(path) {
     loader();
     if (path === "current") {
         //return getCurrentSlide();
-        remoteWebSocket.send('{"action": "presentationCurrent", "presentationSlideQuality": "' + quality + '"}');
+        remoteWebSocket.send('{"action": "presentationCurrent", "presentationSlideQuality": "' + localStorage.getItem("_quality") + '"}');
     } else {
-        remoteWebSocket.send('{"action": "presentationRequest","presentationPath": "' + path + '", "presentationSlideQuality": "' + quality + '"}');
+        remoteWebSocket.send('{"action": "presentationRequest","presentationPath": "' + path + '", "presentationSlideQuality": "' + localStorage.getItem("_quality") + '"}');
     }
 }
 
