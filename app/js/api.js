@@ -470,7 +470,7 @@ function triggerDo(target) {
 
 function getSlideText(slideText) {
     if (slideText != null) {
-        return slideText.replace(/[\r\n\x0B\x0C\u0085\u2028\u2029]+/g, "<br>");
+        return slideText.replace(/\r|\n|\x0B|\x0C|\u0085|\u2028|\u2029/g, "<br>");
     } else {
         return "";
     }
