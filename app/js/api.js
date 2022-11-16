@@ -2,7 +2,6 @@
 var remoteWebSocket;
 var global_warr_timer;
 var global_connection_timer;
-var global_path_helper = new Array();
 
 if (isNa(host)) {
     var host = 'localhost';
@@ -86,7 +85,9 @@ function onMessage(evt) {
         showWarr(null, obj.error);
         return false;
     }
-    console.log(obj);
+
+    $("body").removeClass("_loader");
+    console.log(obj.action, obj);
     if (obj.action == "authenticate" && obj.authenticated == "1") {
         showWarr("login_success");
         return getLibrary();
@@ -98,33 +99,92 @@ function onMessage(evt) {
             data = library;
         }
         $("#library_target").html(data);
+        return false;
     } else if (obj.action == "presentationCurrent") {
-        var data = "<div>No data</div>";
+        //this is trigered when user click on slide in different presentation
+        //cation: this is returned when you request for data /// this is confusing
+        //predentationCurret is returned even in propresenter is not requested uuid current
+        //when you request for song A, and song B is selected in PP, you get this Current state for song A, but reality is that "current" is still the B
+        var data = "<div>Never happend</div>";
 
-        var presentation = createItem(obj.presentation);
-        if (presentation) {
-            data = presentation;
+        //create presentation object from reponse
+        var item = parsePath(obj.presentationPath);
+        //store received-uuid
+        var presentation = createPresentation(obj.presentation);
+        //check last state
+        // this stupid method is because API do reponse with same action for two different requests..
+        //after first fill
+
+        if (item.uuid !== $('body').data('selected-uuid')) {
+            //my request?
+            if (item.uuid == $('body').data('my-uuid')) {
+                console.log("my-uuid");
+                $("body").removeAttr('data-my-uuid');
+                $("#presentation_target").html(presentation);
+                $('body').data('selected-uuid', item.uuid);
+                return selectPresentation();
+            }
+            console.log("Not mine");
+            //$('body').data('received-uuid', item.uuid);
+            if ($('body').hasClass("live_mode")) {
+                console.log("live mode enabled filling control");
+                $("#presentation_target").html(presentation);
+                $('body').data('selected-uuid', item.uuid);
+                return selectPresentation();
+            }
+
+            if (!$("#presentation_target .presentation").length) {
+                console.log("data received and empty");
+                $("#presentation_target").html(presentation);
+            }
         }
-        $("#presentation_target").html(data);
-        return openPanel('_panel_control');
+        //return getCurrentSlide();
+        return selectPresentation();
+
     } else if (obj.action == "presentationTriggerIndex") {
-        return selectSlide(obj.presentationPath, obj.slideIndex);
+        //this will be trigered every time when sombody click on slide
+        //use carefullz
+        var item = parsePath(obj.presentationPath);
+        //store actual received data
+
+        $('body').data('received-uuid', item.uuid);
+        $('body').data('received-index', obj.slideIndex);
+
+        if (item.uuid !== $('body').data('selected-uuid')) {
+            // i have different presentation opened
+            if ($('body').hasClass("live_mode")) {
+                console.log("get presentation");
+                return getPresentation(obj.presentationPath);
+            }
+            return showWarr("observe_mode", 'presentationTriggerIndex');
+        }
+        //have same presentation
+        $('body').data('selected-index', obj.slideIndex);
+        $('body').removeAttr('data-received-index');
+        return selectSlide();
+    } else if (obj.action == "presentationSlideIndex") {
+        //this will be return only when i request for it
+        //always return index of actual selected presentation in propresenter
+        //not very usefull
+        $('body').data('selected-index', obj.slideIndex);
     }
 }
 
 
 //API
+function getCurrentSlide() {
+    $("body").addClass("_loader");
+    remoteWebSocket.send('{"action":"presentationSlideIndex"}');
+}
+
 function getLibrary() {
+    $("body").addClass("_loader");
     remoteWebSocket.send('{"action":"libraryRequest"}');
 }
 
-function getPresentation(path = null) {
-    console.log(path);
-    if (path === null) {
-        remoteWebSocket.send('{"action":"presentationCurrent", "presentationSlideQuality": "' + quality + '"}');
-    } else {
-        remoteWebSocket.send('{"action": "presentationRequest","presentationPath": "' + path + '", "presentationSlideQuality": "' + quality + '"}');
-    }
+function getPresentation(path) {
+    $("body").addClass("_loader");
+    remoteWebSocket.send('{"action": "presentationRequest","presentationPath": "' + path + '", "presentationSlideQuality": "' + quality + '"}');
 }
 
 
@@ -144,7 +204,6 @@ function createLibrary(library) {
         //
         var item = parsePath(group);
         //store into global helper
-        global_path_helper[item.uuid] = item.path;
         //console.log(groups_helper.indexOf(hash));
         if (groups_helper.indexOf(item.library.uuid) === -1) {
             groups_helper.push(item.library.uuid);
@@ -165,7 +224,7 @@ function createLibrary(library) {
         var item_html = '';
         for (var x = 0; x <= group.items.length - 1; x++) {
             var item = group.items[x];
-            var item_html = item_html + `<div class="item library_item _select" data-select="_item" data-id="${item.uuid}"><div class="item_content"><div class="item_title">${item.title}</div><div class="item_group_title">${item.library.title}</div></div></div>`;
+            var item_html = item_html + `<div class="presentation_item item library_item _trigger uuid_${item.uuid}" data-path="${item.path}"><div class="item_content"><div class="item_title">${item.title}</div><div class="item_group_title">${item.library.title}</div></div></div>`;
         }
 
         group_html = group_html + `<div class='group'><div class="group_title">${group.title}</div><div class="items">${item_html}</div></div>`;
@@ -175,16 +234,16 @@ function createLibrary(library) {
     return group_html;
 }
 
-function createItem(presentation) {
+function createPresentation(presentation) {
 
-    console.log(presentation);
+    //console.log(presentation);
 
     var presentation_html = new Array();
 
-    var slideIndex = 1;
+    var slideIndex = 0;
 
     if (isNa(presentation.presentationCurrentLocation)) {
-        console.log("createItem", "no location");
+        console.log("createPresentation", "no location");
         return false;
     }
 
@@ -223,6 +282,10 @@ function createItem(presentation) {
                 item_classes.push('disabled');
             }
 
+            if (!isNa($('body').data('selected-index')) && parseInt($('body').data('selected-index'), 10) == slideIndex) {
+                //item_classes.push('selected');
+            }
+
             var image = null;
             if (slide.slideImage) {
                 image = `<img src="data:image/png;base64,${slide.slideImage}">`;
@@ -243,55 +306,84 @@ function createItem(presentation) {
                 var borderColor = `style="border-color:rgb(${slideColor})"`;
                 var labelColor = `style="background-color:rgb(${slideColor})"`;
             }
-            var item_html = `<div id="index_${slideIndex}" class="item ${item_classes.join(' ')||''} _trigger" data-index="${slideIndex}"><div class="cont" ${borderColor}><div class="thumb">${image||''}</div><div class="text">${slide.slideText||''}</div><div class="label" ${labelColor}><span class="index">${slideIndex}</span><span class="group_label">${groupName}</span><span class="slide_label">${slide.slideLabel}</span></div></div></div>`;
+
+            var item_html = `<div id="index_${slideIndex}" class="presentation_slide item ${item_classes.join(' ')||''} _trigger" data-index="${slideIndex}"><div class="cont" ${borderColor}><div class="thumb">${image||''}</div><div class="text">${slide.slideText||''}</div><div class="label" ${labelColor}><span class="index">${slideIndex + 1}</span><span class="group_label">${groupName}</span><span class="slide_label">${slide.slideLabel}</span></div></div></div>`;
             presentation_html.push(item_html);
             slideIndex = slideIndex + 1;
+            item
         }
     }
     if (presentation_html.length > 0) {
         return `<div id="uuid_${uuid}" class="presentation padder" data-path="${presentation.presentationCurrentLocation}">` + presentation_html.join('') + `</div>`;
     }
-
-    return false;
 }
 
-function selectItem(uuid) {
-    console.log(uuid);
-    if (global_path_helper[uuid]) {
-        return getPresentation(global_path_helper[uuid]);
+function triggerPresentation(path) {
+    var item = parsePath(path);
+    $("body").data('my-uuid', item.uuid);
+    return getPresentation(path);
+}
+
+
+function triggerSlide(path, index) {
+    //console.log("triggerSlide", path, index);
+    if (!isLive()) {
+        return showWarr("observe_mode", '');
     }
-    return showWarr("uknown_path", uuid);
-}
-
-
-function triggerSlide(index, obj) {
-    // Get the slide location
-    var location = $(obj).parents('.presentation').data("path");
-    if (isNa(location)) {
-        return showWarr('_no_path', location);
+    if (isNa(path) || isNa(index)) {
+        console.log("No path or index in triggerSlide", path, index);
+        return false;
     }
     // Get the slide index
-    index = parseInt(index, 10) - 1;
+    index = parseInt(index, 10);
+
+    var item = parsePath(path);
+    $("body").data('my-uuid', item.uuid);
+    $("body").data('my-index', index);
     // Check if this is a playlist or library presentation
-    if (!isNaN(location.charAt(0))) {
+    if (!isNaN(path.charAt(0))) {
         // Sent the request to ProPresenter
-        remoteWebSocket.send('{"action":"presentationTriggerIndex","slideIndex":"' + index + '","presentationPath":"' + location + '"}');
+        remoteWebSocket.send('{"action":"presentationTriggerIndex","slideIndex":"' + index + '","presentationPath":"' + path + '"}');
         // Check if we should follow ProPresenter
     } else {
         // Sent the request to ProPresenter
-        remoteWebSocket.send('{"action":"presentationTriggerIndex","slideIndex":"' + index + '","presentationPath":"' + location.replace(/\//g, "\\/") + '"}');
+        remoteWebSocket.send('{"action":"presentationTriggerIndex","slideIndex":"' + index + '","presentationPath":"' + path.replace(/\//g, "\\/") + '"}');
         // Check if we should follow ProPresenter
     }
 }
 
+function selectPresentation() {
 
+    var uuid = $('body').data('selected-uuid');
 
-function selectSlide(path, slideIndex) {
-    var item = parsePath(path);
-    var target = "#uuid_" + item.uuid + " #index_" + (slideIndex + 1);
-    console.log(target);
-    $("#uuid_" + item.uuid + " .item.selected").removeClass("selected");
+    if (isNa(uuid)) {
+        return console.warn("no uuid", uuid);
+    }
+
+    var target = ".uuid_" + uuid;
+    console.log('selectPresentation', target);
+    //
+    $(".presentation_item").removeClass("selected");
     $(target).addClass("selected");
+    return openPanel("_panel_control");
+}
+
+
+function selectSlide() {
+
+    var uuid = $('body').data('selected-uuid');
+    var index = $('body').data('selected-index');
+
+    if (isNa(uuid) || isNa(index)) {
+        return console.warn("no uuid and index", uuid, index);
+    }
+
+    var target = "#uuid_" + uuid + " #index_" + index;
+    console.log('selectSlide', target);
+    //
+    $("#uuid_" + uuid + " .presentation_slide").removeClass("selected");
+    $(target).addClass("selected");
+    return openPanel("_panel_control");
 }
 
 function parsePath(path, library_only = false) {
@@ -301,14 +393,30 @@ function parsePath(path, library_only = false) {
     }
     var pathSplit = path.split("/").reverse();
 
-    var library = { 'title': pathSplit[1], 'uuid': md5(pathSplit[1]) };
-    var item = { 'title': pathSplit[0].replace(/\.pro6/g, '').replace(/\.pro7/g, '').replace(/\.pro/g, ''), 'filename': pathSplit[0], 'path': path, 'uuid': md5(pathSplit[0]), 'library': library }
+    var library = { 'title': pathSplit[1], 'uuid': md5('library_' + pathSplit[1]) };
+    var item = { 'title': pathSplit[0].replace(/\.pro6/g, '').replace(/\.pro7/g, '').replace(/\.pro/g, ''), 'filename': pathSplit[0], 'path': path, 'uuid': md5('item_' + pathSplit[0]), 'library': library }
 
     if (library_only) {
         return library;
     }
     return item;
 }
+
+
+
+function triggerDo(target) {
+    console.log("triggerDo", target);
+
+    switch (target) {
+        case "_live_mode":
+            $('body').toggleClass("live_mode");
+            break;
+    }
+}
+
+
+
+
 
 function getRGBValue(int) {
     return Math.round(255 * int);
@@ -341,7 +449,7 @@ async function showWarr(warr = null, response = null) {
             if (isNa(warr)) {
                 warr = '';
             }
-            $("#warr_message").html(warr + response);
+            $("#warr_message").html(warr + ' ' + response);
     }
     $("body").addClass("show_warr");
     if (time != null) {
@@ -350,6 +458,12 @@ async function showWarr(warr = null, response = null) {
     return false;
 }
 
+function isLive() {
+    if ($('body').hasClass("live_mode")) {
+        return true;
+    }
+    return false;
+}
 async function warrDismiss() {
     $("#warr_message").html('<i class="fa-solid fa-info"></i>Message');
     $("body").removeClass("show_warr");

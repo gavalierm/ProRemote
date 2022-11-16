@@ -1,4 +1,20 @@
 //app
+$(document).on("click", "._do", async function(event) {
+    event.preventDefault();
+    if ($(this).hasClass("no-prop")) {
+        event.stopPropagation();
+    }
+    var target = $(this).data("do") + '';
+    //console.log(target);
+
+    if (isNa(target)) {
+        console.log("_do", "Undefined target");
+        return false;
+    }
+    target = target.trim();
+
+    return triggerDo(target);
+});
 
 $(document).on("click", "._open", async function(event) {
     event.preventDefault();
@@ -17,38 +33,38 @@ $(document).on("click", "._open", async function(event) {
     return openPanel(target); //true slick true push_state
 });
 
-$(document).on("click", "._select", async function(event) {
-    event.preventDefault();
-    if ($(this).hasClass("no-prop")) {
-        event.stopPropagation();
-    }
-    var uuid = $(this).data("id") + '';
-    //console.log(uuid);
-
-    if (isNa(uuid)) {
-        console.log("_select", "Undefined uuid");
-        return false;
-    }
-    uuid = uuid.trim();
-
-    return selectItem(uuid); //true slick true push_state
-});
-
 $(document).on("click", "._trigger", async function(event) {
     event.preventDefault();
     if ($(this).hasClass("no-prop")) {
         event.stopPropagation();
     }
-    var index = $(this).data("index") + '';
-    console.log(index);
+    var path = $(this).data("path");
+    var index = $(this).data("index");
+
+    console.log(path, index);
 
     if (isNa(index)) {
-        console.log("_trigger", "Undefined index");
-        return false;
+        console.info("_trigger", "Undefined index");
     }
-    index = index.trim();
+    if (isNa(path)) {
+        console.info("_trigger", "Undefined path");
+    }
 
-    return triggerSlide(index, this); //true slick true push_state
+    if (!isNa(index)) {
+        if (!isNa(path)) {
+            return triggerSlide(path, index);
+        }
+
+        path = $(this).parents('.presentation').data("path");
+        if (isNa(path)) {
+            return showWarr('No path in trigger', path);
+        }
+        return triggerSlide(path, index);
+    }
+    if (!isNa(path)) {
+        return triggerPresentation(path);
+    }
+    return showWarr('No path or index in trigger', path, index);
 });
 
 
@@ -92,7 +108,7 @@ async function openPanel(target) {
 }
 
 function isNa(target) {
-    if (target === undefined || target == '' || target == null) {
+    if (target === undefined || target === 'undefined' || target === '' || target === null) {
         return true
     }
     return false;
