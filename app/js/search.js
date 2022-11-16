@@ -20,8 +20,7 @@ $(document).ready(function() {
 });
 //console.log(findObject(obj, 'id', null));
 async function filterItems(query = null) {
-    $("#panel_library .gorup").removeClass('hidden');
-    $("#panel_library .group_title").removeClass('hidden');
+    $("#panel_library .group").removeClass('hidden');
     $("#panel_library .item").removeClass('hidden');
     //
     if (query == null) {
@@ -43,8 +42,7 @@ async function filterItems(query = null) {
         return showWarr("no global_library");
     }
     //console.log( cached );
-    $("#panel_library .gorup").addClass('hidden');
-    $("#panel_library .group_title").addClass('hidden');
+    $("#panel_library .group").addClass('hidden');
     $("#panel_library .item").addClass('hidden');
     //
 
@@ -61,7 +59,7 @@ async function filterItems(query = null) {
             if (i > 20) {
                 break;
             }
-            $("#panel_library  .uuid_" + list[i].id).removeClass('hidden').prevAll('.first_letter').first().removeClass('hidden');
+            $("#panel_library  .uuid_" + list[i].uuid).removeClass('hidden').prevAll('.first_letter').first().removeClass('hidden');
         }
         return false;
     }
@@ -71,12 +69,12 @@ async function filterItems(query = null) {
         mark = false;
 
         if (checkSearch(cached[i], query)) {
-            console.log(cached[i]);
+            console.log(cached[i].uuid, $("#panel_library  .uuid_" + cached[i].uuid));
             mark = true;
         }
 
         if (mark) {
-            $("#panel_library  .uuid_" + cached[i].uuid).removeClass('hidden').prevAll('.group_title').first().removeClass('hidden').prevAll('.group').first().removeClass('hidden');
+            $("#panel_library  .uuid_" + cached[i].uuid).removeClass('hidden').parents('.group').first().removeClass('hidden');
         }
     }
 }
