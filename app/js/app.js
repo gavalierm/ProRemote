@@ -51,20 +51,23 @@ $(document).on("click", "._trigger", async function(event) {
     }
 
     if (!isNa(index)) {
+        if(index == "_prev" || index == "_clear" || index == "_next"){
+            return triggerSlideNav(index);
+        }
         if (!isNa(path)) {
             return triggerSlide(path, index);
         }
 
         path = $(this).parents('.presentation').data("path");
         if (isNa(path)) {
-            return showWarr('No path in trigger', path);
+            return showWarr('No path in trigger', path + ', ' + index);
         }
         return triggerSlide(path, index);
     }
     if (!isNa(path)) {
         return triggerPresentation(path);
     }
-    return showWarr('No path or index in trigger', path, index);
+    return showWarr('No path or index in trigger', path + ', ' + index);
 });
 
 

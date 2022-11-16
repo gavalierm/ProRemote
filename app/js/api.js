@@ -176,18 +176,19 @@ function onMessage(evt) {
 
 //API
 function getCurrentSlide() {
-    $("body").addClass("_loader");
+    loader();
     remoteWebSocket.send('{"action":"presentationSlideIndex"}');
 }
 
 function getLibrary() {
-    $("body").addClass("_loader");
+    loader();
     remoteWebSocket.send('{"action":"libraryRequest"}');
 }
 
 function getPresentation(path) {
-    $("body").addClass("_loader");
+    loader();
     if (path === "current") {
+        return getCurrentSlide();
         remoteWebSocket.send('{"action": "presentationCurrent", "presentationSlideQuality": "' + quality + '"}');
     } else {
         remoteWebSocket.send('{"action": "presentationRequest","presentationPath": "' + path + '", "presentationSlideQuality": "' + quality + '"}');
@@ -360,6 +361,17 @@ function triggerSlide(path, index) {
     }
 }
 
+function triggerSlideNav(index) {
+    if (index == "_prev") {
+        remoteWebSocket.send('{"action":"presentationTriggerPrevious"}');
+    } else if (index == "_clear") {
+        remoteWebSocket.send('{"action":"clearText"}');
+    } else if (index == "_next") {
+        remoteWebSocket.send('{"action":"presentationTriggerPrev"}');
+    }
+    console.warn("Not valid Nav");
+}
+
 function selectPresentation() {
 
     var uuid = $('body').data('selected-uuid');
@@ -436,6 +448,16 @@ function triggerDo(target) {
 function getRGBValue(int) {
     return Math.round(255 * int);
 }
+
+let loaderTimeout;
+async function loader() {
+    clearTimeout(loaderTimeout);
+    $("body").addClass("_loader");
+    signalTimeout = setTimeout(function() {
+        $("body").removeClass("_loader");
+    }, 5000);
+}
+
 
 let signalTimeout;
 async function signalReceived() {
