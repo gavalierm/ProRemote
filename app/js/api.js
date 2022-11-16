@@ -423,7 +423,7 @@ function selectSlide() {
     var target = "#uuid_" + uuid + " #index_" + index;
     console.log('selectSlide', target);
     //
-    $("#uuid_" + uuid + " .presentation_slide").removeClass("selected");
+    $("#uuid_" + uuid + " .presentation_slide").removeClass(["cleared", "selected"]);
     $(target).addClass("selected");
     $("body").addClass(["was_selected", "some_selected"]);
     return openPanel("_panel_control");
