@@ -34,7 +34,7 @@ function connect() {
     // Hide authenticate segment
     $("#authenticate").hide();
     // Display connecting to host text
-    showWarr("Connecting to " + localStorage.getItem("_host"), '');
+    showWarr('connect');
     // Fade-in the loader and text
     $("#connecting-loader").fadeIn();
     // Show disconnected status
@@ -58,9 +58,8 @@ function onError(evt) {
 }
 
 function onClose() {
-    authenticated = false;
     // Show disconnected status
-    $("#status").attr("class", "disconnected");
+    showWarr("offline");
     // If retry connection is enabled
     clearTimeout(global_connection_timer);
     global_connection_timer = setTimeout(function() {
@@ -515,13 +514,19 @@ async function showWarr(warr = null, response = null) {
     //show error message;
     $("#status_message").removeClass(["white", "red", "green", "blue", "orange"]);
     switch (warr) {
+        case "connect":
+            time = null;
+            $("#status_message").addClass("white");
+            $("#warr_message").html('<i class="fa-solid fa-cloud"></i>' + ' ' + "Connecting to " + localStorage.getItem('_host') + ":" + localStorage.getItem('_port'));
+            break;
         case "online":
             $("#status_message").addClass("green");
             $("#warr_message").html('<i class="fa-solid fa-cloud"></i>' + ' ' + "Online");
             break;
         case "offline":
+            time = 3000;
             $("#status_message").addClass("red");
-            $("#warr_message").html('<i class="fa-solid fa-cloud"></i>' + ' ' + "Offline");
+            $("#warr_message").html('<i class="fa-solid fa-cloud"></i> Connection failed to ' + localStorage.getItem('_host') + ":" + localStorage.getItem('_port'));
             break;
         case "login_success":
             $("#status_message").addClass("green");
