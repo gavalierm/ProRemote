@@ -598,6 +598,10 @@ input[type="search"]:focus::-webkit-search-cancel-button {
     margin-top: 5px;
 }
 
+body.some_selected .if_not_selected,
+body.real_selected .if_not_selected {
+    display: none;
+}
 
 body.live_mode .live_mode_trigger i {
     color: red;
