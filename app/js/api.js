@@ -2,6 +2,7 @@
 var remoteWebSocket;
 var global_warr_timer;
 var global_connection_timer;
+var global_library = new Array(); //used for search
 
 if (isNa(host)) {
     var host = 'localhost';
@@ -228,9 +229,10 @@ function createLibrary(library) {
             groups[groups_helper.indexOf(item.library.uuid)]['items'].push(item);
             groups[groups_helper.indexOf(item.library.uuid)]['counter'] = groups[groups_helper.indexOf(item.library.uuid)]['counter'] + 1;
         }
+        global_library.push(item);
     }
 
-
+    //global_library = groups;
 
     var group_html = '';
     for (var i = 0; i <= groups.length - 1; i++) {
