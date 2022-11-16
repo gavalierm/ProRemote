@@ -557,6 +557,10 @@ body.live_mode .live_mode_trigger i {
     color: red;
 }
 
+body.signal .live_mode_trigger i:before {
+    color: #fff400;
+    content: "\f519";
+}
 
 body._panel_settings #panel_settings,
 body._panel_library #panel_library,

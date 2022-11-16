@@ -85,7 +85,9 @@ function onMessage(evt) {
         showWarr(null, obj.error);
         return false;
     }
-
+    //
+    signalReceived();
+    //
     $("body").removeClass("_loader");
     console.log(obj.action, obj);
     if (obj.action == "authenticate" && obj.authenticated == "1") {
@@ -156,7 +158,8 @@ function onMessage(evt) {
                 console.log("get presentation");
                 return getPresentation(obj.presentationPath);
             }
-            return showWarr("observe_mode", 'presentationTriggerIndex');
+            return signalReceived();
+            //return showWarr("observe_mode", 'presentationTriggerIndex');
         }
         //have same presentation
         $('body').data('selected-index', obj.slideIndex);
@@ -431,6 +434,15 @@ function triggerDo(target) {
 
 function getRGBValue(int) {
     return Math.round(255 * int);
+}
+
+let signalTimeout;
+async function signalReceived() {
+    clearTimeout(signalTimeout);
+    $("body").addClass("signal");
+    signalTimeout = setTimeout(function() {
+        $("body").removeClass("signal");
+    }, 200);
 }
 
 async function showWarr(warr = null, response = null) {
