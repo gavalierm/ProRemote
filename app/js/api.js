@@ -455,6 +455,10 @@ async function showWarr(warr = null, response = null) {
             $("#status_message").addClass("red");
             $("#warr_message").html('<i class="fa-solid fa-fingerprint"></i>' + ' ' + "Wrong credentials");
             break;
+        case "observe_mode":
+            $("#status_message").addClass("blue");
+            $("#warr_message").html('<i class="fa-solid fa-link"></i>' + ' ' + "Observe mode");
+            break;
         case "live_mode":
             if (response == 'enabled') {
                 $("#status_message").addClass("red");
