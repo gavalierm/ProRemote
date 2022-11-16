@@ -172,6 +172,8 @@ function onMessage(evt) {
         //not very usefull
         $('body').data('selected-index', obj.slideIndex);
         $("body").addClass("some_selected");
+    } else if (obj.action == "clearText") {
+        $('.presentation_slide.selected').addClass('cleared');
     }
 }
 
@@ -368,6 +370,9 @@ function triggerSlide(path, index) {
 }
 
 function triggerSlideNav(index) {
+    if (!isLive()) {
+        return showWarr("observe_mode", '');
+    }
     if (index == "_prev") {
         remoteWebSocket.send('{"action":"presentationTriggerPrevious"}');
         return;

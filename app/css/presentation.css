@@ -24,6 +24,11 @@
     border-color: var(--slide-selected) !important;
 }
 
+.presentation .item.selected.cleared,
+.presentation .item.selected.cleared .cont {
+    border-color: var(--primary) !important;
+}
+
 .presentation .item .cont {
     overflow: hidden;
     border-radius: 10px;
