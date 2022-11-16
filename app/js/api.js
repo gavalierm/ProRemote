@@ -322,8 +322,10 @@ function createPresentation(presentation) {
                 var borderColor = `style="border-color:rgb(${slideColor})"`;
                 var labelColor = `style="background-color:rgb(${slideColor})"`;
             }
-
-            var item_html = `<div id="index_${slideIndex}" class="presentation_slide item ${item_classes.join(' ')||''} _trigger" data-index="${slideIndex}"><div class="cont" ${borderColor}><div class="thumb">${image||''}</div><div class="text">${slide.slideText||''}</div><div class="label" ${labelColor}><span class="index">${slideIndex + 1}</span><span class="group_label">${groupName}</span><span class="slide_label">${slide.slideLabel}</span></div></div></div>`;
+            //
+            var slideText = getSlideText(slide.slideText);
+            //
+            var item_html = `<div id="index_${slideIndex}" class="presentation_slide item ${item_classes.join(' ')||''} _trigger" data-index="${slideIndex}"><div class="cont" ${borderColor}><div class="thumb">${image||''}</div><div class="text">${slideText||''}</div><div class="label" ${labelColor}><span class="index">${slideIndex + 1}</span><span class="group_label">${groupName}</span><span class="slide_label">${slide.slideLabel}</span></div></div></div>`;
             presentation_html.push(item_html);
             slideIndex = slideIndex + 1;
             item
@@ -466,7 +468,13 @@ function triggerDo(target) {
 
 
 
-
+function getSlideText(slideText) {
+    if (slideText != null) {
+        return slideText.replace(/[\r\n\x0B\x0C\u0085\u2028\u2029]+/g, "<br>");
+    } else {
+        return "";
+    }
+}
 
 function getRGBValue(int) {
     return Math.round(255 * int);
