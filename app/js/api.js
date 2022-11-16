@@ -449,11 +449,11 @@ async function showWarr(warr = null, response = null) {
             break;
         case "login_success":
             $("#status_message").addClass("green");
-            $("#warr_message").html('<i class="fa-solid fa-fingerprint"></i> Bol si prihlásený');
+            $("#warr_message").html('<i class="fa-solid fa-fingerprint"></i> Connection estabslished');
             break;
         case "login_wrong_credentials":
             $("#status_message").addClass("red");
-            $("#warr_message").html('<i class="fa-solid fa-fingerprint"></i>' + ' ' + "Zlé prihlasovacie údaje");
+            $("#warr_message").html('<i class="fa-solid fa-fingerprint"></i>' + ' ' + "Wrong credentials");
             break;
         case "live_mode":
             if (response == 'enabled') {
