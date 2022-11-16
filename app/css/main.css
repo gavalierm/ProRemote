@@ -181,7 +181,7 @@ body.show_warr #status_message {
 
 #no_data_holder .title {
     flex: 1 0 100%;
-    padding: 1rem 0;
+    padding: 1rem 14px;
     font-size: 1.3rem;
 }
 
