@@ -17,10 +17,18 @@ if (isNa(quality)) {
     var quality = '400';
 }
 
-localStorage.setItem("_host", host);
-localStorage.setItem("_port", port);
-localStorage.setItem("_pass", pass);
-localStorage.setItem("_quality", quality);
+if (isNa(localStorage.getItem("_host"))) {
+    localStorage.setItem("_host", host);
+}
+if (isNa(localStorage.getItem("_port"))) {
+    localStorage.setItem("_port", port);
+}
+if (isNa(localStorage.getItem("_pass"))) {
+    localStorage.setItem("_pass", pass);
+}
+if (isNa(localStorage.getItem("_quality"))) {
+    localStorage.setItem("_quality", quality);
+}
 
 function connect() {
     // Hide authenticate segment
