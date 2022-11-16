@@ -184,7 +184,11 @@ function getLibrary() {
 
 function getPresentation(path) {
     $("body").addClass("_loader");
-    remoteWebSocket.send('{"action": "presentationRequest","presentationPath": "' + path + '", "presentationSlideQuality": "' + quality + '"}');
+    if (path === "current") {
+        remoteWebSocket.send('{"action": "presentationCurrent", "presentationSlideQuality": "' + quality + '"}');
+    } else {
+        remoteWebSocket.send('{"action": "presentationRequest","presentationPath": "' + path + '", "presentationSlideQuality": "' + quality + '"}');
+    }
 }
 
 
@@ -365,6 +369,7 @@ function selectPresentation() {
     //
     $(".presentation_item").removeClass("selected");
     $(target).addClass("selected");
+    $("body").addClass("some_selected");
     return openPanel("_panel_control");
 }
 
@@ -383,6 +388,7 @@ function selectSlide() {
     //
     $("#uuid_" + uuid + " .presentation_slide").removeClass("selected");
     $(target).addClass("selected");
+    $("body").addClass("some_selected");
     return openPanel("_panel_control");
 }
 

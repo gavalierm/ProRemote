@@ -4,7 +4,9 @@
     /** https://flatuicolors.com/palette/de **/
 }
 
-.presentation {}
+.presentation {
+    flex: 1 0 100%;
+}
 
 .presentation .item {
     border-radius: 13px;

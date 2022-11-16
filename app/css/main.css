@@ -128,6 +128,64 @@ body.show_warr #status_message {
     top: 0 !important;
 }
 
+#presentation_target {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#no_data_holder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    height: 100%;
+    flex: 1 0 100%;
+}
+
+#no_data_holder>div {
+    text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+#no_data_holder .title {
+    flex: 1 0 100%;
+    padding: 1rem 0;
+    font-size: 1.3rem;
+}
+
+#no_data_holder small {
+    display: block;
+    margin: 0.9rem 0 0.2rem 0;
+    font-size: 0.7em;
+    opacity: 0.4;
+}
+
+#no_data_holder .button_wrapper {
+    align-self: center;
+}
+
+#no_data_holder .fa-solid {
+    font-size: 2rem;
+}
+
+#no_data_holder .btn {
+    font-size: 1rem;
+    margin: 0;
+}
+
+#no_data_holder .button_wrapper .decent {
+    font-size: 0.8em;
+    margin-top: 1em;
+}
+
+body.some_selected #no_data_holder {
+    display: none;
+}
+
 input,
 textarea {
     margin: 0;
