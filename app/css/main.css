@@ -210,7 +210,7 @@ body.show_warr #status_message {
     margin-top: 1em;
 }
 
-body.some_selected #no_data_holder {
+body.was_selected #no_data_holder {
     display: none;
 }
 
@@ -282,10 +282,12 @@ i.fa-solid {
     margin-top: -2px;
 }
 
+body.some_selected .if_selected_decent.btn,
 .btn {
     font-size: 0.8rem;
     background-color: var(--primary);
-    padding: 0.5rem 0.8rem 0.4rem 0.8rem;
+    color: var(--primary-oposit);
+    padding: 0.5rem 0.8rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -301,6 +303,16 @@ i.fa-solid {
     user-select: none;
     text-align: center;
     border-radius: 1rem;
+    pointer-events: auto;
+    opacity: 1;
+}
+
+.btn.disabled,
+.if_selected_decent.btn {
+    background-color: var(--black);
+    color: var(--secondary-oposit);
+    opacity: .35;
+    pointer-events: none;
 }
 
 .btn.round {
@@ -586,6 +598,7 @@ input[type="search"]:focus::-webkit-search-cancel-button {
     margin-top: 5px;
 }
 
+
 body.live_mode .live_mode_trigger i {
     color: red;
 }
@@ -605,6 +618,6 @@ body._panel_control #panel_control {
 body._panel_settings #bottom_bar,
 body._panel_library #bottom_bar,
 body._panel_playlists #bottom_bar,
-body._panel_control.some_selected #control_bar {
+body._panel_control.was_selected #control_bar {
     bottom: 0px;
 }

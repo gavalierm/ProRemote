@@ -101,7 +101,7 @@ function onMessage(evt) {
             data = library;
         }
         $("#library_target").html(data);
-        return false;
+        return getCurrentSlide();
     } else if (obj.action == "presentationCurrent") {
         //this is trigered when user click on slide in different presentation
         //cation: this is returned when you request for data /// this is confusing
@@ -170,13 +170,13 @@ function onMessage(evt) {
         //always return index of actual selected presentation in propresenter
         //not very usefull
         $('body').data('selected-index', obj.slideIndex);
+        $("body").addClass("some_selected");
     }
 }
 
 
 //API
 function getCurrentSlide() {
-    loader();
     remoteWebSocket.send('{"action":"presentationSlideIndex"}');
 }
 
@@ -188,7 +188,7 @@ function getLibrary() {
 function getPresentation(path) {
     loader();
     if (path === "current") {
-        return getCurrentSlide();
+        //return getCurrentSlide();
         remoteWebSocket.send('{"action": "presentationCurrent", "presentationSlideQuality": "' + quality + '"}');
     } else {
         remoteWebSocket.send('{"action": "presentationRequest","presentationPath": "' + path + '", "presentationSlideQuality": "' + quality + '"}');
@@ -364,12 +364,15 @@ function triggerSlide(path, index) {
 function triggerSlideNav(index) {
     if (index == "_prev") {
         remoteWebSocket.send('{"action":"presentationTriggerPrevious"}');
+        return;
     } else if (index == "_clear") {
         remoteWebSocket.send('{"action":"clearText"}');
+        return;
     } else if (index == "_next") {
-        remoteWebSocket.send('{"action":"presentationTriggerPrev"}');
+        remoteWebSocket.send('{"action":"presentationTriggerNext"}');
+        return;
     }
-    console.warn("Not valid Nav");
+    console.warn("Not valid Nav", index);
 }
 
 function selectPresentation() {
@@ -385,7 +388,7 @@ function selectPresentation() {
     //
     $(".presentation_item").removeClass("selected");
     $(target).addClass("selected");
-    $("body").addClass("some_selected");
+    $("body").addClass("was_selected");
     return openPanel("_panel_control");
 }
 
@@ -404,7 +407,7 @@ function selectSlide() {
     //
     $("#uuid_" + uuid + " .presentation_slide").removeClass("selected");
     $(target).addClass("selected");
-    $("body").addClass("some_selected");
+    $("body").addClass("was_selected");
     return openPanel("_panel_control");
 }
 
