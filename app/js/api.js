@@ -438,6 +438,8 @@ function triggerDo(target) {
                 $('body').addClass("live_mode");
                 return showWarr("live_mode", 'enabled');
             }
+        case "_clear_loader":
+            return loader(true); //true mean s clear
     }
 }
 
@@ -450,12 +452,19 @@ function getRGBValue(int) {
 }
 
 let loaderTimeout;
-async function loader() {
+async function loader(clear = false) {
     clearTimeout(loaderTimeout);
     $("body").addClass("_loader");
-    signalTimeout = setTimeout(function() {
-        $("body").removeClass("_loader");
-    }, 5000);
+    if (clear) {
+        $("body").removeClass(["_loader_cancel", "_loader"]);
+    } else {
+        signalTimeout = setTimeout(function() {
+            $("body").addClass("_loader_cancel");
+            signalTimeout = setTimeout(function() {
+                loader(true);
+            }, 10000);
+        }, 5000);
+    }
 }
 
 

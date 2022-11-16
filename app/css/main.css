@@ -71,20 +71,26 @@ body {
 }
 
 #status_message {
-    font-weight: bold;
     transition: top 400ms cubic-bezier(0.17, 0.04, 0.03, 0.94);
-    padding: 12px;
-    padding-top: calc(10px + env(safe-area-inset-top));
     position: absolute;
-    width: 100%;
-    height: auto;
     z-index: 5000;
     top: -50vw;
     bottom: auto;
+}
+
+.status_message {
+    width: 100%;
+    height: auto;
+    font-weight: bold;
     display: flex;
+    padding: 12px;
+    padding-top: calc(10px + env(safe-area-inset-top));
 }
 
 .status_message .status_message_wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     padding-top: 0;
     padding-bottom: 0;
     border-radius: 20px;
@@ -94,7 +100,8 @@ body {
     flex: 1;
 }
 
-.status_message #warr_message {
+.status_message .message {
+    flex: 1;
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
@@ -122,6 +129,27 @@ body {
 
 .status_message.blue .status_message_wrapper {
     background: #2196f3;
+}
+
+#loader_cancel {
+    flex: 1 0 100%;
+    display: none;
+}
+
+#loader_cancel .btn {
+    background: red;
+    margin: 1rem;
+    padding: 0.5rem 0.8rem;
+}
+
+#loader_cancel .message {
+    flex: 1 0 100%;
+    justify-content: center;
+}
+
+#loader_cancel.status_message .status_message_wrapper {
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 body.show_warr #status_message {
@@ -296,6 +324,10 @@ body._loader {
 
 body._loader #loader {
     display: flex;
+}
+
+body._loader_cancel #loader #loader_cancel {
+    display: block;
 }
 
 .icon {

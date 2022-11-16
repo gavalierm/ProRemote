@@ -170,11 +170,19 @@
     </div>
     <div id="status_message" class="status_message">
         <div class="status_message_wrapper">
-            <div id="warr_message">Message</div>
+            <div id="warr_message" class="message">Message</div>
         </div>
     </div>
     <div id="loader">
         <div class="loader fa-3x"><i class="fa-solid fa-circle-notch fa-spin"></i></div>
+        <div id="loader_cancel" class="status_message">
+            <div class="status_message_wrapper">
+                <div class="message">Loading takes too long than usual.</div>
+                <div class='btn _do' data-do="_clear_loader">
+                    <div class="inner">Cancel</div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 <script src="app/js/jquery-3.6.0.min.js" type="text/javascript"></script>
