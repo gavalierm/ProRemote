@@ -124,6 +124,7 @@ function onMessage(evt) {
                 $("body").removeAttr('data-my-uuid');
                 $("#presentation_target").html(presentation);
                 $('body').data('selected-uuid', item.uuid);
+                $('body').data('selected-title', item.title);
                 return selectPresentation();
             }
             console.log("Not mine");
@@ -132,12 +133,16 @@ function onMessage(evt) {
                 console.log("live mode enabled filling control");
                 $("#presentation_target").html(presentation);
                 $('body').data('selected-uuid', item.uuid);
+                $('body').data('selected-title', item.title);
                 return selectPresentation();
             }
 
             if (!$("#presentation_target .presentation").length) {
-                console.log("data received and empty");
-                $("#presentation_target").html(presentation);
+                console.log("data received and empty", item.uuid, item.title);
+                //$("#presentation_target").html(presentation);
+                //$('body').data('selected-uuid', item.uuid);
+                //$('body').data('selected-title', item.title);
+                return false;
             }
         }
         //return getCurrentSlide();
@@ -389,17 +394,19 @@ function triggerSlideNav(index) {
 function selectPresentation() {
 
     var uuid = $('body').data('selected-uuid');
+    var title = $('body').data('selected-title');
 
     if (isNa(uuid)) {
-        return console.warn("no uuid", uuid);
+        return console.warn("no uuid", uuid, title);
     }
 
     var target = ".uuid_" + uuid;
-    console.log('selectPresentation', target);
+    console.log('selectPresentation', target, title);
     //
     $(".presentation_item").removeClass("selected");
     $(target).addClass("selected");
     $("body").addClass(["was_selected", "some_selected"]);
+    $('.active_presentation_title').html(title);
     return openPanel("_panel_control");
 }
 
