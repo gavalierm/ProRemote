@@ -409,8 +409,13 @@ function triggerDo(target) {
 
     switch (target) {
         case "_live_mode":
-            $('body').toggleClass("live_mode");
-            break;
+            if ($('body').hasClass("live_mode")) {
+                $('body').removeClass("live_mode");
+                return showWarr("live_mode", 'disabled');
+            } else {
+                $('body').addClass("live_mode");
+                return showWarr("live_mode", 'enabled');
+            }
     }
 }
 
@@ -438,11 +443,19 @@ async function showWarr(warr = null, response = null) {
             break;
         case "login_success":
             $("#status_message").addClass("green");
-            $("#warr_message").html('<i class="fa-solid fa-fingerprint"></i>Bol si prihlásený');
+            $("#warr_message").html('<i class="fa-solid fa-fingerprint"></i> Bol si prihlásený');
             break;
         case "login_wrong_credentials":
             $("#status_message").addClass("red");
             $("#warr_message").html('<i class="fa-solid fa-fingerprint"></i>' + ' ' + "Zlé prihlasovacie údaje");
+            break;
+        case "live_mode":
+            if (response == 'enabled') {
+                $("#status_message").addClass("red");
+            } else {
+                $("#status_message").addClass("white");
+            }
+            $("#warr_message").html('<i class="fa-solid fa-link"></i>' + ' ' + "Live mode " + response);
             break;
         default:
             $("#status_message").addClass("white");

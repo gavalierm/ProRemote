@@ -100,7 +100,11 @@ body {
     align-items: center;
     justify-content: flex-start;
     padding: 12px 17px;
-    font-size: 17px;
+    font-size: 18px;
+}
+
+.status_message #warr_message i {
+    margin-right: 0.5em;
 }
 
 .status_message.red .status_message_wrapper {
@@ -491,7 +495,7 @@ input[type="search"]:focus::-webkit-search-cancel-button {
     margin-top: 5px;
 }
 
-body.live_mode .live_mode_trigger i{
+body.live_mode .live_mode_trigger i {
     color: red;
 }
 
