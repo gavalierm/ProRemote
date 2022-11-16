@@ -349,6 +349,7 @@ function triggerSlide(path, index) {
     $("body").data('my-index', index);
     // Check if this is a playlist or library presentation
     if (!isNaN(path.charAt(0))) {
+        console.warn("in playlist");
         // Sent the request to ProPresenter
         remoteWebSocket.send('{"action":"presentationTriggerIndex","slideIndex":"' + index + '","presentationPath":"' + path + '"}');
         // Check if we should follow ProPresenter

@@ -512,11 +512,11 @@ input[type="search"]:focus::-webkit-search-cancel-button {
 }
 
 
-#bottom_bar {
+.bar {
     transition: bottom 0.3s;
     z-index: 100;
     position: absolute;
-    bottom: 0;
+    bottom: -100px;
     width: 100%;
     background: var(--body);
     padding-left: env(safe-area-inset-left);
@@ -524,31 +524,32 @@ input[type="search"]:focus::-webkit-search-cancel-button {
 }
 
 @media (orientation: landscape) {
-    #bottom_bar {
+
+    .bar {
         padding-bottom: env(safe-area-inset-bottom);
     }
 }
 
-#bottom_bar .wrapper {
+.bar .wrapper {
     display: flex;
     align-items: stretch;
     justify-content: space-around;
 }
 
-#bottom_bar .wrapper .bottom_bar_button {
+.bar .wrapper .bottom_bar_button {
     flex: 1;
     display: flex;
     flex-wrap: wrap;
     align-items: flex-end;
 }
 
-#bottom_bar .wrapper .icon {
+.bar .wrapper .icon {
     padding: 5px 5px 2px 5px;
     margin: 0;
     flex: 1 0 100%;
 }
 
-#bottom_bar .wrapper .icon .icon_title {
+.bar .wrapper .icon .icon_title {
     font-size: 11px;
     margin-top: 5px;
 }
@@ -570,6 +571,8 @@ body._panel_control #panel_control {
 }
 
 body._panel_settings #bottom_bar,
-body._panel_control #bottom_bar {
-    bottom: -100px;
+body._panel_library #bottom_bar,
+body._panel_playlists #bottom_bar,
+body._panel_control.some_selected #control_bar {
+    bottom: 0px;
 }
