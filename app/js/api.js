@@ -119,8 +119,8 @@ function onMessage(evt) {
 
         if (item.uuid !== $('body').data('selected-uuid')) {
             //my request?
-            if (item.uuid == $('body').data('my-uuid')) {
-                console.log("my-uuid");
+            if (item.uuid == $('body').data('my-uuid') || "current" == $('body').data('my-uuid')) {
+                console.log("my-uuid", $('body').data('my-uuid'));
                 $("body").removeAttr('data-my-uuid');
                 $("#presentation_target").html(presentation);
                 $('body').data('selected-uuid', item.uuid);
@@ -158,6 +158,7 @@ function onMessage(evt) {
                 console.log("get presentation");
                 return getPresentation(obj.presentationPath);
             }
+            $("body").addClass("some_selected");
             return signalReceived();
             //return showWarr("observe_mode", 'presentationTriggerIndex');
         }
@@ -327,8 +328,13 @@ function createPresentation(presentation) {
 }
 
 function triggerPresentation(path) {
-    var item = parsePath(path);
-    $("body").data('my-uuid', item.uuid);
+    console.log("triggerPresentation", path);
+    var uuid = path;
+    if (path !== "current") {
+        var item = parsePath(path);
+        uuid = item.uuid;
+    }
+    $("body").data('my-uuid', uuid);
     return getPresentation(path);
 }
 
@@ -388,7 +394,7 @@ function selectPresentation() {
     //
     $(".presentation_item").removeClass("selected");
     $(target).addClass("selected");
-    $("body").addClass("was_selected");
+    $("body").addClass(["was_selected", "some_selected"]);
     return openPanel("_panel_control");
 }
 
@@ -407,7 +413,7 @@ function selectSlide() {
     //
     $("#uuid_" + uuid + " .presentation_slide").removeClass("selected");
     $(target).addClass("selected");
-    $("body").addClass("was_selected");
+    $("body").addClass(["was_selected", "some_selected"]);
     return openPanel("_panel_control");
 }
 
