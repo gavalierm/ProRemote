@@ -294,7 +294,6 @@ body.some_selected .if_selected_decent.btn,
     justify-content: center;
     margin: 0.6rem;
     font-weight: 600;
-    margin-right: -0.5rem;
     cursor: pointer;
     background-image: linear-gradient(var(--secondary), var(--secondary));
     background-position: 50% 50%;
@@ -306,6 +305,10 @@ body.some_selected .if_selected_decent.btn,
     border-radius: 1rem;
     pointer-events: auto;
     opacity: 1;
+}
+
+.vertical_slider_cont .btn {
+    margin-right: -0.5rem;
 }
 
 .btn.disabled,

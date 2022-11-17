@@ -36,12 +36,24 @@ if (isNa(localStorage.getItem("_protocol"))) {
     localStorage.setItem("_protocol", protocol);
 }
 
+$("#setting_id" + "_host").val(localStorage.getItem("_host"));
+$("#setting_id" + "_port").val(localStorage.getItem("_port"));
+$("#setting_id" + "_pass").val(localStorage.getItem("_pass"));
+$("#setting_id" + "_quality").val(localStorage.getItem("_quality"));
+$("#setting_id" + "_protocol").val(localStorage.getItem("_protocol"));
 
-$("#setting_id"+"_host").val(localStorage.getItem("_host"));
-$("#setting_id"+"_port").val(localStorage.getItem("_port"));
-$("#setting_id"+"_pass").val(localStorage.getItem("_pass"));
-$("#setting_id"+"_quality").val(localStorage.getItem("_quality"));
-$("#setting_id"+"_protocol").val(localStorage.getItem("_protocol"));
+async function storeConnection(auto_connect = true) {
+
+    localStorage.setItem("_host", $("#setting_id" + "_host").val());
+    localStorage.setItem("_port", $("#setting_id" + "_port").val());
+    localStorage.setItem("_pass", $("#setting_id" + "_pass").val());
+    localStorage.setItem("_quality", $("#setting_id" + "_quality").val());
+    localStorage.setItem("_protocol", $("#setting_id" + "_protocol").val());
+
+    if (auto_connect) {
+        connect();
+    }
+}
 
 function connect() {
     //showWarr('connect');
@@ -54,7 +66,7 @@ function connect() {
     remoteWebSocket.onerror = function(evt) { onError(evt); };
 }
 
-function onError(evt) {
+async function onError(evt) {
     disconnected();
     if (remoteWebSocket) {
         console.error('Socket encountered error: ', evt.message, 'Closing socket');
@@ -62,7 +74,7 @@ function onError(evt) {
     }
 }
 
-function onClose() {
+async function onClose() {
     disconnected();
     clearTimeout(global_connection_timer);
     global_connection_timer = setTimeout(function() {
@@ -70,13 +82,13 @@ function onClose() {
     }, 5000);
 }
 
-function onOpen() {
+async function onOpen() {
     connected();
     clearTimeout(global_connection_timer);
     remoteWebSocket.send('{"action":"authenticate","protocol":"' + protocol + '","password":"' + pass + '"}');
 }
 
-function onMessage(evt) {
+async function onMessage(evt) {
     var obj = JSON.parse(evt.data);
     if (!obj.action) {
         console.log(obj);
@@ -467,6 +479,8 @@ function triggerDo(target) {
             }
         case "_clear_loader":
             return loader(true); //true mean s clear
+        case "_store_connection":
+            return storeConnection(true); //true means auto connect
     }
 }
 
@@ -586,5 +600,5 @@ async function disconnected() {
 }
 
 $(document).ready(function() {
-    connect();
+    storeConnection();
 });
