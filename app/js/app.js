@@ -13,7 +13,7 @@ $(document).on("click", "._do", async function(event) {
     }
     target = target.trim();
 
-    return triggerDo(target);
+    return triggerDo(target, this);
 });
 
 $(document).on("click", "._open", async function(event) {
@@ -51,7 +51,7 @@ $(document).on("click", "._trigger", async function(event) {
     }
 
     if (!isNa(index)) {
-        if(index == "_prev" || index == "_clear" || index == "_next"){
+        if (index == "_prev" || index == "_clear" || index == "_next") {
             return triggerSlideNav(index);
         }
         if (!isNa(path)) {
@@ -108,6 +108,32 @@ async function openPanel(target) {
         global_back_steps.shift();
     }
     //console.log(global_back_steps);
+}
+
+
+function triggerDo(target, element) {
+    console.log("triggerDo", target, element);
+
+    switch (target) {
+        case "_live_mode":
+            if ($('body').hasClass("live_mode")) {
+                $('body').removeClass("live_mode");
+                return showWarr("live_mode", 'disabled');
+            } else {
+                $('body').addClass("live_mode");
+                return showWarr("live_mode", 'enabled');
+            }
+        case "_clear_loader":
+            return loader(true); //true mean s clear
+        case "_store_connection":
+            return storeConnection(true); //true means auto connect
+        case "_store_filters":
+            return storeFilters(); //true means auto connect
+        case "_fill_search":
+            console.log($(element).data('fill'));
+            $('#search input').val($(element).data('fill')).trigger("input");
+            return false;
+    }
 }
 
 function isNa(target) {

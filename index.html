@@ -40,7 +40,16 @@
     <link rel="apple-touch-icon" sizes="152x152" href="app/img/fav/apple-icon-152x152.png">
     <link rel="apple-touch-icon" sizes="180x180" href="app/img/fav/apple-icon-180x180.png">
     <!-- -->
-    <link rel="icon" type="image/png" sizes="192x192" href="app/img/fav/android-icon-192x192.png">
+    <link rel="icon" type="image/png"  sizes="57x57" href="app/img/fav/apple-icon-57x57.png">
+    <link rel="icon" type="image/png"  sizes="60x60" href="app/img/fav/apple-icon-60x60.png">
+    <link rel="icon" type="image/png"  sizes="72x72" href="app/img/fav/apple-icon-72x72.png">
+    <link rel="icon" type="image/png"  sizes="76x76" href="app/img/fav/apple-icon-76x76.png">
+    <link rel="icon" type="image/png"  sizes="114x114" href="app/img/fav/apple-icon-114x114.png">
+    <link rel="icon" type="image/png"  sizes="120x120" href="app/img/fav/apple-icon-120x120.png">
+    <link rel="icon" type="image/png"  sizes="144x144" href="app/img/fav/apple-icon-144x144.png">
+    <link rel="icon" type="image/png"  sizes="152x152" href="app/img/fav/apple-icon-152x152.png">
+    <link rel="icon" type="image/png"  sizes="180x180" href="app/img/fav/apple-icon-180x180.png">
+
     <link rel="icon" type="image/png" sizes="32x32" href="app/img/fav/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="96x96" href="app/img/fav/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="app/img/fav/favicon-16x16.png">
@@ -152,6 +161,32 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="settings_section">
+                            <div class="settings_section_title">Filters</div>
+                            <div class="setting">
+                                <label for="setting_id_filter_a" class="setting_label">Filter A</label>
+                                <div class="setting_value">
+                                    <input id="setting_id_filter_a" type="text" name="_filter_a" value="">
+                                </div>
+                            </div>
+                            <div class="setting">
+                                <label for="setting_id_filter_b" class="setting_label">Filter B</label>
+                                <div class="setting_value">
+                                    <input id="setting_id_filter_b" type="text" name="_filter_b" value="">
+                                </div>
+                            </div>
+                            <div class="setting">
+                                <label for="setting_id_filter_c" class="setting_label">Filter C</label>
+                                <div class="setting_value">
+                                    <input id="setting_id_filter_c" type="text" name="_filter_c" value="">
+                                </div>
+                            </div>
+                            <div class="button_wrapper">
+                                <div class="button btn _do disconnected_allowed" data-do="_store_filters">
+                                    <div class="inner">Store</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -179,13 +214,13 @@
                             <div class='btn round rounded  _do' data-do="_fill_search" data-fill="">
                                 <i class="fa-solid fa-xmark"></i>
                             </div>
-                            <div class='btn rounded decent _do' data-do="_fill_search" data-fill="pomalé">
+                            <div class='btn rounded decent filter_a_trigger _do' data-do="_fill_search" data-fill="Change in settings">
                                 <div class="inner">Filter A</div>
                             </div>
-                            <div class='btn rounded decent _do' data-do="_fill_search" data-fill="stredné">
+                            <div class='btn rounded decent filter_b_trigger _do' data-do="_fill_search" data-fill="Change in settings">
                                 <div class="inner">Filter B</div>
                             </div>
-                            <div class='btn rounded decent _do' data-do="_fill_search" data-fill="rýchle">
+                            <div class='btn rounded decent filter_c_trigger _do' data-do="_fill_search" data-fill="Change in settings">
                                 <div class="inner">Filter C</div>
                             </div>
                         </div>

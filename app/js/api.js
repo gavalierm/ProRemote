@@ -42,6 +42,58 @@ async function storeConnection(auto_connect = true) {
     }
 }
 
+async function refillConnection() {
+    //set stored settings into fields
+    if (!isNa(localStorage.getItem("_host"))) {
+        $("#setting_id" + "_host").val(localStorage.getItem("_host"));
+    }
+    if (!isNa(localStorage.getItem("_port"))) {
+        $("#setting_id" + "_port").val(localStorage.getItem("_port"));
+    }
+    if (!isNa(localStorage.getItem("_pass"))) {
+        $("#setting_id" + "_pass").val(localStorage.getItem("_pass"));
+    }
+    if (!isNa(localStorage.getItem("_quality"))) {
+        $("#setting_id" + "_quality").val(localStorage.getItem("_quality"));
+    }
+    if (!isNa(localStorage.getItem("_protocol"))) {
+        $("#setting_id" + "_protocol").val(localStorage.getItem("_protocol"));
+    }
+}
+
+async function storeFilters() {
+    if (!isNa($("#setting_id" + "_filter_a").val().trim())) {
+        localStorage.setItem("_filter_a", $("#setting_id" + "_filter_a").val());
+    }
+
+    if (!isNa($("#setting_id" + "_filter_b").val().trim())) {
+        localStorage.setItem("_filter_b", $("#setting_id" + "_filter_b").val());
+    }
+
+    if (!isNa($("#setting_id" + "_filter_c").val().trim())) {
+        localStorage.setItem("_filter_c", $("#setting_id" + "_filter_c").val());
+    }
+
+    refillFilters();
+}
+
+async function refillFilters() {
+    if (!isNa(localStorage.getItem("_filter_a"))) {
+        $("#setting_id" + "_filter_a").val(localStorage.getItem("_filter_a"));
+        $("." + "_filter_a" + "_trigger ._do").attr("data-fill", localStorage.getItem("_filter_a"));
+    }
+
+    if (!isNa(localStorage.getItem("_filter_b"))) {
+        $("#setting_id" + "_filter_b").val(localStorage.getItem("_filter_b"));
+        $("." + "_filter_b" + "_trigger ._do").attr("data-fill", localStorage.getItem("_filter_b"));
+    }
+    if (!isNa(localStorage.getItem("_filter_c"))) {
+        $("#setting_id" + "_filter_c").val(localStorage.getItem("_filter_c"));
+        $("." + "_filter_c" + "_trigger ._do").attr("data-fill", localStorage.getItem("_filter_c"));
+    }
+
+}
+
 function connect() {
     clearTimeout(global_connection_timer);
     if (isNa(localStorage.getItem("_host")) || isNa(localStorage.getItem("_port")) || isNa(localStorage.getItem("_pass")) || isNa(localStorage.getItem("_quality")) || isNa(localStorage.getItem("_protocol"))) {
@@ -462,27 +514,6 @@ function parsePath(path, library_only = false) {
 
 
 
-function triggerDo(target) {
-    console.log("triggerDo", target);
-
-    switch (target) {
-        case "_live_mode":
-            if ($('body').hasClass("live_mode")) {
-                $('body').removeClass("live_mode");
-                return showWarr("live_mode", 'disabled');
-            } else {
-                $('body').addClass("live_mode");
-                return showWarr("live_mode", 'enabled');
-            }
-        case "_clear_loader":
-            return loader(true); //true mean s clear
-        case "_store_connection":
-            return storeConnection(true); //true means auto connect
-    }
-}
-
-
-
 function getSlideText(slideText) {
     if (slideText != null) {
         return slideText.replace(/\r|\n|\x0B|\x0C|\u0085|\u2028|\u2029/g, "<br>");
@@ -606,22 +637,7 @@ async function disconnected() {
 }
 
 $(document).ready(function() {
-    //set stored settings into fields
-    if (!isNa(localStorage.getItem("_host"))) {
-        $("#setting_id" + "_host").val(localStorage.getItem("_host"));
-    }
-    if (!isNa(localStorage.getItem("_port"))) {
-        $("#setting_id" + "_port").val(localStorage.getItem("_port"));
-    }
-    if (!isNa(localStorage.getItem("_pass"))) {
-        $("#setting_id" + "_pass").val(localStorage.getItem("_pass"));
-    }
-    if (!isNa(localStorage.getItem("_quality"))) {
-        $("#setting_id" + "_quality").val(localStorage.getItem("_quality"));
-    }
-    if (!isNa(localStorage.getItem("_protocol"))) {
-        $("#setting_id" + "_protocol").val(localStorage.getItem("_protocol"));
-    }
-
+    refillConnection();
+    refillFilters();
     connect();
 });
