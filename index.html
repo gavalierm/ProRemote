@@ -56,6 +56,44 @@
     <link href="app/css/main.css" rel="stylesheet" type="text/css" />
     <link href="app/css/list.css" rel="stylesheet" type="text/css" />
     <link href="app/css/presentation.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript">
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            window.isUpdateAvailable = new Promise(function(resolve, reject) {
+                // lazy way of disabling service workers while developing
+                //&& ['localhost', '127'].indexOf(location.hostname) === -1
+                if ('serviceWorker' in navigator) {
+                    // register service worker file
+                    navigator.serviceWorker.register('sworker.js').then(reg => {
+                        reg.onupdatefound = () => {
+                            const installingWorker = reg.installing;
+                            installingWorker.onstatechange = () => {
+                                switch (installingWorker.state) {
+                                    case 'installed':
+                                        if (navigator.serviceWorker.controller) {
+                                            // new update available
+                                            resolve(true);
+                                        } else {
+                                            // no update available
+                                            resolve(false);
+                                        }
+                                        break;
+                                }
+                            };
+                        };
+                    }).catch(err => console.error('[SW ERROR]', err));
+                }
+            });
+            window['isUpdateAvailable'].then(isAvailable => {
+                if (isAvailable) {
+                    console.log('New Update available! Reload the webapp to see the latest juicy changes.');
+                    window.location.reload(1);
+                }
+            });
+        });
+    }
+    </script>
 </head>
 
 <body class="_panel_settings disconnected">

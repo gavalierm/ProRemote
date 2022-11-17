@@ -11,6 +11,7 @@ var ASSETS = [
     "app/js/search.js",
     "app/js/app.js",
     "app/js/api.js",
+    "app/js/md5.js",
     //
     "app/img/splashscreens/iphone5_splash.png",
     "app/img/splashscreens/iphone6_splash.png",
@@ -28,8 +29,8 @@ var ASSETS = [
     'app/css/list.css',
     'app/css/presentation.css',
     //
-    '/manifest.json',
-    '/index.html',
+    'manifest.json',
+    'index.html',
     '/'
 ];
 
