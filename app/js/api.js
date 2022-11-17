@@ -326,14 +326,14 @@ function createPresentation(presentation) {
 
     var slideIndex = 0;
 
-    if (isNa(presentation.presentationCurrentLocation)) {
-        console.log("createPresentation", "no location");
+    if (isNa(presentation.presentationName)) {
+        console.log("createPresentation", "no presentationName");
         return false;
     }
 
-    var item = parsePath(presentation.presentationCurrentLocation);
+    var uuid = md5(presentation.presentationName);
 
-    var uuid = item.uuid;
+    //var uuid = item.uuid;
 
     for (var i = 0; i <= presentation.presentationSlideGroups.length - 1; i++) {
         var group = presentation.presentationSlideGroups[i];
@@ -396,7 +396,6 @@ function createPresentation(presentation) {
             var item_html = `<div id="index_${slideIndex}" class="presentation_slide item ${item_classes.join(' ')||''} _trigger" data-index="${slideIndex}"><div class="cont" ${borderColor}><div class="thumb">${image||''}</div><div class="text">${slideText||''}</div><div class="label" ${labelColor}><span class="index">${slideIndex + 1}</span><span class="group_label">${groupName}</span><span class="slide_label">${slide.slideLabel}</span></div></div></div>`;
             presentation_html.push(item_html);
             slideIndex = slideIndex + 1;
-            item
         }
     }
     if (presentation_html.length > 0) {
