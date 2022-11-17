@@ -130,6 +130,7 @@ body {
 .status_message.blue .status_message_wrapper {
     background: #2196f3;
 }
+
 .status_message.orange .status_message_wrapper {
     background: var(--orange);
 }
@@ -342,6 +343,9 @@ body.some_selected .if_selected_decent.btn,
     background-color: transparent;
 }
 
+.fitler .btn .inner:first-letter {
+    text-transform: uppercase;
+}
 
 body._loader {
     background-color: var(--primary) !important;

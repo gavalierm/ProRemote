@@ -69,7 +69,7 @@ async function filterItems(query = null) {
         mark = false;
 
         if (checkSearch(cached[i], query)) {
-            console.log(cached[i].uuid, $("#panel_library  .uuid_" + cached[i].uuid));
+            //console.log(cached[i].uuid, $("#panel_library  .uuid_" + cached[i].uuid));
             mark = true;
         }
 
