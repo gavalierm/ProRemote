@@ -343,7 +343,7 @@ body.some_selected .if_selected_decent.btn,
     background-color: transparent;
 }
 
-.fitler .btn .inner:first-letter {
+.filter .btn .inner:first-letter {
     text-transform: uppercase;
 }
 
