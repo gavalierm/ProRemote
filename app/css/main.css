@@ -236,6 +236,7 @@ select {
     font-size1px;
     border-radius: 4px;
     color: black;
+    font-size: 1rem;
 }
 
 img {

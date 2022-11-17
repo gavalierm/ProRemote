@@ -22,7 +22,7 @@
                             <div class="icon_cont"><i class="fa-solid fa-xmark"></i></div>
                         </div>
                         <div class="panel_title">Settings</div>
-                        <div class="space_holder"></div>
+                        <div class="space_holder if_connected"></div>
                     </div>
                 </div>
                 <div class="panel_content">
@@ -32,31 +32,31 @@
                             <div class="setting">
                                 <label for="setting_id_host" class="setting_label">Host / IP</label>
                                 <div class="setting_value">
-                                    <input id="setting_id_host" type="text" name="_host">
+                                    <input id="setting_id_host" type="text" name="_host" required="required">
                                 </div>
                             </div>
                             <div class="setting">
                                 <label for="setting_id_port" class="setting_label">Port</label>
                                 <div class="setting_value">
-                                    <input id="setting_id_port" type="text" name="_port">
+                                    <input id="setting_id_port" type="text" name="_port" required="required">
                                 </div>
                             </div>
                             <div class="setting">
                                 <label for="setting_id_pass" class="setting_label">Password</label>
                                 <div class="setting_value">
-                                    <input id="setting_id_pass" type="text" name="_pass">
+                                    <input id="setting_id_pass" type="text" name="_pass" required="required">
                                 </div>
                             </div>
                             <div class="setting">
                                 <label for="setting_id_quality" class="setting_label">Quality</label>
                                 <div class="setting_value">
-                                    <input id="setting_id_quality" type="number" step="10" name="_quality">
+                                    <input id="setting_id_quality" type="number" step="10" name="_quality" required="required">
                                 </div>
                             </div>
                             <div class="setting">
                                 <label for="setting_id_protocol" class="setting_label">Protocol</label>
                                 <div class="setting_value">
-                                    <select id="setting_id_protocol" type="text" name="_protocol">
+                                    <select id="setting_id_protocol" type="text" name="_protocol" required="required">
                                         <option value="701" selected>Version 7</option>
                                         <option value="601">Version 6</option>
                                     </select>

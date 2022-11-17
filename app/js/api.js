@@ -10,22 +10,6 @@ var pass = 'control';
 var quality = '400';
 var protocol = '701';
 
-if (isNa(localStorage.getItem("_host"))) {
-    localStorage.setItem("_host", host);
-}
-if (isNa(localStorage.getItem("_port"))) {
-    localStorage.setItem("_port", port);
-}
-if (isNa(localStorage.getItem("_pass"))) {
-    localStorage.setItem("_pass", pass);
-}
-if (isNa(localStorage.getItem("_quality"))) {
-    localStorage.setItem("_quality", quality);
-}
-if (isNa(localStorage.getItem("_protocol"))) {
-    localStorage.setItem("_protocol", protocol);
-}
-
 async function storeConnection(auto_connect = true) {
 
     localStorage.setItem("_host", $("#setting_id" + "_host").val());
@@ -40,8 +24,14 @@ async function storeConnection(auto_connect = true) {
 }
 
 function connect() {
-    showWarr('connect');
     clearTimeout(global_connection_timer);
+    if (isNa(localStorage.getItem("_host")) || isNa(localStorage.getItem("_port")) || isNa(localStorage.getItem("_pass")) || isNa(localStorage.getItem("_quality")) || isNa(localStorage.getItem("_protocol"))) {
+        //no credentials
+        return false;
+    }
+    //
+    showWarr('connect');
+    //
     if (remoteWebSocket) {
         console.error('Socket opened before reconnect: Closing socket');
         remoteWebSocket.close();
