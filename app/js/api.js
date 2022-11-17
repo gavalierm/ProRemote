@@ -80,16 +80,19 @@ async function storeFilters() {
 async function refillFilters() {
     if (!isNa(localStorage.getItem("_filter_a"))) {
         $("#setting_id" + "_filter_a").val(localStorage.getItem("_filter_a"));
-        $("." + "_filter_a" + "_trigger ._do").attr("data-fill", localStorage.getItem("_filter_a"));
+        $("." + "_filter_a" + "_trigger._do").attr("data-fill", localStorage.getItem("_filter_a"));
+        $("." + "_filter_a" + "_trigger._do .inner").html(localStorage.getItem("_filter_a"));
     }
 
     if (!isNa(localStorage.getItem("_filter_b"))) {
         $("#setting_id" + "_filter_b").val(localStorage.getItem("_filter_b"));
-        $("." + "_filter_b" + "_trigger ._do").attr("data-fill", localStorage.getItem("_filter_b"));
+        $("." + "_filter_b" + "_trigger._do").attr("data-fill", localStorage.getItem("_filter_b"));
+        $("." + "_filter_b" + "_trigger._do .iiner").html(localStorage.getItem("_filter_b"));
     }
     if (!isNa(localStorage.getItem("_filter_c"))) {
         $("#setting_id" + "_filter_c").val(localStorage.getItem("_filter_c"));
-        $("." + "_filter_c" + "_trigger ._do").attr("data-fill", localStorage.getItem("_filter_c"));
+        $("." + "_filter_c" + "_trigger._do").attr("data-fill", localStorage.getItem("_filter_c"));
+        $("." + "_filter_c" + "_trigger._do .inner").html(localStorage.getItem("_filter_c"));
     }
 
 }

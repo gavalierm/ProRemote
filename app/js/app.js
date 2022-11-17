@@ -130,7 +130,7 @@ function triggerDo(target, element) {
         case "_store_filters":
             return storeFilters(); //true means auto connect
         case "_fill_search":
-            console.log($(element).data('fill'));
+            //console.log($(element).data('fill'));
             $('#search input').val($(element).data('fill')).trigger("input");
             return false;
     }
