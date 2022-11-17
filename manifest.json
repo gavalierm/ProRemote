@@ -1,0 +1,61 @@
+{
+    "name": "ProRemote",
+    "short_name": "ProRemote",
+    "start_url": "/",
+    "display": "fullscreen",
+    "background_color": "#1b1e1f",
+    "theme_color": "#1b1e1f",
+    "description": "",
+    "splash_generator_note": "DO NOT REMOVE YOU NEED IT https://appsco.pe/developer/splash-screens https://www.simicart.com/blog/pwa-splash-screen/",
+    "icons": [
+    {
+        "sizes": "320x568",
+        "type": "image/png",
+        "src": "/img/splashscreens/iphone5_splash.png"
+    },
+    {
+        "sizes": "375x667",
+        "type": "image/png",
+        "src": "/img/splashscreens/iphone6_splash.png"
+    },
+    {
+        "sizes": "621x1104",
+        "type": "image/png",
+        "src": "/img/splashscreens/iphoneplus_splash.png"
+    },
+    {
+        "sizes": "375x812",
+        "type": "image/png",
+        "src": "/img/splashscreens/iphonex_splash.png"
+    },
+    {
+        "sizes": "414x896",
+        "type": "image/png",
+        "src": "/img/splashscreens/iphonexr_splash.png"
+    },
+    {
+        "sizes": "414x896",
+        "type": "image/png",
+        "src": "/img/splashscreens/iphonexsmax_splash.png"
+    },
+    {
+        "sizes": "768x1024",
+        "type": "image/png",
+        "src": "/img/splashscreens/ipad_splash.png"
+    },
+    {
+        "sizes": "834x1112",
+        "type": "image/png",
+        "src": "/img/splashscreens/ipadpro1_splash.png"
+    },
+    {
+        "sizes": "834x1194",
+        "type": "image/png",
+        "src": "/img/splashscreens/ipadpro3_splash.png"
+    },
+    {
+        "sizes": "1024x1366",
+        "type": "image/png",
+        "src": "/img/splashscreens/ipadpro2_splash.png"
+    }]
+}
