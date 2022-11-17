@@ -194,6 +194,8 @@ body.show_warr #status_message {
 
 #no_data_holder .button_wrapper {
     align-self: center;
+    display: block;
+    flex: unset;
 }
 
 #no_data_holder .fa-solid {
@@ -281,6 +283,13 @@ i.fa-solid {
 
 .fa-stopwatch {
     margin-top: -2px;
+}
+
+.button_wrapper {
+    flex: 1 0 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 body.some_selected .if_selected_decent.btn,
@@ -568,17 +577,19 @@ input[type="search"]:focus::-webkit-search-cancel-button {
     font-size: 1.4em;
     font-weight: bold;
     color: var(--selected);
-    margin: 2rem 0 1rem 0;
+    margin: 1rem 0 0.5rem 0;
 }
 
 .settings_section .setting {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 0.2rem 0.5rem;
 }
 
 .settings_section .setting .setting_label {
     margin: 0.5rem;
+    margin-left: 0;
 }
 
 .settings_section .setting .setting_value {
@@ -678,11 +689,11 @@ body.disconnected ._trigger {
     pointer-events: none;
 }
 
-body.disconnected .disconnected_allowed{
+body.disconnected .disconnected_allowed {
     opacity: 1 !important;
     pointer-events: auto !important;
 }
 
-body.disconnected .if_connected{
+body.disconnected .if_connected {
     display: none;
 }
