@@ -4,21 +4,11 @@ var global_warr_timer;
 var global_connection_timer;
 var global_library = new Array(); //used for search
 
-if (isNa(host)) {
-    var host = 'localhost';
-}
-if (isNa(port)) {
-    var port = '50000';
-}
-if (isNa(pass)) {
-    var pass = 'control';
-}
-if (isNa(quality)) {
-    var quality = '400';
-}
-if (isNa(protocol)) {
-    var protocol = '701';
-}
+var host = 'localhost';
+var port = '1024';
+var pass = 'control';
+var quality = '400';
+var protocol = '701';
 
 if (isNa(localStorage.getItem("_host"))) {
     localStorage.setItem("_host", host);
@@ -36,12 +26,6 @@ if (isNa(localStorage.getItem("_protocol"))) {
     localStorage.setItem("_protocol", protocol);
 }
 
-$("#setting_id" + "_host").val(localStorage.getItem("_host"));
-$("#setting_id" + "_port").val(localStorage.getItem("_port"));
-$("#setting_id" + "_pass").val(localStorage.getItem("_pass"));
-$("#setting_id" + "_quality").val(localStorage.getItem("_quality"));
-$("#setting_id" + "_protocol").val(localStorage.getItem("_protocol"));
-
 async function storeConnection(auto_connect = true) {
 
     localStorage.setItem("_host", $("#setting_id" + "_host").val());
@@ -56,8 +40,12 @@ async function storeConnection(auto_connect = true) {
 }
 
 function connect() {
-    //showWarr('connect');
+    showWarr('connect');
     clearTimeout(global_connection_timer);
+    if (remoteWebSocket) {
+        console.error('Socket opened before reconnect: Closing socket');
+        remoteWebSocket.close();
+    }
     wsUri = "ws://" + localStorage.getItem("_host") + ":" + localStorage.getItem("_port");
     remoteWebSocket = new WebSocket(wsUri + "/remote");
     remoteWebSocket.onopen = function() { onOpen(); };
@@ -602,5 +590,10 @@ async function disconnected() {
 }
 
 $(document).ready(function() {
-    storeConnection();
+    $("#setting_id" + "_host").val(localStorage.getItem("_host"));
+    $("#setting_id" + "_port").val(localStorage.getItem("_port"));
+    $("#setting_id" + "_pass").val(localStorage.getItem("_pass"));
+    $("#setting_id" + "_quality").val(localStorage.getItem("_quality"));
+    $("#setting_id" + "_protocol").val(localStorage.getItem("_protocol"));
+    connect();
 });

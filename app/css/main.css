@@ -669,16 +669,20 @@ body.disconnected #panel_library .panel_header .filter,
 body.disconnected #panel_playlists .panel_header,
 body.disconnected #panel_control .panel_header {
     opacity: 0.3;
-    pointer-events: none !important;
+    pointer-events: none;
 }
 
 body.disconnected ._open,
 body.disconnected ._do,
 body.disconnected ._trigger {
-    pointer-events: none !important;
+    pointer-events: none;
 }
 
 body.disconnected .disconnected_allowed{
     opacity: 1 !important;
-    pointer-events: initial !important;
+    pointer-events: auto !important;
+}
+
+body.disconnected .if_connected{
+    display: none;
 }
