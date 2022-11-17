@@ -619,7 +619,6 @@ body._panel_control #panel_control {
     display: flex;
 }
 
-body._panel_settings #bottom_bar,
 body._panel_library #bottom_bar,
 body._panel_playlists #bottom_bar,
 body._panel_control.was_selected #control_bar {

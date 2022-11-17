@@ -31,14 +31,8 @@ if (isNa(localStorage.getItem("_quality"))) {
 }
 
 function connect() {
-    // Hide authenticate segment
-    $("#authenticate").hide();
     // Display connecting to host text
-    showWarr('connect');
-    // Fade-in the loader and text
-    $("#connecting-loader").fadeIn();
-    // Show disconnected status
-    $("#status").attr("class", "disconnected");
+    //showWarr('connect');
     // Set WebSocket uri
     wsUri = "ws://" + localStorage.getItem("_host") + ":" + localStorage.getItem("_port");
     remoteWebSocket = new WebSocket(wsUri + "/remote");
