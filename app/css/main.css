@@ -657,6 +657,7 @@ body.signal .live_mode_trigger i:before {
     content: "\f519";
 }
 
+body._panel_settings_first #panel_settings,
 body._panel_settings #panel_settings,
 body._panel_library #panel_library,
 body._panel_playlists #panel_playlists,

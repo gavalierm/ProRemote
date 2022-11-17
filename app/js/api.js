@@ -591,7 +591,7 @@ async function warrDismiss() {
 }
 
 async function connected() {
-    $("body").removeClass("disconnected")
+    $("body").removeClass(["disconnected", "_panel_settings_first"]);
     $("body").addClass("connected");
     showWarr("connected");
 }
