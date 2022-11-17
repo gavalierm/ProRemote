@@ -654,3 +654,11 @@ body._panel_playlists #bottom_bar,
 body._panel_control.was_selected #control_bar {
     bottom: 0px;
 }
+body.disconnected #bottom_bar,
+body.disconnected #control_bar,
+body.disconnected #panel_library,
+body.disconnected #panel_playlists,
+body.disconnected #panel_control {
+    opacity: 0.3;
+    pointer-events: none !important;
+}

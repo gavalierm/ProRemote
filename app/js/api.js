@@ -590,11 +590,13 @@ async function warrDismiss() {
 }
 
 async function connected() {
-    $("body").removeClass("disconnected").addClass("connected");
+    $("body").removeClass("disconnected")
+    $("body").addClass("connected");
     showWarr("connected");
 }
 
 async function disconnected() {
+    $("body").removeClass("connected");
     $("body").addClass("disconnected");
     showWarr("disconnected");
 }
