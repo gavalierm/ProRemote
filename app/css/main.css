@@ -215,7 +215,8 @@ body.was_selected #no_data_holder {
 }
 
 input,
-textarea {
+textarea,
+select {
     margin: 0;
     -webkit-user-select: initial;
     -ms-user-select: initial;
@@ -555,6 +556,32 @@ input[type="search"]:focus::-webkit-search-cancel-button {
     height: 1rem;
 }
 
+
+.settings_section {
+    padding: 1rem;
+}
+
+.settings_section .settings_section_title {
+    font-size: 1.4em;
+    font-weight: bold;
+    color: var(--selected);
+    margin: 2rem 0 1rem 0;
+}
+
+.settings_section .setting {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.settings_section .setting .setting_label {
+    margin: 0.5rem;
+}
+
+.settings_section .setting .setting_value {
+    flex: 1;
+    max-width: 235px;
+}
 
 .bar {
     transition: bottom 0.3s;

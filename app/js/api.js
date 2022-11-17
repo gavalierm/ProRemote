@@ -16,6 +16,9 @@ if (isNa(pass)) {
 if (isNa(quality)) {
     var quality = '400';
 }
+if (isNa(protocol)) {
+    var protocol = '701';
+}
 
 if (isNa(localStorage.getItem("_host"))) {
     localStorage.setItem("_host", host);
@@ -29,11 +32,20 @@ if (isNa(localStorage.getItem("_pass"))) {
 if (isNa(localStorage.getItem("_quality"))) {
     localStorage.setItem("_quality", quality);
 }
+if (isNa(localStorage.getItem("_protocol"))) {
+    localStorage.setItem("_protocol", protocol);
+}
+
+
+$("#setting_id"+"_host").val(localStorage.getItem("_host"));
+$("#setting_id"+"_port").val(localStorage.getItem("_port"));
+$("#setting_id"+"_pass").val(localStorage.getItem("_pass"));
+$("#setting_id"+"_quality").val(localStorage.getItem("_quality"));
+$("#setting_id"+"_protocol").val(localStorage.getItem("_protocol"));
 
 function connect() {
-    // Display connecting to host text
     //showWarr('connect');
-    // Set WebSocket uri
+    clearTimeout(global_connection_timer);
     wsUri = "ws://" + localStorage.getItem("_host") + ":" + localStorage.getItem("_port");
     remoteWebSocket = new WebSocket(wsUri + "/remote");
     remoteWebSocket.onopen = function() { onOpen(); };
@@ -43,18 +55,15 @@ function connect() {
 }
 
 function onError(evt) {
-    authenticated = false;
+    disconnected();
     if (remoteWebSocket) {
         console.error('Socket encountered error: ', evt.message, 'Closing socket');
         remoteWebSocket.close();
     }
-    showWarr("offline");
 }
 
 function onClose() {
-    // Show disconnected status
-    showWarr("offline");
-    // If retry connection is enabled
+    disconnected();
     clearTimeout(global_connection_timer);
     global_connection_timer = setTimeout(function() {
         connect();
@@ -62,10 +71,9 @@ function onClose() {
 }
 
 function onOpen() {
-    //if (!authenticated) {
+    connected();
     clearTimeout(global_connection_timer);
-    remoteWebSocket.send('{"action":"authenticate","protocol":"701","password":"' + pass + '"}');
-    //}
+    remoteWebSocket.send('{"action":"authenticate","protocol":"' + protocol + '","password":"' + pass + '"}');
 }
 
 function onMessage(evt) {
@@ -513,11 +521,11 @@ async function showWarr(warr = null, response = null) {
             $("#status_message").addClass("white");
             $("#warr_message").html('<i class="fa-solid fa-cloud"></i>' + ' ' + "Connecting to " + localStorage.getItem('_host') + ":" + localStorage.getItem('_port'));
             break;
-        case "online":
+        case "connected":
             $("#status_message").addClass("green");
-            $("#warr_message").html('<i class="fa-solid fa-cloud"></i>' + ' ' + "Online");
+            $("#warr_message").html('<i class="fa-solid fa-cloud"></i>' + ' ' + "Connected" + localStorage.getItem('_host') + ":" + localStorage.getItem('_port'));
             break;
-        case "offline":
+        case "disconnected":
             time = 3000;
             $("#status_message").addClass("red");
             $("#warr_message").html('<i class="fa-solid fa-cloud"></i> Connection failed to ' + localStorage.getItem('_host') + ":" + localStorage.getItem('_port'));
@@ -565,6 +573,16 @@ function isLive() {
 async function warrDismiss() {
     $("#warr_message").html('<i class="fa-solid fa-info"></i>Message');
     $("body").removeClass("show_warr");
+}
+
+async function connected() {
+    $("body").removeClass("disconnected").addClass("connected");
+    showWarr("connected");
+}
+
+async function disconnected() {
+    $("body").addClass("disconnected");
+    showWarr("disconnected");
 }
 
 $(document).ready(function() {

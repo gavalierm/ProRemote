@@ -12,7 +12,7 @@
     <link href="app/css/presentation.css" rel="stylesheet" type="text/css" />
 </head>
 
-<body class="_panel_settings">
+<body class="_panel_settings disconnected">
     <div id="app">
         <div id="panel_settings" class="panel">
             <div class="panel_wrapper">
@@ -25,7 +25,46 @@
                         <div class="space_holder"></div>
                     </div>
                 </div>
-                <div class="panel_content"></div>
+                <div class="panel_content">
+                    <div class="padder">
+                        <div class="settings_section">
+                            <div class="settings_section_title">Connection</div>
+                            <div class="setting">
+                                <label for="setting_id_host" class="setting_label">Host / IP</label>
+                                <div class="setting_value">
+                                    <input id="setting_id_host" type="text" name="_host">
+                                </div>
+                            </div>
+                            <div class="setting">
+                                <label for="setting_id_port" class="setting_label">Port</label>
+                                <div class="setting_value">
+                                    <input id="setting_id_port" type="text" name="_port">
+                                </div>
+                            </div>
+                            <div class="setting">
+                                <label for="setting_id_pass" class="setting_label">Password</label>
+                                <div class="setting_value">
+                                    <input id="setting_id_pass" type="text" name="_pass">
+                                </div>
+                            </div>
+                            <div class="setting">
+                                <label for="setting_id_quality" class="setting_label">Quality</label>
+                                <div class="setting_value">
+                                    <input id="setting_id_quality" type="number" step="10" name="_quality">
+                                </div>
+                            </div>
+                            <div class="setting">
+                                <label for="setting_id_protocol" class="setting_label">Protocol</label>
+                                <div class="setting_value">
+                                    <select id="setting_id_protocol" type="text" name="_protocol">
+                                        <option value="701" selected>Version 7</option>
+                                        <option value="601">Version 6</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div id="panel_library" class="panel">
