@@ -7,6 +7,10 @@
     "theme_color": "#1b1e1f",
     "description": "",
     "splash_generator_note": "DO NOT REMOVE YOU NEED IT https://appsco.pe/developer/splash-screens https://www.simicart.com/blog/pwa-splash-screen/",
+    "url_handlers": [
+    {
+        "origin": "https://proremote.tymy.sk"
+    }],
     "icons": [
     {
         "sizes": "320x568",
