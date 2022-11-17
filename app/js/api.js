@@ -11,12 +11,31 @@ var quality = '400';
 var protocol = '701';
 
 async function storeConnection(auto_connect = true) {
-
-    localStorage.setItem("_host", $("#setting_id" + "_host").val());
-    localStorage.setItem("_port", $("#setting_id" + "_port").val());
-    localStorage.setItem("_pass", $("#setting_id" + "_pass").val());
-    localStorage.setItem("_quality", $("#setting_id" + "_quality").val());
-    localStorage.setItem("_protocol", $("#setting_id" + "_protocol").val());
+    if (!isNa($("#setting_id" + "_host").val().trim())) {
+        localStorage.setItem("_host", $("#setting_id" + "_host").val());
+    } else {
+        return showWarr("required_value", "Host");
+    }
+    if (!isNa($("#setting_id" + "_port").val().trim())) {
+        localStorage.setItem("_port", $("#setting_id" + "_port").val());
+    } else {
+        return showWarr("required_value", "Port");
+    }
+    if (!isNa($("#setting_id" + "_pass").val().trim())) {
+        localStorage.setItem("_pass", $("#setting_id" + "_pass").val());
+    } else {
+        return showWarr("required_value", "Password");
+    }
+    if (!isNa($("#setting_id" + "_quality").val().trim())) {
+        localStorage.setItem("_quality", $("#setting_id" + "_quality").val());
+    } else {
+        return showWarr("required_value", "Quality");
+    }
+    if (!isNa($("#setting_id" + "_protocol").val().trim())) {
+        localStorage.setItem("_protocol", $("#setting_id" + "_protocol").val());
+    } else {
+        return showWarr("required_value", "Protocol");
+    }
 
     if (auto_connect) {
         connect();
@@ -508,6 +527,10 @@ async function showWarr(warr = null, response = null) {
     //show error message;
     $("#status_message").removeClass(["white", "red", "green", "blue", "orange"]);
     switch (warr) {
+        case "required_value":
+            $("#status_message").addClass("orange");
+            $("#warr_message").html('<i class="fa-solid fa-fingerprint"></i>' + ' ' + "Required: " + response);
+            break;
         case "connect":
             time = null;
             $("#status_message").addClass("white");
@@ -580,10 +603,22 @@ async function disconnected() {
 }
 
 $(document).ready(function() {
-    $("#setting_id" + "_host").val(localStorage.getItem("_host"));
-    $("#setting_id" + "_port").val(localStorage.getItem("_port"));
-    $("#setting_id" + "_pass").val(localStorage.getItem("_pass"));
-    $("#setting_id" + "_quality").val(localStorage.getItem("_quality"));
-    $("#setting_id" + "_protocol").val(localStorage.getItem("_protocol"));
+    //set stored settings into fields
+    if (!isNa(localStorage.getItem("_host"))) {
+        $("#setting_id" + "_host").val(localStorage.getItem("_host"));
+    }
+    if (!isNa(localStorage.getItem("_port"))) {
+        $("#setting_id" + "_port").val(localStorage.getItem("_port"));
+    }
+    if (!isNa(localStorage.getItem("_pass"))) {
+        $("#setting_id" + "_pass").val(localStorage.getItem("_pass"));
+    }
+    if (!isNa(localStorage.getItem("_quality"))) {
+        $("#setting_id" + "_quality").val(localStorage.getItem("_quality"));
+    }
+    if (!isNa(localStorage.getItem("_protocol"))) {
+        $("#setting_id" + "_protocol").val(localStorage.getItem("_protocol"));
+    }
+
     connect();
 });

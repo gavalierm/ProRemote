@@ -130,6 +130,9 @@ body {
 .status_message.blue .status_message_wrapper {
     background: #2196f3;
 }
+.status_message.orange .status_message_wrapper {
+    background: var(--orange);
+}
 
 #loader_cancel {
     flex: 1 0 100%;
