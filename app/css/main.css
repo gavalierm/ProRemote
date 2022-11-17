@@ -654,11 +654,31 @@ body._panel_playlists #bottom_bar,
 body._panel_control.was_selected #control_bar {
     bottom: 0px;
 }
-body.disconnected #bottom_bar,
-body.disconnected #control_bar,
-body.disconnected #panel_library,
-body.disconnected #panel_playlists,
-body.disconnected #panel_control {
+
+body.disconnected #bottom_bar .wrapper,
+body.disconnected #control_bar .wrapper,
+body.disconnected #panel_library .panel_content,
+body.disconnected #panel_playlists .panel_content,
+body.disconnected #panel_control .panel_content,
+body.disconnected #panel_library .panel_header .header .panel_title,
+body.disconnected #panel_library .panel_header .header ._do,
+body.disconnected #panel_library .panel_header .header ._open,
+body.disconnected #panel_library .panel_header .header ._trigger,
+body.disconnected #panel_library .panel_header .search,
+body.disconnected #panel_library .panel_header .filter,
+body.disconnected #panel_playlists .panel_header,
+body.disconnected #panel_control .panel_header {
     opacity: 0.3;
     pointer-events: none !important;
+}
+
+body.disconnected ._open,
+body.disconnected ._do,
+body.disconnected ._trigger {
+    pointer-events: none !important;
+}
+
+body.disconnected .disconnected_allowed{
+    opacity: 1 !important;
+    pointer-events: initial !important;
 }
