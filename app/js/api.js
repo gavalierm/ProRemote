@@ -4,12 +4,6 @@ var global_warr_timer;
 var global_connection_timer;
 var global_library = new Array(); //used for search
 
-var host = 'localhost';
-var port = '1024';
-var pass = 'control';
-var quality = '400';
-var protocol = '701';
-
 async function storeConnection(auto_connect = true) {
     if (!isNa($("#setting_id" + "_host").val().trim())) {
         localStorage.setItem("_host", $("#setting_id" + "_host").val());
@@ -137,7 +131,7 @@ async function onClose() {
 async function onOpen() {
     connected();
     clearTimeout(global_connection_timer);
-    remoteWebSocket.send('{"action":"authenticate","protocol":"' + protocol + '","password":"' + pass + '"}');
+    remoteWebSocket.send('{"action":"authenticate","protocol":"' + localStorage.getItem("_protocol") + '","password":"' + localStorage.getItem("_pass") + '"}');
 }
 
 async function onMessage(evt) {
@@ -157,9 +151,11 @@ async function onMessage(evt) {
     //
     $("body").removeClass("_loader");
     console.log(obj.action, obj);
-    if (obj.action == "authenticate" && obj.authenticated == "1") {
-        showWarr("login_success");
+    if (obj.action == "authenticate" && parseInt(obj.authenticated, 10) == 1) {
+        authenticated();
         return getLibrary();
+    } else if (obj.action == "authenticate" && parseInt(obj.authenticated, 10) == 0) {
+        return showWarr("login_wrong_credentials");
     } else if (obj.action == "libraryRequest") {
         var data = "";
 
@@ -326,14 +322,16 @@ function createPresentation(presentation) {
 
     var slideIndex = 0;
 
-    if (isNa(presentation.presentationName)) {
+    if (isNa(presentation.presentationCurrentLocation)) {
         console.log("createPresentation", "no presentationName");
         return false;
     }
 
-    var uuid = md5(presentation.presentationName);
+    var item = parsePath(presentation.presentationCurrentLocation);
 
-    //var uuid = item.uuid;
+    var uuid = item.uuid;
+
+    console.log(item, uuid);
 
     for (var i = 0; i <= presentation.presentationSlideGroups.length - 1; i++) {
         var group = presentation.presentationSlideGroups[i];
@@ -358,8 +356,12 @@ function createPresentation(presentation) {
             var slide = group.groupSlides[x];
             var item_classes = new Array();
             //console.log(slide);
-            if (!isNa(slide.slideText)) {
-                item_classes.push('has_text');
+            if (isNa(slide.slideText)) {
+                item_classes.push('no_text');
+            } else {
+                if (slide.slideText.length > 500) {
+                    item_classes.push('long_text');
+                }
             }
 
             if (!slide.slideEnabled) {
@@ -393,7 +395,7 @@ function createPresentation(presentation) {
             //
             var slideText = getSlideText(slide.slideText);
             //
-            var item_html = `<div id="index_${slideIndex}" class="presentation_slide item ${item_classes.join(' ')||''} _trigger" data-index="${slideIndex}"><div class="cont" ${borderColor}><div class="thumb">${image||''}</div><div class="text">${slideText||''}</div><div class="label" ${labelColor}><span class="index">${slideIndex + 1}</span><span class="group_label">${groupName}</span><span class="slide_label">${slide.slideLabel}</span></div></div></div>`;
+            var item_html = `<div id="index_${slideIndex}" class="presentation_slide item ${item_classes.join(' ')||''} _trigger" data-index="${slideIndex}"><div class="cont" ${borderColor}><div class="content"><div class="text">${slideText||''}</div><div class="thumb">${image||''}</div></div><div class="label" ${labelColor}><span class="index">${slideIndex + 1}</span><span class="group_label">${groupName}</span><span class="slide_label">${slide.slideLabel}</span></div></div></div>`;
             presentation_html.push(item_html);
             slideIndex = slideIndex + 1;
         }
@@ -518,7 +520,14 @@ function parsePath(path, library_only = false) {
 
 function getSlideText(slideText) {
     if (slideText != null) {
-        return slideText.replace(/\r|\n|\x0B|\x0C|\u0085|\u2028|\u2029/g, "<br>");
+
+        //add br
+        slideText = slideText.replace(/\n|\x0B|\x0C|\u0085|\u2028|\u2029/g, "<br>");
+        //add box
+        slideText = slideText.replace(/\r/g, '</div><div class="box">');
+        //
+        return `<div class="box">${slideText}</div>`;
+
     } else {
         return "";
     }
@@ -578,7 +587,7 @@ async function showWarr(warr = null, response = null) {
             $("#status_message").addClass("red");
             $("#warr_message").html('<i class="fa-solid fa-cloud"></i> Connection failed to ' + localStorage.getItem('_host') + ":" + localStorage.getItem('_port'));
             break;
-        case "login_success":
+        case "authenticated":
             $("#status_message").addClass("green");
             $("#warr_message").html('<i class="fa-solid fa-fingerprint"></i> Connection estabslished');
             break;
@@ -633,9 +642,19 @@ async function connected() {
 }
 
 async function disconnected() {
+    $("body").removeClass("authenticated");
     $("body").removeClass("connected");
     $("body").addClass("disconnected");
     showWarr("disconnected");
+}
+
+async function authenticated() {
+    if ($('body').hasClass("_panel_settings_first")) {
+        openPanel("_panel_control");
+    }
+    $("body").removeClass("disconnected");
+    $("body").addClass("authenticated");
+    showWarr("authenticated");
 }
 
 $(document).ready(function() {

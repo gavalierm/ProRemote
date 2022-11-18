@@ -6,13 +6,18 @@
 
 .presentation {
     flex: 1 0 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
 }
 
 .presentation .item {
+    cursor: pointer;
     border-radius: 13px;
-    margin: 3px 3px 23px 3px;
+    padding: 3px 3px 23px 3px;
     overflow: hidden;
     border: 3px solid transparent;
+    flex-basis: 100%;
 }
 
 .presentation .item.disabled {
@@ -30,28 +35,60 @@
 }
 
 .presentation .item .cont {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
     overflow: hidden;
     border-radius: 10px;
     border: 1px solid gray;
+    width: 100%;
+    height: 100%;
 }
 
-.presentation .item .text {
+.presentation .item .cont .content {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.presentation .item .cont .content .text {
+    height: 100%;
+    flex: 2;
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: column;
+    padding: 0.4rem;
+}
+
+.presentation .item .cont .content .text .box {
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 0.5rem 0.7rem;
+    margin: 0.1rem 0;
+    border-radius: 0.2rem;
+}
+
+.presentation .item .cont .content .thumb {
+    flex: 1;
     display: none;
 }
 
-.presentation .item.has_text .thumb {
+.presentation .item.no_text .cont .content .thumb {
+    display: flex;
+}
+
+.presentation .item.no_text .cont .content .text {
     display: none;
 }
 
-.presentation .item.has_text .text {
-    display: block;
-}
-
-.presentation .item .text {
-    padding: 3rem 1rem;
+.presentation .item.long_text {
+    flex-basis: 100% !important;
 }
 
 .presentation .item .label {
+    width: 100%;
     font-weight: bold;
     text-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
     display: flex;
@@ -72,4 +109,33 @@
 
 .presentation .item .label .slide_label {
     margin-left: auto;
+}
+
+@media screen and (min-width: 800px) {
+
+    .presentation .item {
+        flex-basis: 50%;
+    }
+
+}
+
+
+@media screen and (min-width: 1200px) {
+
+    .presentation .item {
+        flex-basis: 33%;
+    }
+
+    .presentation .item.has_text .thumb {
+        display: block;
+    }
+
+}
+
+@media screen and (min-width: 1919px) {
+
+    .presentation .item {
+        flex-basis: 25%;
+    }
+
 }
