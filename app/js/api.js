@@ -400,14 +400,13 @@ function createPresentation(presentation) {
             var item_classes = new Array();
             //console.log(slide);
             if (!isNa(slide.slideText)) {
-                if (slide.slideText.length == 1) {
-                    //console.log(slide.slideText);
-                    slide.slideText = slide.slideText.trim().replace(/^\x82+|\x82+$/gm, '');
-                    //console.log(slide.slideText.length, unescape(slide.slideText));
-                }
-
-
+                //console.log(slide.slideText.length, unescape(slide.slideText));
+                slide.slideText = slide.slideText.trim();
+                //
+                slide.slideText = slide.slideText.replace(/^\x82+|\x82+$/gm, '').trim();
+                //
             }
+
             if (isNa(slide.slideText)) {
                 item_classes.push('no_text');
             } else {
@@ -610,6 +609,10 @@ function getSlideText(slideText) {
 
         //add br
         slideText = slideText.replace(/\n|\x0B|\x0C|\u0085|\u2028|\u2029/g, "<br>");
+        //
+        slideText = slideText.trim();
+        //
+        slideText = slideText.replace(/^\x82+|\x82+$/gm, '');
         //add box
         slideText = slideText.replace(/\r/g, '</div><div class="box">');
         //
