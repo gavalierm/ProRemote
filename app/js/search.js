@@ -2,6 +2,7 @@ var typing = null;
 $(document).ready(function() {
     $(".search input").on("input", function(e) {
         e.preventDefault();
+        clearTimeout(typing);
         typing = window.setTimeout(function() {
             clearTimeout(typing);
             typing = null

@@ -76,7 +76,7 @@ $(document).on("click", "._trigger", async function(event) {
 //global array for back stepping
 var global_back_steps = new Array('_panel_library');
 
-async function openPanel(target) {
+async function openPanel(target, callback = null) {
     if (isNa(target)) {
         console.log("openPanel", "Undefined target");
         return false;
@@ -88,9 +88,9 @@ async function openPanel(target) {
             _target = global_back_steps[(global_back_steps.length - 2)];
             global_back_steps.pop();
         }
-        return openPanel(_target);
+        return openPanel(_target, callback);
     } else if (target == "_panel_close") {
-        return openPanel('_panel_library');
+        return openPanel('_panel_library', callback);
     }
     //
     //remove all class with _ leading
@@ -109,6 +109,9 @@ async function openPanel(target) {
         global_back_steps.shift();
     }
     //console.log(global_back_steps);
+    if (callback) {
+        return callback();
+    }
 }
 
 

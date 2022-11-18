@@ -390,6 +390,11 @@ function createPresentation(presentation) {
             var labelColor = null;
             if (slideColor) {
                 var borderColor = `style="border-color:rgb(${slideColor})"`;
+                if (slideColor == '0,0,0,1.0') {
+                    //borderColor = `style="border-color:rgb(68,68,68,1.0)"`;
+                    //borderColor = `style="border-color:rgb(255,255,255,1.0)"`;
+                }
+
                 var labelColor = `style="background-color:rgb(${slideColor})"`;
             }
             //
@@ -478,6 +483,7 @@ function selectPresentation() {
     $(target).addClass("selected");
     $("body").addClass(["was_selected", "some_selected"]);
     $('.active_presentation_title').html(title);
+    
     return openPanel("_panel_control");
 }
 
@@ -497,7 +503,10 @@ function selectSlide() {
     $("#uuid_" + uuid + " .presentation_slide").removeClass(["cleared", "selected"]);
     $(target).addClass("selected");
     $("body").addClass(["was_selected", "some_selected"]);
-    return openPanel("_panel_control");
+    //with callback
+    if ($('body').hasClass("live_mode")) {
+        return openPanel("_panel_control", autoMoveStep);
+    }
 }
 
 function parsePath(path, library_only = false) {

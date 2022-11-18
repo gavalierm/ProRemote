@@ -12,9 +12,9 @@
 }
 
 .presentation .item {
+    display: flex;
     cursor: pointer;
     border-radius: 13px;
-    padding: 3px 3px 23px 3px;
     overflow: hidden;
     border: 3px solid transparent;
     flex-basis: 100%;
@@ -24,17 +24,9 @@
     opacity: 0.25;
 }
 
-.presentation .item.selected,
-.presentation .item.selected .cont {
-    border-color: var(--slide-selected) !important;
-}
-
-.presentation .item.selected.cleared,
-.presentation .item.selected.cleared .cont {
-    border-color: var(--primary) !important;
-}
-
 .presentation .item .cont {
+    flex: 1;
+    margin: 0.4rem;
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -42,8 +34,6 @@
     overflow: hidden;
     border-radius: 10px;
     border: 1px solid gray;
-    width: 100%;
-    height: 100%;
 }
 
 .presentation .item .cont .content {
@@ -61,10 +51,15 @@
     justify-content: space-evenly;
     flex-direction: column;
     padding: 0.4rem;
+    font-size: 1.5rem;
+    line-height: 2rem;
+    background-image: repeating-conic-gradient(#090909 0 25%, #232323 25% 50%);
+    background-size: 18px 18px;
+    background-color: #222222;
 }
 
 .presentation .item .cont .content .text .box {
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid #444;
     padding: 0.5rem 0.7rem;
     margin: 0.1rem 0;
     border-radius: 0.2rem;
@@ -104,7 +99,7 @@
     align-items: center;
     justify-content: flex-start;
     flex-wrap: nowrap;
-    padding: 4px;
+    padding: 4px 0.5rem;
 }
 
 .presentation .item .label_cont .label span {
@@ -136,6 +131,15 @@
     display: block;
 }
 
+
+.presentation .item.selected {
+    border-color: var(--slide-selected) !important;
+}
+
+.presentation .item.selected.cleared {
+    border-color: var(--primary) !important;
+}
+
 @media screen and (min-width: 800px) {
 
     .presentation .item {
@@ -148,7 +152,7 @@
 @media screen and (min-width: 1200px) {
 
     .presentation .item {
-        flex-basis: 33%;
+        flex-basis: 33.332%;
     }
 
     .presentation .item.has_text .thumb {
