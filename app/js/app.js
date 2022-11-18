@@ -1,4 +1,5 @@
 //app
+
 $(document).on("click", "._do", async function(event) {
     event.preventDefault();
     if ($(this).hasClass("no-prop")) {
@@ -132,6 +133,9 @@ function triggerDo(target, element) {
         case "_fill_search":
             //console.log($(element).data('fill'));
             $('#search input').val($(element).data('fill')).trigger("input");
+            return false;
+        case "_swap":
+            $(element).parents(".item").first().toggleClass("show_thumb");
             return false;
     }
 }

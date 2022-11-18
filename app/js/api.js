@@ -395,7 +395,7 @@ function createPresentation(presentation) {
             //
             var slideText = getSlideText(slide.slideText);
             //
-            var item_html = `<div id="index_${slideIndex}" class="presentation_slide item ${item_classes.join(' ')||''} _trigger" data-index="${slideIndex}"><div class="cont" ${borderColor}><div class="content"><div class="text">${slideText||''}</div><div class="thumb">${image||''}</div></div><div class="label" ${labelColor}><span class="index">${slideIndex + 1}</span><span class="group_label">${groupName}</span><span class="slide_label">${slide.slideLabel}</span></div></div></div>`;
+            var item_html = `<div id="index_${slideIndex}" class="presentation_slide item ${item_classes.join(' ')||''} _trigger" data-index="${slideIndex}"><div class="cont" ${borderColor}><div class="content"><div class="text">${slideText||''}</div><div class="thumb">${image||''}</div></div><div class="label_cont" ${labelColor}><div class="label"><span class="index">${slideIndex + 1}</span><span class="group_label">${groupName || ''}</span><span class="slide_label">${slide.slideLabel || ''}</span></div><div class="slide_actions"><div class="slide_action swap no-prop _do" data-do="_swap"><i class="fa-solid fa-image"></i></div></div></div></div></div>`;
             presentation_html.push(item_html);
             slideIndex = slideIndex + 1;
         }

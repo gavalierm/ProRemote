@@ -40,16 +40,15 @@
     <link rel="apple-touch-icon" sizes="152x152" href="app/img/fav/apple-icon-152x152.png">
     <link rel="apple-touch-icon" sizes="180x180" href="app/img/fav/apple-icon-180x180.png">
     <!-- -->
-    <link rel="icon" type="image/png"  sizes="57x57" href="app/img/fav/apple-icon-57x57.png">
-    <link rel="icon" type="image/png"  sizes="60x60" href="app/img/fav/apple-icon-60x60.png">
-    <link rel="icon" type="image/png"  sizes="72x72" href="app/img/fav/apple-icon-72x72.png">
-    <link rel="icon" type="image/png"  sizes="76x76" href="app/img/fav/apple-icon-76x76.png">
-    <link rel="icon" type="image/png"  sizes="114x114" href="app/img/fav/apple-icon-114x114.png">
-    <link rel="icon" type="image/png"  sizes="120x120" href="app/img/fav/apple-icon-120x120.png">
-    <link rel="icon" type="image/png"  sizes="144x144" href="app/img/fav/apple-icon-144x144.png">
-    <link rel="icon" type="image/png"  sizes="152x152" href="app/img/fav/apple-icon-152x152.png">
-    <link rel="icon" type="image/png"  sizes="180x180" href="app/img/fav/apple-icon-180x180.png">
-
+    <link rel="icon" type="image/png" sizes="57x57" href="app/img/fav/apple-icon-57x57.png">
+    <link rel="icon" type="image/png" sizes="60x60" href="app/img/fav/apple-icon-60x60.png">
+    <link rel="icon" type="image/png" sizes="72x72" href="app/img/fav/apple-icon-72x72.png">
+    <link rel="icon" type="image/png" sizes="76x76" href="app/img/fav/apple-icon-76x76.png">
+    <link rel="icon" type="image/png" sizes="114x114" href="app/img/fav/apple-icon-114x114.png">
+    <link rel="icon" type="image/png" sizes="120x120" href="app/img/fav/apple-icon-120x120.png">
+    <link rel="icon" type="image/png" sizes="144x144" href="app/img/fav/apple-icon-144x144.png">
+    <link rel="icon" type="image/png" sizes="152x152" href="app/img/fav/apple-icon-152x152.png">
+    <link rel="icon" type="image/png" sizes="180x180" href="app/img/fav/apple-icon-180x180.png">
     <link rel="icon" type="image/png" sizes="32x32" href="app/img/fav/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="96x96" href="app/img/fav/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="app/img/fav/favicon-16x16.png">
@@ -66,7 +65,6 @@
     <link href="app/css/list.css" rel="stylesheet" type="text/css" />
     <link href="app/css/presentation.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript">
-
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
             window.isUpdateAvailable = new Promise(function(resolve, reject) {
@@ -146,13 +144,17 @@
                             <div class="setting">
                                 <label for="setting_id_quality" class="setting_label">Quality</label>
                                 <div class="setting_value">
-                                    <input id="setting_id_quality" type="number" step="10" value="400" name="_quality" required="required">
+                                    <select id="setting_id_quality" name="_quality" required="required">
+                                        <option value="200">Low</option>
+                                        <option value="400" selected>Mid</option>
+                                        <option value="600">High</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="setting">
                                 <label for="setting_id_protocol" class="setting_label">Protocol</label>
                                 <div class="setting_value">
-                                    <select id="setting_id_protocol" type="text" name="_protocol" required="required">
+                                    <select id="setting_id_protocol" name="_protocol" required="required">
                                         <option value="701" selected>Version 7</option>
                                         <option value="601">Version 6</option>
                                     </select>

@@ -87,28 +87,53 @@
     flex-basis: 100% !important;
 }
 
-.presentation .item .label {
+.presentation .item .label_cont {
     width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    background-color: gray;
+}
+
+.presentation .item .label {
+    flex: 1;
     font-weight: bold;
     text-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
     display: flex;
     align-items: center;
     justify-content: flex-start;
     flex-wrap: nowrap;
-    background-color: gray;
     padding: 4px;
 }
 
-.presentation .item .label span {
+.presentation .item .label_cont .label span {
     padding: 0px 4px;
 }
 
-.presentation .item .label .index {
+.presentation .item .label_cont .label .index {
     font-weight: bold;
 }
 
-.presentation .item .label .slide_label {
+.presentation .item .label_cont .label .slide_label {
     margin-left: auto;
+}
+
+.presentation .item .label_cont .slide_action {
+    margin: 0.2rem 0.4rem;
+    padding: 0.2rem;
+}
+
+.presentation .item.no_text .label_cont .slide_action.swap {
+    display: none;
+}
+
+.presentation .item.show_thumb .content .text {
+    display: none;
+}
+
+.presentation .item.show_thumb .content .thumb {
+    display: block;
 }
 
 @media screen and (min-width: 800px) {
