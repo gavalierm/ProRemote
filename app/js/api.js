@@ -139,13 +139,13 @@ async function onOpen() {
 async function onMessage(obj) {
     if (!obj.action) {
         console.log(obj);
-        showWarr('no_action');
-        return false;
+        return showWarr('no_action');
     }
-    if (obj.error) {
-        console.log(obj);
-        showWarr(null, obj.error);
-        return false;
+    if (!isNa(obj.error)) {
+        console.error(obj);
+        disconnected();
+        openPanel("_panel_settings");
+        return showWarr("error", obj.error);
     }
     //
     signalReceived();
@@ -156,6 +156,7 @@ async function onMessage(obj) {
         authenticated();
         return getLibrary();
     } else if (obj.action == "authenticate" && parseInt(obj.authenticated, 10) == 0) {
+        console.error("Not auth");
         return showWarr("login_wrong_credentials");
     } else if (obj.action == "libraryRequest") {
         var data = "";
@@ -607,12 +608,14 @@ function parsePath(path, library_only = false) {
 function getSlideText(slideText) {
     if (slideText != null) {
 
-        //add br
-        slideText = slideText.replace(/\n|\x0B|\x0C|\u0085|\u2028|\u2029/g, "<br>");
         //
         slideText = slideText.trim();
         //
         slideText = slideText.replace(/^\x82+|\x82+$/gm, '');
+        //
+        slideText = slideText.replace(/^\r+|\r+$/gm, '');
+        //add br
+        slideText = slideText.replace(/\n|\x0B|\x0C|\u0085|\u2028|\u2029/g, "<br>");
         //add box
         slideText = slideText.replace(/\r/g, '</div><div class="box">');
         //
@@ -659,6 +662,11 @@ async function showWarr(warr = null, response = null) {
     //show error message;
     $("#status_message").removeClass(["white", "red", "green", "blue", "orange"]);
     switch (warr) {
+        case "error":
+            time = 10000;
+            $("#status_message").addClass("red");
+            $("#warr_message").html('<i class="fa-solid fa-triangle-exclamation"></i>' + ' ' + "Error: " + response);
+            break;
         case "required_value":
             $("#status_message").addClass("orange");
             $("#warr_message").html('<i class="fa-solid fa-fingerprint"></i>' + ' ' + "Required: " + response);
