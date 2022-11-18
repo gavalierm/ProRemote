@@ -103,7 +103,7 @@ function connect() {
     showWarr('connect');
     //
     if (remoteWebSocket) {
-        console.error('Socket opened before reconnect: Closing socket');
+        console.warn('Socket opened before reconnect: Closing socket');
         remoteWebSocket.close();
     }
     wsUri = "ws://" + localStorage.getItem("_host") + ":" + localStorage.getItem("_port");
@@ -143,8 +143,8 @@ async function onMessage(obj) {
     }
     if (!isNa(obj.error)) {
         console.error(obj);
-        disconnected();
         openPanel("_panel_settings");
+        disconnected();
         return showWarr("error", obj.error);
     }
     //
@@ -695,7 +695,7 @@ async function showWarr(warr = null, response = null) {
             break;
         case "observe_mode":
             $("#status_message").addClass("blue");
-            $("#warr_message").html('<i class="fa-solid fa-link"></i>' + ' ' + "Observe mode");
+            $("#warr_message").html('<i class="fa-solid fa-lock"></i>' + ' ' + "Interface is locked");
             break;
         case "live_mode":
             if (response == 'enabled') {
@@ -703,7 +703,7 @@ async function showWarr(warr = null, response = null) {
             } else {
                 $("#status_message").addClass("white");
             }
-            $("#warr_message").html('<i class="fa-solid fa-link"></i>' + ' ' + "Live mode " + response);
+            $("#warr_message").html('<i class="fa-solid fa-lock"></i>' + ' ' + "Live mode " + response);
             break;
         default:
             $("#status_message").addClass("white");
