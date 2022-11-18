@@ -53,9 +53,11 @@ $(document).on("click", "._trigger", async function(event) {
 
     if (!isNa(index)) {
         if (index == "_prev" || index == "_clear" || index == "_next") {
+            console.log("Triggering nav", path, index);
             return triggerSlideNav(index);
         }
         if (!isNa(path)) {
+            console.log("Triggering slide with defined path", path, index);
             return triggerSlide(path, index);
         }
 
@@ -63,6 +65,7 @@ $(document).on("click", "._trigger", async function(event) {
         if (isNa(path)) {
             return showWarr('No path in trigger', path + ', ' + index);
         }
+        console.log("Triggering slide with parent path", path, index);
         return triggerSlide(path, index);
     }
     if (!isNa(path)) {

@@ -94,7 +94,6 @@
 .presentation .item .label {
     flex: 1;
     font-weight: bold;
-    text-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -131,6 +130,9 @@
     display: block;
 }
 
+.presentation .item.bright_color .label_cont{
+    color: black;
+}
 
 .presentation .item.selected {
     border-color: var(--slide-selected) !important;

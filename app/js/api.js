@@ -3,6 +3,8 @@ var remoteWebSocket;
 var global_warr_timer;
 var global_connection_timer;
 var global_library = new Array(); //used for search
+var global_library_list = new Array(); //api has bug that do not send actual path, so we need create helper field with paths
+
 
 async function storeConnection(auto_connect = true) {
     if (!isNa($("#setting_id" + "_host").val().trim())) {
@@ -108,7 +110,7 @@ function connect() {
     remoteWebSocket = new WebSocket(wsUri + "/remote");
     remoteWebSocket.onopen = function() { onOpen(); };
     remoteWebSocket.onclose = function() { onClose(); };
-    remoteWebSocket.onmessage = function(evt) { onMessage(evt); };
+    remoteWebSocket.onmessage = function(evt) { onMessage(JSON.parse(evt.data)); };
     remoteWebSocket.onerror = function(evt) { onError(evt); };
 }
 
@@ -134,8 +136,7 @@ async function onOpen() {
     remoteWebSocket.send('{"action":"authenticate","protocol":"' + localStorage.getItem("_protocol") + '","password":"' + localStorage.getItem("_pass") + '"}');
 }
 
-async function onMessage(evt) {
-    var obj = JSON.parse(evt.data);
+async function onMessage(obj) {
     if (!obj.action) {
         console.log(obj);
         showWarr('no_action');
@@ -170,8 +171,35 @@ async function onMessage(evt) {
         //cation: this is returned when you request for data /// this is confusing
         //predentationCurret is returned even in propresenter is not requested uuid current
         //when you request for song A, and song B is selected in PP, you get this Current state for song A, but reality is that "current" is still the B
-        var data = "<div>Never happend</div>";
 
+        var action = "presentationCurrent";
+
+        //v7
+        if (isNa(obj.presentationDestination)) {
+            console.log("No presentationDestination");
+            //in version 7 presentationRequest do not include this
+            //in version 6 this is never included
+            action = "presentationRequest"; //for version 7
+
+            if (!isNa(obj.presentationPath) && localStorage.getItem("_protocol") == "601") {
+                console.log("No presentationPath AND version 6 it means Current action");
+                //this happend only in version 6 because version 7 include this in both responses
+                action = "presentationCurrent";
+            }
+            //
+            obj.action = action;
+        }
+
+        if (isNa(obj.presentationPath)) {
+            if (obj.presentation.presentationName) {
+                obj.presentationPath = obj.presentation.presentationName;
+            } else {
+                console.error("Not possible parse name", obj.presentation);
+                return false;
+            }
+        }
+
+        console.log("Actual action", obj);
         //create presentation object from reponse
         var item = parsePath(obj.presentationPath);
         //store received-uuid
@@ -224,7 +252,7 @@ async function onMessage(evt) {
             // i have different presentation opened
             if ($('body').hasClass("live_mode")) {
                 console.log("get presentation");
-                return getPresentation(obj.presentationPath);
+                return getPresentation(item.path);
             }
             $("body").addClass("some_selected");
             return signalReceived();
@@ -283,6 +311,13 @@ function createLibrary(library) {
         //
         var item = parsePath(group);
         //store into global helper
+        if (isNa(global_library_list[item.uuid])) {
+            global_library_list[item.uuid] = item.path;
+        } else {
+            console.error("Duplicate item", global_library_list[item.uuid]);
+        }
+
+
         //console.log(groups_helper.indexOf(hash));
         if (groups_helper.indexOf(item.library.uuid) === -1) {
             groups_helper.push(item.library.uuid);
@@ -317,21 +352,21 @@ function createLibrary(library) {
 function createPresentation(presentation) {
 
     //console.log(presentation);
-
+    //return false;
     var presentation_html = new Array();
 
     var slideIndex = 0;
 
-    if (isNa(presentation.presentationCurrentLocation)) {
+    if (isNa(presentation.presentationName)) {
         console.log("createPresentation", "no presentationName");
         return false;
     }
 
-    var item = parsePath(presentation.presentationCurrentLocation);
+    var item = parsePath(presentation.presentationName);
 
     var uuid = item.uuid;
 
-    console.log(item, uuid);
+    //console.log(item, uuid);
 
     for (var i = 0; i <= presentation.presentationSlideGroups.length - 1; i++) {
         var group = presentation.presentationSlideGroups[i];
@@ -342,11 +377,19 @@ function createPresentation(presentation) {
             groupName = group.groupName;
         }
         var groupColor = null;
+        var groupColor_text = null;
+
         if (!isNa(group.groupColor)) {
             groupColor = group.groupColor.split(' ');
             groupColor[0] = getRGBValue(groupColor[0]);
             groupColor[1] = getRGBValue(groupColor[1]);
             groupColor[2] = getRGBValue(groupColor[2]);
+
+            if ((groupColor[0] + groupColor[1] + groupColor[2]) > 375) {
+                //this means that slide have to bright color
+                groupColor_text = true;
+            }
+
             groupColor = groupColor.join(',');
         }
         //group slides
@@ -356,6 +399,15 @@ function createPresentation(presentation) {
             var slide = group.groupSlides[x];
             var item_classes = new Array();
             //console.log(slide);
+            if (!isNa(slide.slideText)) {
+                if (slide.slideText.length == 1) {
+                    //console.log(slide.slideText);
+                    slide.slideText = slide.slideText.trim().replace(/^\x82+|\x82+$/gm, '');
+                    //console.log(slide.slideText.length, unescape(slide.slideText));
+                }
+
+
+            }
             if (isNa(slide.slideText)) {
                 item_classes.push('no_text');
             } else {
@@ -377,25 +429,30 @@ function createPresentation(presentation) {
                 image = `<img src="data:image/png;base64,${slide.slideImage}">`;
             }
             var slideColor = null;
+            var slideColor_text = null;
             if (!isNa(slide.slideColor)) {
                 slideColor = slide.slideColor.split(' ');
                 slideColor[0] = getRGBValue(slideColor[0]);
                 slideColor[1] = getRGBValue(slideColor[1]);
                 slideColor[2] = getRGBValue(slideColor[2]);
+                if ((slideColor[0] + slideColor[1] + slideColor[2]) > 375) {
+                    //this means that slide have to bright color
+                    slideColor_text = true;
+                }
                 slideColor = slideColor.join(',');
             } else if (groupColor) {
                 slideColor = groupColor;
+                slideColor_text = groupColor_text;
             }
             var borderColor = null;
             var labelColor = null;
-            if (slideColor) {
-                var borderColor = `style="border-color:rgb(${slideColor})"`;
-                if (slideColor == '0,0,0,1.0') {
-                    //borderColor = `style="border-color:rgb(68,68,68,1.0)"`;
-                    //borderColor = `style="border-color:rgb(255,255,255,1.0)"`;
+            if (slideColor && slideColor != '0,0,0,0') {
+                if (slideColor_text) {
+                    item_classes.push('bright_color');
                 }
+                var borderColor = `style="border-color:rgb(${slideColor});"`;
 
-                var labelColor = `style="background-color:rgb(${slideColor})"`;
+                var labelColor = `style="background-color:rgb(${slideColor});"`;
             }
             //
             var slideText = getSlideText(slide.slideText);
@@ -406,7 +463,7 @@ function createPresentation(presentation) {
         }
     }
     if (presentation_html.length > 0) {
-        return `<div id="uuid_${uuid}" class="presentation padder" data-path="${presentation.presentationCurrentLocation}">` + presentation_html.join('') + `</div>`;
+        return `<div id="uuid_${uuid}" class="presentation padder" data-path="${presentation.presentationName}">` + presentation_html.join('') + `</div>`;
     }
 }
 
@@ -416,6 +473,7 @@ function triggerPresentation(path) {
     if (path !== "current") {
         var item = parsePath(path);
         uuid = item.uuid;
+        path = item.path;
     }
     $("body").data('my-uuid', uuid);
     return getPresentation(path);
@@ -435,17 +493,21 @@ function triggerSlide(path, index) {
     index = parseInt(index, 10);
 
     var item = parsePath(path);
+
+
+    console.log("Triggering slide", item);
+
     $("body").data('my-uuid', item.uuid);
     $("body").data('my-index', index);
     // Check if this is a playlist or library presentation
-    if (!isNaN(path.charAt(0))) {
+    if (!isNaN(item.path.charAt(0))) {
         console.warn("in playlist");
         // Sent the request to ProPresenter
-        remoteWebSocket.send('{"action":"presentationTriggerIndex","slideIndex":"' + index + '","presentationPath":"' + path + '"}');
+        remoteWebSocket.send('{"action":"presentationTriggerIndex","slideIndex":"' + index + '","presentationPath":"' + item.path + '"}');
         // Check if we should follow ProPresenter
     } else {
         // Sent the request to ProPresenter
-        remoteWebSocket.send('{"action":"presentationTriggerIndex","slideIndex":"' + index + '","presentationPath":"' + path.replace(/\//g, "\\/") + '"}');
+        remoteWebSocket.send('{"action":"presentationTriggerIndex","slideIndex":"' + index + '","presentationPath":"' + item.path.replace(/\//g, "\\/") + '"}');
         // Check if we should follow ProPresenter
     }
 }
@@ -483,8 +545,8 @@ function selectPresentation() {
     $(target).addClass("selected");
     $("body").addClass(["was_selected", "some_selected"]);
     $('.active_presentation_title').html(title);
-    
-    return openPanel("_panel_control");
+
+    return openPanel("_panel_control", function() { $("#automove_target").scrollTop(0); });
 }
 
 
@@ -516,8 +578,24 @@ function parsePath(path, library_only = false) {
     }
     var pathSplit = path.split("/").reverse();
 
-    var library = { 'title': pathSplit[1], 'uuid': md5('library_' + pathSplit[1]) };
-    var item = { 'title': pathSplit[0].replace(/\.pro6/g, '').replace(/\.pro7/g, '').replace(/\.pro/g, ''), 'filename': pathSplit[0], 'path': path, 'uuid': md5('item_' + pathSplit[0]), 'library': library }
+
+    if (pathSplit.length < 2) {
+        //this is name only
+        console.log("No presentationPath in parsePath", localStorage.getItem("_protocol"));
+        //we need generate path from helper array
+        var uuid = md5('item_' + path.replace(/\.pro6/g, '').replace(/\.pro7/g, '').replace(/\.pro/g, '')); //prefix in createLibrary
+        if (isNa(global_library_list[uuid])) {
+            console.error("Not possible get path from helper array", path, uuid);
+            return false;
+        }
+        path = global_library_list[uuid];
+        pathSplit = path.split("/").reverse();
+    }
+
+
+    var library = { 'title': pathSplit[1].replace(/ProPresenter6/g, 'Library'), 'uuid': md5('library_' + pathSplit[1]) };
+    var item_file = pathSplit[0].replace(/\.pro6/g, '').replace(/\.pro7/g, '').replace(/\.pro/g, '');
+    var item = { 'title': item_file, 'filename': pathSplit[0], 'path': path, 'uuid': md5('item_' + item_file), 'library': library }
 
     if (library_only) {
         return library;
