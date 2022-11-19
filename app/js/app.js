@@ -44,23 +44,23 @@ $(document).on("click", "._trigger", async function(event) {
     var index = $(this).data("index");
     var playlist = $(this).data("playlist");
 
-    console.log(load, path, index, playlist);
+    //console.log(load, path, index, playlist);
 
     if (isNa(load)) {
-        console.info("_trigger", "Undefined load");
+        //console.info("_trigger", "Undefined load");
     }
     if (isNa(index)) {
-        console.info("_trigger", "Undefined index");
+        //console.info("_trigger", "Undefined index");
     }
     if (isNa(path)) {
-        console.info("_trigger", "Undefined path");
+        //console.info("_trigger", "Undefined path");
     }
     if (isNa(playlist)) {
-        console.info("_trigger", "Undefined playlist");
+        //console.info("_trigger", "Undefined playlist");
     }
 
     if (!isNa(load)) {
-        console.log("Triggering load", load);
+        //console.log("Triggering load", load);
         switch (load) {
             case "_library":
                 return getLibrary();
@@ -71,19 +71,16 @@ $(document).on("click", "._trigger", async function(event) {
     }
 
     if (!isNa(path) && !isNa(playlist)) {
-        console.log("Triggering playlist", path, playlist);
-        //$("body").data('my-uuid', path);
-        $("body").data('my-playlist', playlist);
-        //return getPresentation(playlist);
-        return triggerPresentation(path);
+        //console.log("Triggering playlist", path, playlist);
+        return triggerPresentation(playlist);
     }
     if (!isNa(index)) {
         if (index == "_prev" || index == "_clear" || index == "_next") {
-            console.log("Triggering nav", path, index);
+            //console.log("Triggering nav", path, index);
             return triggerSlideNav(index);
         }
         if (!isNa(path)) {
-            console.log("Triggering slide with defined path", path, index);
+            //console.log("Triggering slide with defined path", path, index);
             return triggerSlide(path, index);
         }
 
@@ -94,12 +91,11 @@ $(document).on("click", "._trigger", async function(event) {
         //
         playlist = $(this).parents('.presentation').data("playlist");
         if (!isNa(playlist)) {
-            path = playlist;
-            console.log("Triggering slide with parent playlist", path, index);
-            return triggerSlide(path, index, true);
+            //console.log("Triggering slide with parent playlist", path, index, playlist);
+            return triggerSlide(playlist, index);
         }
 
-        console.log("Triggering slide with parent path", path, index);
+        //console.log("Triggering slide with parent path", path, index);
         return triggerSlide(path, index);
     }
     if (!isNa(path)) {
@@ -115,7 +111,7 @@ var global_back_steps = new Array('_panel_library');
 
 async function openPanel(target, callback = null) {
     if (isNa(target)) {
-        console.log("openPanel", "Undefined target");
+        //console.log("openPanel", "Undefined target");
         return false;
     }
     //
@@ -153,7 +149,7 @@ async function openPanel(target, callback = null) {
 
 
 function triggerDo(target, element) {
-    console.log("triggerDo", target, element);
+    //console.log("triggerDo", target, element);
 
     switch (target) {
         case "_live_mode":

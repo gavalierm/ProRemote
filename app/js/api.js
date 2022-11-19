@@ -139,6 +139,9 @@ async function onOpen() {
 }
 
 async function onMessage(obj) {
+    //
+    signalReceived();
+    //
     if (!obj.action) {
         console.log(obj);
         return showWarr('no_action');
@@ -149,11 +152,9 @@ async function onMessage(obj) {
         disconnected();
         return showWarr("error", obj.error);
     }
-    //
-    signalReceived();
-    //
+
     $("body").removeClass("_loader");
-    console.log(obj.action, obj);
+    //console.log(obj.action, obj);
     if (obj.action == "authenticate" && parseInt(obj.authenticated, 10) == 1) {
         authenticated();
         getPlaylists()
@@ -170,14 +171,8 @@ async function onMessage(obj) {
             data = library;
         }
         $("#library_target").html(data);
-
+        return triggerSlide("current");
         return false;
-
-
-        return getCurrentSlide();
-
-
-
     } else if (obj.action == "playlistRequestAll") {
         var data = "";
 
@@ -186,8 +181,8 @@ async function onMessage(obj) {
             data = library;
         }
         $("#playlists_target").html(data);
+        return triggerSlide("current");
         return false;
-        return getCurrentSlide();
     } else if (obj.action == "presentationCurrent") {
         //this is trigered when user click on slide in different presentation
         //cation: this is returned when you request for data /// this is confusing
@@ -222,16 +217,25 @@ async function onMessage(obj) {
         }
 
         //create presentation object from reponse
-        var path = parsePath(obj.presentationPath);
+        var item_object = parsePath(obj.presentationPath);
 
-        console.warn("Actual action", path, obj);
+        var request = $('body').data("request");
+        var request_title = $('body').data("request-title");
+        var request_path = $('body').data("request-path");
 
-        if (path.path_type == "title" && $('body').data("request") == 'playlist') {
-            console.log("As playlist", path);
-            $('body').data("request", null);
-            var presentation = createPlaylists(obj.playlists);
+        $('body').data("request", null);
+        $('body').data("request-title", null);
+        $('body').data("request-path", null);
+
+
+
+        console.warn("Actual action", action, item_object, obj);
+
+        if (item_object.path_type == "title" && request == 'playlist') {
+            console.log("As playlist", item_object);
+            var presentation = createPresentation(obj.presentation, request_path); // same as createPresentation but with flag
         } else {
-            console.log("As item", path);
+            console.log("As item", item_object);
             var presentation = createPresentation(obj.presentation);
         }
 
@@ -240,54 +244,87 @@ async function onMessage(obj) {
 
         //in live mode trigger everzthing
         if ($('body').hasClass("live_mode")) {
-            console.log("Live mode, filling and executing");
+            console.warn("Live mode, filling and executing");
             $("#presentation_target").html(presentation);
-            return selectPresentation(path.path_item);
+            return selectPresentation(item_object);
         }
 
         //prisli mi data su mije?
-        //console.log("data", $('body').data("request-title"), path.path_item.title);
-        if ($('body').data("request-title") == path.path_item.title) {
-            $('body').data("request-title", null);
-            console.log("My request");
+        //console.log("data", $('body').data("request-title"), item_object.path_item.title);
+        if (request_title == item_object.path_item.title) {
+            console.warn("My request");
             $("#presentation_target").html(presentation);
-            return selectPresentation(path.path_item);
+            return selectPresentation(item_object);
         }
 
         //blind selection without open widows or regenrate my control
         console.log("Blind select");
-        return selectPresentation(path.path_item, true); //ture means quiet
+        return selectPresentation(item_object, true); //ture means quiet
 
 
     } else if (obj.action == "presentationTriggerIndex") {
         //this will be trigered every time when sombody click on slide
         //use carefullz
-        var item = parsePath(obj.presentationPath);
-        //store actual received data
+        var item_object = parsePath(obj.presentationPath);
 
-        $('body').data('received-uuid', item.uuid);
-        $('body').data('received-index', obj.slideIndex);
+        var request = $('body').data("request");
+        var request_title = $('body').data("request-title");
+        var request_path = $('body').data("request-path");
 
-        if (item.uuid !== $('body').data('selected-uuid')) {
-            // i have different presentation opened
-            if ($('body').hasClass("live_mode")) {
-                console.log("get presentation");
-                return getPresentation(item.path);
-            }
-            $("body").addClass("some_selected");
-            return signalReceived();
-            //return showWarr("observe_mode", 'presentationTriggerIndex');
+        $('body').data("request", null);
+        $('body').data("request-title", null);
+        $('body').data("request-path", null);
+
+        var actual = $('#presentation_target .presentation');
+
+        console.warn("Actual action", item_object, obj, request);
+
+
+        // because trigering index we need index, isnt?
+        if (isNa(obj.slideIndex)) {
+            return console.error("No index in triggerIndex response", obj);
         }
-        //have same presentation
-        $('body').data('selected-index', obj.slideIndex);
-        $('body').data('received-index', null);
-        return selectSlide();
+        //store into parsed iitem_object
+        item_object.path_item.index = obj.slideIndex;
+        //
+        $("body").addClass("some_selected");
+        //
+
+        if ($('body').hasClass("live_mode")) {
+            if (actual.data('path') == item_object.path_item.title && actual.data('type') == item_object.path_type) {
+                return selectSlide(item_object);
+            }
+            console.warn("LIVE MODE: This is NOT my actual presentation", actual.data('path'), actual.data('type'));
+            triggerPresentation(obj.presentationPath);
+            return triggerSlide("current");
+        }
+
+
+        console.log("Blind select");
+        return selectSlide(item_object, true); //ture means quiet
+
     } else if (obj.action == "presentationSlideIndex") {
         //this will be return only when i request for it
         //always return index of actual selected presentation in propresenter
         //not very usefull
-        $('body').data('selected-index', obj.slideIndex);
+
+        var actual = $('#presentation_target .presentation');
+
+        if (actual.data('path')) {
+            var item_object = parsePath(actual.data('path'));
+
+            item_object.path_item.index = obj.slideIndex;
+
+            console.log("presentationSlideIndex", obj, item_object);
+            if ($('body').hasClass("live_mode")) {
+                return selectSlide(item_object); //true means quiet
+            }
+            return selectSlide(item_object, true); //true means quiet
+        }
         $("body").addClass("some_selected");
+        $("#no_data_holder .title .guess").html("something");
+        return false;
+
     } else if (obj.action == "clearText") {
         $('.presentation_slide.selected').addClass('cleared');
     }
@@ -307,91 +344,6 @@ async function getLibrary() {
 async function getPlaylists() {
     loader();
     remoteWebSocket.send('{"action":"playlistRequestAll"}');
-}
-
-async function getPresentation(path) {
-    loader();
-    //
-    $('body').data('request', path.path_type);
-    $('body').data("request-title", path.path_item.title);
-    console.warn("getPresentation", path.path_type, path.path_item.title);
-    //
-    if (path.path_type === "current") {
-        //return getCurrentSlide();
-        remoteWebSocket.send('{"action": "presentationCurrent", "presentationSlideQuality": "' + localStorage.getItem("_quality") + '"}');
-    } else {
-        remoteWebSocket.send('{"action": "presentationRequest","presentationPath": "' + path.path_item.path + '", "presentationSlideQuality": "' + localStorage.getItem("_quality") + '"}');
-    }
-}
-
-
-function createPlaylists(playlists) {
-    if (isNa(playlists)) {
-        console.error("No playlists data received", playlists);
-        return false;
-    }
-    playlists.sort();
-
-    //console.log(library);
-    //reset actual library
-    global_playlists_list = new Array();
-    global_playlists = new Array();
-    //
-
-    for (var i = 0; i <= playlists.length - 1; i++) {
-        var playlist = playlists[i];
-        //
-        //var uuid = md5('playlist_' + playlist.playlistName);
-        //store into global helper
-        if (isNa(global_playlists_list[playlist.playlistLocation])) {
-            global_playlists_list[playlist.playlistLocation] = playlist.playlistName;
-        } else {
-            console.error("Duplicate item", global_playlists_list[playlist.playlistLocation]);
-        }
-
-        var playlist_item = {
-            'title': playlist.playlistName,
-            'location': playlist.playlistLocation,
-            'type': playlist.playlistType,
-            'counter': 0,
-            'items': []
-        }
-
-
-        for (var x = 0; x <= playlist.playlist.length - 1; x++) {
-            var item = playlist.playlist[x];
-            //
-
-            var item_ = {
-                'title': item.playlistItemName,
-                'path': item.playlistItemLocation,
-                'uuid': md5('item_' + item.playlistItemName),
-                'type': item.playlistItemType,
-            };
-
-            playlist_item.items.push(item_);
-            playlist_item.counter = playlist_item.counter + 1;
-        }
-
-        global_playlists.push(playlist_item);
-    }
-
-    console.log(global_playlists_list, global_playlists);
-
-    var global_playlists_html = '';
-    for (var i = 0; i <= global_playlists.length - 1; i++) {
-        var playlist = global_playlists[i];
-        // Add the library if required
-        //console.log(playlist);
-        var item_html = '';
-        for (var x = 0; x <= playlist.items.length - 1; x++) {
-            var item = playlist.items[x];
-            item_html = item_html + `<div class="item playlist_item _trigger uuid_${item.uuid}" data-path="${item.title}" data-playlist="${item.path}"><div class="item_content"><div class="item_title">${item.title}</div><div class="item_group_title">${playlist.title}</div></div></div>`;
-        }
-
-        global_playlists_html = global_playlists_html + `<div class='group'><div class="group_title">${playlist.title}</div><div class="items">${item_html}</div></div>`;
-    }
-    return global_playlists_html;
 }
 
 function createLibrary(library) {
@@ -414,11 +366,12 @@ function createLibrary(library) {
         var path = library[i];
         //
         var item = path.split('/').reverse();
+        var title = item[0].replace(/\.pro6/g, '').replace(/\.pro7/g, '').replace(/\.pro/g, '');
         //
         var item_object = {
-            'title': item[0].replace(/\.pro6/g, '').replace(/\.pro7/g, '').replace(/\.pro/g, ''),
+            'title': title,
             'file': item[0],
-            'uuid': 'item_' + md5('item_' + item[0]),
+            'uuid': 'item_' + md5('item_' + title),
             'library_title': item[1].replace(/\.pro6/g, '').replace(/\.pro7/g, '').replace(/\.pro/g, ''),
             'library_file': item[1],
             'library_uuid': 'library_' + md5('library_' + item[1]),
@@ -468,9 +421,84 @@ function createLibrary(library) {
     return library_html;
 }
 
-function createPresentation(presentation) {
+function createPlaylists(playlists) {
+    if (isNa(playlists)) {
+        console.error("No playlists data received", playlists);
+        return false;
+    }
+    playlists.sort();
 
-    //console.log(presentation);
+    //console.log(library);
+    //reset actual library
+    global_playlists_list = new Array();
+    global_playlists = new Array();
+    //
+
+    for (var i = 0; i <= playlists.length - 1; i++) {
+        var playlist = playlists[i];
+        //
+        //var uuid = md5('playlist_' + playlist.playlistName);
+        //store into global helper
+        if (isNa(global_playlists_list[playlist.playlistLocation])) {
+            global_playlists_list[playlist.playlistLocation] = playlist.playlistName;
+        } else {
+            console.error("Duplicate item", global_playlists_list[playlist.playlistLocation]);
+        }
+
+        var playlist_item = {
+            'title': playlist.playlistName,
+            'location': playlist.playlistLocation,
+            'type': playlist.playlistType,
+            'counter': 0,
+            'uuid': 'playlist_' + md5('playlist_' + playlist.playlistName),
+            'items': []
+        }
+
+
+        for (var x = 0; x <= playlist.playlist.length - 1; x++) {
+            var item = playlist.playlist[x];
+            //
+
+            var title = item.playlistItemName.replace(/\.pro6/g, '').replace(/\.pro7/g, '').replace(/\.pro/g, '');
+
+            var item_ = {
+                'title': title,
+                'path': item.playlistItemLocation,
+                'uuid': 'item_' + md5('item_' + title),
+                'type': item.playlistItemType,
+            };
+
+            playlist_item.items.push(item_);
+            playlist_item.counter = playlist_item.counter + 1;
+        }
+
+        global_playlists.push(playlist_item);
+    }
+
+    //console.log(global_playlists_list, global_playlists);
+
+    var global_playlists_html = '';
+    for (var i = 0; i <= global_playlists.length - 1; i++) {
+        var playlist = global_playlists[i];
+        // Add the library if required
+        //console.log(playlist);
+        var item_html = '';
+        for (var x = 0; x <= playlist.items.length - 1; x++) {
+            var item = playlist.items[x];
+            item_html = item_html + `<div class="item playlist_item _trigger uuid_${item.uuid}" data-path="${item.title}" data-playlist="${item.path}"><div class="item_content"><div class="item_title">${item.title}</div><div class="item_group_title">${playlist.title}</div></div></div>`;
+        }
+
+        global_playlists_html = global_playlists_html + `<div class='group'><div class="group_title">${playlist.title}</div><div class="items">${item_html}</div></div>`;
+    }
+    return global_playlists_html;
+}
+
+function createPlaylist(presentation) {
+    return createPresentation(presentation, $('body').data('request-playlist')); //true means as playlist
+}
+
+function createPresentation(presentation, playlist = false) {
+
     //return false;
     var presentation_html = new Array();
 
@@ -481,11 +509,12 @@ function createPresentation(presentation) {
         return false;
     }
 
-    var item = parsePath(presentation.presentationName);
+    var item_object = parsePath(presentation.presentationName);
 
-    var uuid = item.uuid;
+    var uuid = item_object.path_item.uuid;
+    var type = item_object.path_type;
 
-    //console.log(item, uuid);
+    //console.warn("createPresentation", item_object);
 
     for (var i = 0; i <= presentation.presentationSlideGroups.length - 1; i++) {
         var group = presentation.presentationSlideGroups[i];
@@ -581,61 +610,71 @@ function createPresentation(presentation) {
             slideIndex = slideIndex + 1;
         }
     }
+
+    //BECAUSE REQUEST PLAYLISTS REPONSE IS THE SAME AS PRESENTATION WE NEED THIS
     if (presentation_html.length > 0) {
-        var playlist = null;
-        if (!isNa($("body").data('my-playlist'))) {
-            playlist = `data-playlist="${$("body").data('my-playlist')}"`;
+        if (playlist) {
+            playlist = `data-playlist="${playlist}"`;
+            type = "playlist";
             group_classes.push('in_playlist');
             //
-            console.warn("As playlist", $("body").data('my-playlist'));
+            console.warn("As playlist", playlist);
             //
         }
-        $("body").data('my-playlist', null);
 
-        return `<div id="uuid_${uuid}" class="presentation padder ${group_classes.join(' ')||''}" data-path="${presentation.presentationName}" ${playlist || ''}>` + presentation_html.join('') + `</div>`;
+        return `<div id="uuid_${uuid}" class="presentation padder ${group_classes.join(' ')||''}" data-path="${presentation.presentationName}" data-type="${type}" ${playlist || ''}>` + presentation_html.join('') + `</div>`;
     }
+
+    return false;
 }
 
 async function triggerPresentation(path) {
-    console.log("triggerPresentation", path);
-    return getPresentation(parsePath(path));
+    loader();
+    var item_object = parsePath(path);
+    //
+    $('body').data('request', item_object.path_type);
+    $('body').data("request-path", item_object.path_item.path);
+    $('body').data("request-title", item_object.path_item.title);
+    //
+    console.warn("triggerPresentation", item_object.path_type, item_object.path_item.title, item_object.path_item.path);
+    //
+    if (item_object.path_type === "current") {
+        //return getCurrentSlide();
+        remoteWebSocket.send('{"action": "presentationCurrent", "presentationSlideQuality": "' + localStorage.getItem("_quality") + '"}');
+    } else {
+        remoteWebSocket.send('{"action": "presentationRequest","presentationPath": "' + item_object.path_item.path + '", "presentationSlideQuality": "' + localStorage.getItem("_quality") + '"}');
+    }
 }
 
 
-async function triggerSlide(path, index, as_playlist = false) {
+async function triggerSlide(path, index = 0) {
     //console.log("triggerSlide", path, index);
     if (!isLive()) {
         return showWarr("observe_mode", '');
     }
     if (isNa(path) || isNa(index)) {
-        console.log("No path or index in triggerSlide", path, index);
+        console.error("No path or index in triggerSlide", path, index);
         return false;
     }
+
+    //loader();
     // Get the slide index
     index = parseInt(index, 10);
-
-    var uuid = path;
-
-    if (!as_playlist) {
-        var item = parsePath(path);
-        path = item.path;
-        uuid = item.uuid;
-    }
-
-
-    $("body").data('my-uuid', uuid);
-    $("body").data('my-index', index);
-    // Check if this is a playlist or library presentation
-    if (as_playlist) {
-        console.warn("As playlist");
-        // Sent the request to ProPresenter
-        remoteWebSocket.send('{"action":"presentationTriggerIndex","slideIndex":"' + index + '","presentationPath":"' + path + '"}');
-        // Check if we should follow ProPresenter
+    item_object = parsePath(path);
+    //
+    //
+    console.warn("triggerSlide", item_object.path_type, item_object.path_item.title, item_object.path_item.path);
+    //
+    if (item_object.path_type === "current") {
+        //return getCurrentSlide();
+        return getCurrentSlide();
     } else {
-        // Sent the request to ProPresenter
-        remoteWebSocket.send('{"action":"presentationTriggerIndex","slideIndex":"' + index + '","presentationPath":"' + path.replace(/\//g, "\\/") + '"}');
-        // Check if we should follow ProPresenter
+        $('body').data('request', item_object.path_type);
+        $('body').data("request-path", item_object.path_item.path);
+        $('body').data("request-title", item_object.path_item.title);
+        remoteWebSocket.send('{"action":"presentationTriggerIndex","slideIndex":"' + index + '","presentationPath":"' + item_object.path_item.path.replace(/\//g, "\\/") + '"}');
     }
+    return false;
 }
 
 async function triggerSlideNav(index) {
@@ -655,10 +694,10 @@ async function triggerSlideNav(index) {
     console.warn("Not valid Nav", index);
 }
 
-async function selectPresentation(item, quiet = false) {
+async function selectPresentation(item_object, quiet = false) {
 
-    var uuid = item.uuid;
-    var title = item.title;
+    var uuid = item_object.path_item.uuid;
+    var title = item_object.path_item.title;
 
     if (isNa(uuid)) {
         return console.warn("no uuid", uuid, title);
@@ -667,8 +706,13 @@ async function selectPresentation(item, quiet = false) {
     var target = ".uuid_" + uuid;
     console.log('selectPresentation', target, title);
     //
-    $(".presentation_item").removeClass("selected");
-    $(target).addClass("selected");
+    if (item_object.path_tupe == "playlist") {
+        $(".playlist_item").removeClass("selected");
+        $(".playlist_item" + target).addClass("selected");
+    } else {
+        $(".presentation_item").removeClass("selected");
+        $(".presentation_item" + target).addClass("selected");
+    }
     $("body").addClass(["was_selected", "some_selected"]);
 
     if (quiet) {
@@ -681,11 +725,11 @@ async function selectPresentation(item, quiet = false) {
 }
 
 
-async function selectSlide(item, quiet = false) {
+async function selectSlide(item_object, quiet = false) {
 
-    var uuid = item.uuid;
-    var title = item.title;
-    var index = item.index;
+    var uuid = item_object.path_item.uuid;
+    var title = item_object.path_item.title;
+    var index = item_object.path_item.index;
 
     if (isNa(uuid) || isNa(index)) {
         return console.warn("no uuid and index", uuid, index);
@@ -702,7 +746,9 @@ async function selectSlide(item, quiet = false) {
         return false;
     }
 
-    return openPanel("_panel_control", autoMoveStep);
+    return openPanel("_panel_control", autoMoveStep); //index will be auto determine by .selected
+
+    return openPanel("_panel_control", function() { autoMoveStep("#index_" + index); });
 
 }
 
@@ -718,7 +764,14 @@ function parsePath(path, library_only = false) {
     }
 
     if (path == "current") {
-        return { 'path_type': 'current', 'path_item': null };
+        return {
+            'path_type': 'current',
+            'path_item': {
+                'uuid': "current",
+                'title': "current",
+                'path': "current"
+            }
+        };
     }
     //determine playlist path in pattern 0.0:0
     //   
