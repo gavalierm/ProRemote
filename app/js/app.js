@@ -39,18 +39,44 @@ $(document).on("click", "._trigger", async function(event) {
     if ($(this).hasClass("no-prop")) {
         event.stopPropagation();
     }
+    var load = $(this).data("load");
     var path = $(this).data("path");
     var index = $(this).data("index");
+    var playlist = $(this).data("playlist");
 
-    console.log(path, index);
+    console.log(load, path, index, playlist);
 
+    if (isNa(load)) {
+        console.info("_trigger", "Undefined load");
+    }
     if (isNa(index)) {
         console.info("_trigger", "Undefined index");
     }
     if (isNa(path)) {
         console.info("_trigger", "Undefined path");
     }
+    if (isNa(playlist)) {
+        console.info("_trigger", "Undefined playlist");
+    }
 
+    if (!isNa(load)) {
+        console.log("Triggering load", load);
+        switch (load) {
+            case "_library":
+                return getLibrary();
+            case "_playlists":
+                return getPlaylists();
+        }
+        return false;
+    }
+
+    if (!isNa(path) && !isNa(playlist)) {
+        console.log("Triggering playlist", path, playlist);
+        //$("body").data('my-uuid', path);
+        $("body").data('my-playlist', playlist);
+        //return getPresentation(playlist);
+        return triggerPresentation(path);
+    }
     if (!isNa(index)) {
         if (index == "_prev" || index == "_clear" || index == "_next") {
             console.log("Triggering nav", path, index);
@@ -65,6 +91,14 @@ $(document).on("click", "._trigger", async function(event) {
         if (isNa(path)) {
             return showWarr('No path in trigger', path + ', ' + index);
         }
+        //
+        playlist = $(this).parents('.presentation').data("playlist");
+        if (!isNa(playlist)) {
+            path = playlist;
+            console.log("Triggering slide with parent playlist", path, index);
+            return triggerSlide(path, index, true);
+        }
+
         console.log("Triggering slide with parent path", path, index);
         return triggerSlide(path, index);
     }

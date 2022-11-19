@@ -23,6 +23,10 @@
     padding: 1rem 1rem 0.8rem 1rem;
 }
 
+#playlists_target.list .group_title {
+    color: #3f91fa;
+}
+
 .list .item {
     background-color: var(--list-item);
     color: var(--list-item-oposit);
