@@ -42,7 +42,7 @@ $(document).on("click", "._trigger", async function(event) {
     var load = $(this).data("load");
     var path = $(this).data("path");
     var index = $(this).data("index");
-    var playlist = $(this).data("playlist");
+    var type = $(this).data("type");
 
     //console.log(load, path, index, playlist);
 
@@ -55,7 +55,7 @@ $(document).on("click", "._trigger", async function(event) {
     if (isNa(path)) {
         //console.info("_trigger", "Undefined path");
     }
-    if (isNa(playlist)) {
+    if (isNa(type)) {
         //console.info("_trigger", "Undefined playlist");
     }
 
@@ -70,10 +70,6 @@ $(document).on("click", "._trigger", async function(event) {
         return false;
     }
 
-    if (!isNa(path) && !isNa(playlist)) {
-        //console.log("Triggering playlist", path, playlist);
-        return triggerPresentation(playlist);
-    }
     if (!isNa(index)) {
         if (index == "_prev" || index == "_clear" || index == "_next") {
             //console.log("Triggering nav", path, index);
@@ -89,13 +85,12 @@ $(document).on("click", "._trigger", async function(event) {
             return showWarr('No path in trigger', path + ', ' + index);
         }
         //
-        playlist = $(this).parents('.presentation').data("playlist");
-        if (!isNa(playlist)) {
-            //console.log("Triggering slide with parent playlist", path, index, playlist);
-            return triggerSlide(playlist, index);
+        if (type == "playlist") {
+            console.log("Triggering slide with parent playlist", path, index);
+        } else {
+            console.log("Triggering slide with parent path", path, index);
         }
 
-        //console.log("Triggering slide with parent path", path, index);
         return triggerSlide(path, index);
     }
     if (!isNa(path)) {

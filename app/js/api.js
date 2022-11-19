@@ -2,6 +2,7 @@
 var remoteWebSocket;
 var global_warr_timer;
 var global_connection_timer;
+var global_propresenter;
 var global_library = new Array(); //used for search
 var global_library_list = new Array(); //api has bug that do not send actual path, so we need create helper field with paths
 var global_playlists = new Array(); //used for search
@@ -29,11 +30,6 @@ async function storeConnection(auto_connect = true) {
     } else {
         return showWarr("required_value", "Quality");
     }
-    if (!isNa($("#setting_id" + "_protocol").val().trim())) {
-        localStorage.setItem("_protocol", $("#setting_id" + "_protocol").val());
-    } else {
-        return showWarr("required_value", "Protocol");
-    }
 
     if (auto_connect) {
         connect();
@@ -53,9 +49,6 @@ async function refillConnection() {
     }
     if (!isNa(localStorage.getItem("_quality"))) {
         $("#setting_id" + "_quality").val(localStorage.getItem("_quality"));
-    }
-    if (!isNa(localStorage.getItem("_protocol"))) {
-        $("#setting_id" + "_protocol").val(localStorage.getItem("_protocol"));
     }
 }
 
@@ -97,7 +90,7 @@ async function refillFilters() {
 
 async function connect() {
     clearTimeout(global_connection_timer);
-    if (isNa(localStorage.getItem("_host")) || isNa(localStorage.getItem("_port")) || isNa(localStorage.getItem("_pass")) || isNa(localStorage.getItem("_quality")) || isNa(localStorage.getItem("_protocol"))) {
+    if (isNa(localStorage.getItem("_host")) || isNa(localStorage.getItem("_port")) || isNa(localStorage.getItem("_pass")) || isNa(localStorage.getItem("_quality"))) {
         //no credentials
         return false;
     }
@@ -135,7 +128,7 @@ async function onClose() {
 async function onOpen() {
     connected();
     clearTimeout(global_connection_timer);
-    remoteWebSocket.send('{"action":"authenticate","protocol":"' + localStorage.getItem("_protocol") + '","password":"' + localStorage.getItem("_pass") + '"}');
+    remoteWebSocket.send('{"action":"authenticate","protocol":"701","password":"' + localStorage.getItem("_pass") + '"}');
 }
 
 async function onMessage(obj) {
@@ -156,11 +149,19 @@ async function onMessage(obj) {
     $("body").removeClass("_loader");
     //console.log(obj.action, obj);
     if (obj.action == "authenticate" && parseInt(obj.authenticated, 10) == 1) {
+        global_propresenter = obj;
+        if (isNa(global_propresenter.majorVersion)) {
+            global_propresenter.majorVersion = 6;
+        }
         authenticated();
         getPlaylists()
         getLibrary();
         return false;
     } else if (obj.action == "authenticate" && parseInt(obj.authenticated, 10) == 0) {
+        global_propresenter = obj;
+        if (isNa(global_propresenter.majorVersion)) {
+            global_propresenter.majorVersion = 6;
+        }
         console.error("Not auth");
         return showWarr("login_wrong_credentials");
     } else if (obj.action == "libraryRequest") {
@@ -181,7 +182,7 @@ async function onMessage(obj) {
             data = library;
         }
         $("#playlists_target").html(data);
-        return triggerSlide("current");
+        //return triggerSlide("current");
         return false;
     } else if (obj.action == "presentationCurrent") {
         //this is trigered when user click on slide in different presentation
@@ -191,52 +192,60 @@ async function onMessage(obj) {
 
         var action = "presentationCurrent";
 
-        //v7
-        if (isNa(obj.presentationDestination)) {
-            console.log("No presentationDestination");
-            //in version 7 presentationRequest do not include this
-            //in version 6 this is never included
-            action = "presentationRequest"; //for version 7
-
-            if (!isNa(obj.presentationPath) && localStorage.getItem("_protocol") == "601") {
-                console.log("No presentationPath AND version 6 it means Current action");
-                //this happend only in version 6 because version 7 include this in both responses
+        if (!isNa(obj.presentationDestination)) {
+            //this is 7 current
+            action = "presentationCurrent";
+        } else {
+            //this is 7 request
+            action = "presentationRequest";
+            console.log(global_propresenter);
+            if (!isNa(obj.presentationPath) && global_propresenter.majorVersion == 6) {
+                //this is current because 7 alway have path
+                console.error("No presentationPath AND version 6 it means Current action");
                 action = "presentationCurrent";
             }
-            //
-            obj.action = action;
         }
+
+        obj.action = action;
 
         if (isNa(obj.presentationPath)) {
             if (obj.presentation.presentationName) {
-                obj.presentationPath = obj.presentation.presentationName;
+                obj.presentationPath_ = parsePath(obj.presentation.presentationName);
+                obj.presentationPath = obj.presentationPath_.path_item.path;
             } else {
                 console.error("Not possible parse name", obj.presentation);
                 return false;
             }
         }
 
+        //console.log(obj.action, obj);
+        //return false;
         //create presentation object from reponse
         var item_object = parsePath(obj.presentationPath);
 
         var request = $('body').data("request");
         var request_title = $('body').data("request-title");
         var request_path = $('body').data("request-path");
+        var request_index = $('body').data("request-index");
 
         $('body').data("request", null);
         $('body').data("request-title", null);
         $('body').data("request-path", null);
+        $('body').data("request-index", null);
 
+        if (!isNa(request_index)) {
+            console.warn("Fetching index", request_index);
+            obj.requestIndex = request_index;
+        }
 
+        console.warn("Actual action", request_path, obj.action, item_object, obj);
 
-        console.warn("Actual action", action, item_object, obj);
-
-        if (item_object.path_type == "title" && request == 'playlist') {
+        if (request == 'playlist') {
             console.log("As playlist", item_object);
-            var presentation = createPresentation(obj.presentation, request_path); // same as createPresentation but with flag
+            var presentation = createPresentation(obj, request_path); // same as createPresentation but with flag
         } else {
             console.log("As item", item_object);
-            var presentation = createPresentation(obj.presentation);
+            var presentation = createPresentation(obj);
         }
 
         //console.log(presentation);
@@ -277,7 +286,7 @@ async function onMessage(obj) {
 
         var actual = $('#presentation_target .presentation');
 
-        console.warn("Actual action", item_object, obj, request);
+        console.warn("Actual trigger action", item_object, obj, request);
 
 
         // because trigering index we need index, isnt?
@@ -291,12 +300,14 @@ async function onMessage(obj) {
         //
 
         if ($('body').hasClass("live_mode")) {
-            if (actual.data('path') == item_object.path_item.title && actual.data('type') == item_object.path_type) {
+            if (actual.data('path') == item_object.path_item.path && actual.data('type') == item_object.path_type) {
                 return selectSlide(item_object);
             }
-            console.warn("LIVE MODE: This is NOT my actual presentation", actual.data('path'), actual.data('type'));
-            triggerPresentation(obj.presentationPath);
-            return triggerSlide("current");
+            console.error("LIVE MODE: This is NOT my actual presentation", actual.data('path'), item_object.path_item.path, actual.data('type'));
+            //store actual index before trigger ceration;   
+            console.warn("Storing index", item_object.path_item.index);
+            $('body').data("request-index", item_object.path_item.index);
+            return triggerPresentation(obj.presentationPath);
         }
 
 
@@ -346,34 +357,29 @@ async function getPlaylists() {
     remoteWebSocket.send('{"action":"playlistRequestAll"}');
 }
 
-function createLibrary(library) {
+function createLibrary(obj) {
 
-    if (isNa(library)) {
-        console.error("No library data received", library);
+    if (isNa(obj)) {
+        console.error("No library data received", obj);
         return false;
     }
-    library.sort();
+    obj.sort();
 
     //console.log(library);
-    //reset actual library
-    global_library_list = new Array();
     global_library = new Array();
     //
-    var library_list_helper = new Array();
     var library_group_helper = new Array();
     //crate gourps
-    for (var i = 0; i <= library.length - 1; i++) {
-        var path = library[i];
+    for (var i = 0; i <= obj.length - 1; i++) {
+        var path = obj[i];
         //
         var item = path.split('/').reverse();
         var title = item[0].replace(/\.pro6/g, '').replace(/\.pro7/g, '').replace(/\.pro/g, '');
         //
         var item_object = {
+            'uuid': 'item_' + md5(path),
             'title': title,
-            'file': item[0],
-            'uuid': 'item_' + md5('item_' + title),
             'library_title': item[1].replace(/\.pro6/g, '').replace(/\.pro7/g, '').replace(/\.pro/g, ''),
-            'library_file': item[1],
             'library_uuid': 'library_' + md5('library_' + item[1]),
             'path': path
         };
@@ -384,11 +390,6 @@ function createLibrary(library) {
 
         //console.log(item_object);
         //store into global helper
-        if (isNa(library_list_helper[item_object.uuid])) {
-            library_list_helper[item_object.uuid] = item_object.path;
-        } else {
-            console.error("Duplicate item", library_list_helper[item_object.uuid]);
-        }
 
         if (library_group_helper.indexOf(item_object.library_uuid) === -1) {
             library_group_helper.push(item_object.library_uuid);
@@ -403,18 +404,20 @@ function createLibrary(library) {
     //return false;
     //global_library = groups;
 
+    console.log('Library', obj, global_library);
+
     var library_html = '';
     for (var i = 0; i <= global_library.length - 1; i++) {
-        var library_ = global_library[i];
+        var library = global_library[i];
         // Add the library if required
         //console.log(group);
         var item_html = '';
-        for (var x = 0; x <= library_.items.length - 1; x++) {
-            var item = library_.items[x];
-            item_html = item_html + `<div class="presentation_item item library_item _trigger uuid_${item.uuid}" data-path="${item.title}"><div class="item_content"><div class="item_title">${item.title}</div><div class="item_group_title">${item.library_title}</div></div></div>`;
+        for (var x = 0; x <= library.items.length - 1; x++) {
+            var item = library.items[x];
+            item_html = item_html + `<div class="item library_item _trigger ${item.uuid}" data-path="${item.path}" data-type="library"><div class="item_content"><div class="item_title">${item.title}</div><div class="item_group_title">${library.title}</div></div></div>`;
         }
 
-        library_html = library_html + `<div class='group'><div class="library_title group_title">${library_.title}</div><div class="items">${item_html}</div></div>`;
+        library_html = library_html + `<div class="group ${library.uuid}"><div class="library_title group_title">${library.title}</div><div class="items">${item_html}</div></div>`;
     }
 
     //console.log(group_html);
@@ -428,9 +431,8 @@ function createPlaylists(playlists) {
     }
     playlists.sort();
 
-    //console.log(library);
+    //console.log(playlists);
     //reset actual library
-    global_playlists_list = new Array();
     global_playlists = new Array();
     //
 
@@ -439,18 +441,13 @@ function createPlaylists(playlists) {
         //
         //var uuid = md5('playlist_' + playlist.playlistName);
         //store into global helper
-        if (isNa(global_playlists_list[playlist.playlistLocation])) {
-            global_playlists_list[playlist.playlistLocation] = playlist.playlistName;
-        } else {
-            console.error("Duplicate item", global_playlists_list[playlist.playlistLocation]);
-        }
 
         var playlist_item = {
             'title': playlist.playlistName,
             'location': playlist.playlistLocation,
             'type': playlist.playlistType,
             'counter': 0,
-            'uuid': 'playlist_' + md5('playlist_' + playlist.playlistName),
+            'uuid': 'playlist_' + md5(playlist.playlistLocation),
             'items': []
         }
 
@@ -463,9 +460,9 @@ function createPlaylists(playlists) {
 
             var item_ = {
                 'title': title,
-                'path': item.playlistItemLocation,
-                'uuid': 'item_' + md5('item_' + title),
+                'uuid': 'item_' + md5(item.playlistItemLocation),
                 'type': item.playlistItemType,
+                'path': item.playlistItemLocation
             };
 
             playlist_item.items.push(item_);
@@ -475,7 +472,7 @@ function createPlaylists(playlists) {
         global_playlists.push(playlist_item);
     }
 
-    //console.log(global_playlists_list, global_playlists);
+    console.log(playlists, global_playlists);
 
     var global_playlists_html = '';
     for (var i = 0; i <= global_playlists.length - 1; i++) {
@@ -485,36 +482,49 @@ function createPlaylists(playlists) {
         var item_html = '';
         for (var x = 0; x <= playlist.items.length - 1; x++) {
             var item = playlist.items[x];
-            item_html = item_html + `<div class="item playlist_item _trigger uuid_${item.uuid}" data-path="${item.title}" data-playlist="${item.path}"><div class="item_content"><div class="item_title">${item.title}</div><div class="item_group_title">${playlist.title}</div></div></div>`;
+            var trigger = "_trigger";
+            if (item.type !== "playlistItemTypePresentation") {
+                trigger = "disabled _no_trigger";
+            }
+            item_html = item_html + `<div class="item playlist_item ${item.type} ${trigger||''} ${item.uuid}" data-path="${item.path}" data-type="playlist"><div class="item_content"><div class="item_title">${item.title}</div><div class="item_group_title">${playlist.title}</div></div></div>`;
         }
 
-        global_playlists_html = global_playlists_html + `<div class='group'><div class="group_title">${playlist.title}</div><div class="items">${item_html}</div></div>`;
+        global_playlists_html = global_playlists_html + `<div class="group ${item.uuid}"><div class="group_title">${playlist.title}</div><div class="items">${item_html}</div></div>`;
     }
     return global_playlists_html;
 }
 
-function createPlaylist(presentation) {
-    return createPresentation(presentation, $('body').data('request-playlist')); //true means as playlist
-}
-
-function createPresentation(presentation, playlist = false) {
+function createPresentation(obj, playlist = false) {
 
     //return false;
+    //console.log('createPresentation', obj);
     var presentation_html = new Array();
 
     var slideIndex = 0;
 
-    if (isNa(presentation.presentationName)) {
-        console.log("createPresentation", "no presentationName");
+    if (isNa(obj.presentationPath)) {
+        console.log("createPresentation", "no presentationPath");
         return false;
     }
 
-    var item_object = parsePath(presentation.presentationName);
+    var request_index = null;
+    if (!isNa(obj.requestIndex)) {
+        request_index = obj.requestIndex;
+    }
+
+    if (playlist) {
+        var item_object = parsePath(playlist);
+    } else {
+        var item_object = parsePath(obj.presentationPath);
+    }
+
 
     var uuid = item_object.path_item.uuid;
     var type = item_object.path_type;
 
-    //console.warn("createPresentation", item_object);
+    var presentation = obj.presentation;
+
+    console.warn("createPresentation", presentation, item_object);
 
     for (var i = 0; i <= presentation.presentationSlideGroups.length - 1; i++) {
         var group = presentation.presentationSlideGroups[i];
@@ -568,8 +578,8 @@ function createPresentation(presentation, playlist = false) {
                 slide_classes.push('disabled');
             }
 
-            if (!isNa($('body').data('selected-index')) && parseInt($('body').data('selected-index'), 10) == slideIndex) {
-                //slide_classes.push('selected');
+            if (request_index == slideIndex) {
+                slide_classes.push('selected');
             }
 
             var image = null;
@@ -614,7 +624,7 @@ function createPresentation(presentation, playlist = false) {
     //BECAUSE REQUEST PLAYLISTS REPONSE IS THE SAME AS PRESENTATION WE NEED THIS
     if (presentation_html.length > 0) {
         if (playlist) {
-            playlist = `data-playlist="${playlist}"`;
+            //item_object.path_item.path = playlist;
             type = "playlist";
             group_classes.push('in_playlist');
             //
@@ -622,7 +632,7 @@ function createPresentation(presentation, playlist = false) {
             //
         }
 
-        return `<div id="uuid_${uuid}" class="presentation padder ${group_classes.join(' ')||''}" data-path="${presentation.presentationName}" data-type="${type}" ${playlist || ''}>` + presentation_html.join('') + `</div>`;
+        return `<div id="${uuid}" class="presentation padder ${group_classes.join(' ')||''}" data-path="${item_object.path_item.path}" data-type="${type}">` + presentation_html.join('') + `</div>`;
     }
 
     return false;
@@ -640,9 +650,11 @@ async function triggerPresentation(path) {
     //
     if (item_object.path_type === "current") {
         //return getCurrentSlide();
+        console.error('{"action": "presentationCurrent", "presentationSlideQuality": "' + localStorage.getItem("_quality") + '"}');
         remoteWebSocket.send('{"action": "presentationCurrent", "presentationSlideQuality": "' + localStorage.getItem("_quality") + '"}');
     } else {
-        remoteWebSocket.send('{"action": "presentationRequest","presentationPath": "' + item_object.path_item.path + '", "presentationSlideQuality": "' + localStorage.getItem("_quality") + '"}');
+        console.error('{"action": "presentationRequest","presentationPath": "' + item_object.path_item.path.replace(/\//g, "\\/") + '", "presentationSlideQuality": "' + localStorage.getItem("_quality") + '"}');
+        remoteWebSocket.send('{"action": "presentationRequest","presentationPath": "' + item_object.path_item.path.replace(/\//g, "\\/") + '", "presentationSlideQuality": "' + localStorage.getItem("_quality") + '"}');
     }
 }
 
@@ -672,6 +684,7 @@ async function triggerSlide(path, index = 0) {
         $('body').data('request', item_object.path_type);
         $('body').data("request-path", item_object.path_item.path);
         $('body').data("request-title", item_object.path_item.title);
+        console.error('{"action":"presentationTriggerIndex","slideIndex":"' + index + '","presentationPath":"' + item_object.path_item.path.replace(/\//g, "\\/") + '"}');
         remoteWebSocket.send('{"action":"presentationTriggerIndex","slideIndex":"' + index + '","presentationPath":"' + item_object.path_item.path.replace(/\//g, "\\/") + '"}');
     }
     return false;
@@ -703,15 +716,15 @@ async function selectPresentation(item_object, quiet = false) {
         return console.warn("no uuid", uuid, title);
     }
 
-    var target = ".uuid_" + uuid;
+    var target = "." + uuid;
     console.log('selectPresentation', target, title);
     //
     if (item_object.path_tupe == "playlist") {
         $(".playlist_item").removeClass("selected");
         $(".playlist_item" + target).addClass("selected");
     } else {
-        $(".presentation_item").removeClass("selected");
-        $(".presentation_item" + target).addClass("selected");
+        $(".library_item").removeClass("selected");
+        $(".library_item" + target).addClass("selected");
     }
     $("body").addClass(["was_selected", "some_selected"]);
 
@@ -735,10 +748,10 @@ async function selectSlide(item_object, quiet = false) {
         return console.warn("no uuid and index", uuid, index);
     }
 
-    var target = "#uuid_" + uuid + " #index_" + index;
+    var target = "#" + uuid + " #index_" + index;
     console.log('selectSlide', target);
     //
-    $("#uuid_" + uuid + " .presentation_slide").removeClass(["cleared", "selected"]);
+    $("#" + uuid + " .presentation_slide").removeClass(["cleared", "selected"]);
     $(target).addClass("selected");
     $("body").addClass(["was_selected", "some_selected"]);
     //with callback
@@ -783,7 +796,7 @@ function parsePath(path, library_only = false) {
         var song = pathSplit[0];
 
         var pathSplit = pathSplit[1].split(".");
-        console.log("PARSE PATH AS PLAYLIST", pathSplit);
+        //console.log("PARSE PATH AS PLAYLIST", pathSplit);
 
         var group = global_playlists;
         for (var x = 0; x <= pathSplit.length - 1; x++) {
@@ -792,20 +805,14 @@ function parsePath(path, library_only = false) {
         }
 
         item_object.path_item = group.items[song];
-        //path = global_playlists_list[uuid];
         //var item = { 'title': 'item_file', 'filename': '', 'path': path, 'uuid': md5('playlist_item_' + 'item_file'), 'library': 'library' };
         console.warn("PARSE PATH AS PLAYLIST", path, global_playlists, item_object);
     } else {
         //
-        item_object.path_type = 'path';
+        item_object.path_type = 'library';
         //
         var pathSplit = path.split("/").reverse();
 
-        if (pathSplit.length == 1) {
-            //
-            item_object.path_type = 'title';
-            //  
-        }
         var title = pathSplit[0].replace(/\.pro6/g, '').replace(/\.pro7/g, '').replace(/\.pro/g, ''); //prefix in createLibrary
 
         loop: for (var i = 0; i <= global_library.length - 1; i++) {
@@ -822,6 +829,10 @@ function parsePath(path, library_only = false) {
 
     }
     if (item_object.path_type == null || item_object.path_item == null) {
+        console.error("No valid item in parsePath", item_object);
+        console.error("No valid item in parsePath", item_object);
+        console.error("No valid item in parsePath", item_object);
+        console.error("No valid item in parsePath", item_object);
         console.error("No valid item in parsePath", item_object);
         return false;
     }
