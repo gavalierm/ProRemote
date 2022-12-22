@@ -146,7 +146,7 @@ async function onMessage(obj) {
         return showWarr("error", obj.error);
     }
 
-    $("body").removeClass("_loader");
+    loader(true); //true menas clear
     //console.log(obj.action, obj);
     if (obj.action == "authenticate" && parseInt(obj.authenticated, 10) == 1) {
         global_propresenter = obj;
@@ -544,7 +544,7 @@ function createPresentation(obj, playlist = false) {
             groupColor[1] = getRGBValue(groupColor[1]);
             groupColor[2] = getRGBValue(groupColor[2]);
 
-            if ((groupColor[0] + groupColor[1] + groupColor[2]) > 375) {
+            if ((groupColor[0] + groupColor[1] + groupColor[2]) > 400) {
                 //this means that slide have to bright color
                 groupColor_text = true;
             }
