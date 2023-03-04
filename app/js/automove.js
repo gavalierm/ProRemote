@@ -1,7 +1,7 @@
 async function autoMoveStep(target = null, callback = null) {
-    console.log("AutoStep");
+   if(LOGGING) console.log("AutoStep");
     if (!$("body").hasClass("_panel_control")) {
-        console.log("AutoStep", "pausing");
+       if(LOGGING) console.log("AutoStep", "pausing");
         return pauseAutoMove();
     }
 
@@ -15,11 +15,11 @@ async function autoMoveStep(target = null, callback = null) {
     var autoMoveTarget = target;
 
     if (!autoMoveTarget) {
-        console.log("AutoStep", "no target", autoMoveTarget);
+       if(LOGGING) console.log("AutoStep", "no target", autoMoveTarget);
         return false;
     }
 
-    console.log("auto move target", autoMoveTarget);
+   if(LOGGING) console.log("auto move target", autoMoveTarget);
 
     //$('#automove_target .chart_sections .section').addClass("automove_inactive_pos");
     //$(autoMoveTarget).removeClass("automove_inactive_pos");
@@ -31,7 +31,7 @@ async function autoMoveStep(target = null, callback = null) {
 }
 
 async function pauseAutoMove() {
-    console.log("pauseAutoMove");
+   if(LOGGING) console.log("pauseAutoMove");
     return false;
 }
 

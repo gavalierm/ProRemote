@@ -1,4 +1,5 @@
 //app
+const LOGGING = false;
 
 $(document).on("click", "._do", async function(event) {
     event.preventDefault();
@@ -9,7 +10,7 @@ $(document).on("click", "._do", async function(event) {
     //console.log(target);
 
     if (isNa(target)) {
-        console.log("_do", "Undefined target");
+      if(LOGGING) console.log("_do", "Undefined target");
         return false;
     }
     target = target.trim();
@@ -26,7 +27,7 @@ $(document).on("click", "._open", async function(event) {
     //console.log(target);
 
     if (isNa(target)) {
-        console.log("_open", "Undefined target");
+      if(LOGGING) console.log("_open", "Undefined target");
         return false;
     }
     target = target.trim();
@@ -86,9 +87,9 @@ $(document).on("click", "._trigger", async function(event) {
         }
         //
         if (type == "playlist") {
-            console.log("Triggering slide with parent playlist", path, index);
+          if(LOGGING) console.log("Triggering slide with parent playlist", path, index);
         } else {
-            console.log("Triggering slide with parent path", path, index);
+          if(LOGGING) console.log("Triggering slide with parent path", path, index);
         }
 
         return triggerSlide(path, index);
@@ -147,13 +148,21 @@ function triggerDo(target, element) {
     //console.log("triggerDo", target, element);
 
     switch (target) {
-        case "_live_mode":
-            if ($('body').hasClass("live_mode")) {
-                $('body').removeClass("live_mode");
-                return showWarr("live_mode", 'disabled');
+        case "_safe_mode":
+            if ($('body').hasClass("safe_mode")) {
+                $('body').removeClass("safe_mode");
+                return showWarr("safe_mode", 'disabled');
             } else {
-                $('body').addClass("live_mode");
-                return showWarr("live_mode", 'enabled');
+                $('body').addClass("safe_mode");
+                return showWarr("safe_mode", 'enabled');
+            }
+        case "_follow_mode":
+            if ($('body').hasClass("follow_mode")) {
+                $('body').removeClass("follow_mode");
+                return showWarr("follow_mode", 'disabled');
+            } else {
+                $('body').addClass("follow_mode");
+                return showWarr("follow_mode", 'enabled');
             }
         case "_clear_loader":
             return loader(true); //true mean s clear

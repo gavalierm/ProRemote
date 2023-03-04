@@ -39,7 +39,7 @@ async function filterItems(query = null) {
     var cached = global_library;
 
     if (!cached) {
-        console.log("No cached", query);
+      if(LOGGING) console.log("No cached", query);
         return showWarr("no global_library");
     }
     //console.log( cached );
@@ -82,7 +82,7 @@ async function filterItems(query = null) {
 async function clearFocus() {
     var focus = $(".search input");
     if (focus.is(':focus')) {
-        console.log("search clear");
+      if(LOGGING) console.log("search clear");
         focus.blur();
     }
 }

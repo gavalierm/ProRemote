@@ -657,19 +657,29 @@ body.real_selected .if_not_selected {
     display: none;
 }
 
-.live_mode_trigger i {
-    color: #7fe30c;
+body.safe_mode .icon._trigger{
+    color: gray;
 }
-
-body.live_mode .live_mode_trigger i {
+body .safe_mode_trigger i {
     color: red;
 }
 
-body.live_mode .live_mode_trigger i:before {
-    content: "\f3c1";
+body.safe_mode .safe_mode_trigger i{
+    color: #7fe30c;
+}
+body.safe_mode .safe_mode_trigger i:before {
+    content: "\f023";
 }
 
-body.signal .live_mode_trigger i:before {
+body.follow_mode .follow_mode_trigger i {
+    color: red;
+}
+body.follow_mode .follow_mode_trigger i:before {
+    content: "\f0c1";
+}
+
+
+body.signal .safe_mode_trigger i:before {
     color: #fff400;
     content: "\f519";
 }
