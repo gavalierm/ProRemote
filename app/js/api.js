@@ -808,9 +808,9 @@ async function showWarr(warr = null, response = null) {
             break;
         case "safe_mode":
             if (response == 'enabled') {
-                $("#status_message").addClass("green");
-            } else {
                 $("#status_message").addClass("red");
+            } else {
+                $("#status_message").addClass("green");
             }
             $("#warr_message").html('<i class="fa-solid fa-lock"></i>' + ' ' + "Safe mode " + response);
             break;
