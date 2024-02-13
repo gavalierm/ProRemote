@@ -665,12 +665,17 @@ body .safe_mode_trigger i {
     color: #7fe30c;
 }
 
+
 body.safe_mode .safe_mode_trigger i {
     color: red;
 }
 
 body.safe_mode .safe_mode_trigger i:before {
     content: "\f023";
+}
+
+.follow_mode_trigger {
+    display: none;
 }
 
 body.follow_mode .follow_mode_trigger i {

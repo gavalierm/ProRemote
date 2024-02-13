@@ -1,407 +1,442 @@
 <!DOCTYPE html>
 <html>
 
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>ProRemote App</title>
-        <meta name="description" content="ProRemote App">
-        <meta content="no-cache, no-store, must-revalidate" http-equiv="Cache-Control" />
-        <meta content="no-cache" http-equiv="Pragma" />
-        <meta content="0" http-equiv="Expires" />
-        <meta content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no, viewport-fit=cover" name="viewport" />
-        <meta content="true" name="HandheldFriendly" />
-        <meta content="ie=edge" http-equiv="X-UA-Compatible" />
-        <!-- -->
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-touch-fullscreen" content="yes" />
-        <meta name="apple-mobile-web-app-title" content="ProRemote App" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <!-- -->
-        <link href="app/img/splashscreens/iphone5_splash.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
-        <link href="app/img/splashscreens/iphone6_splash.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
-        <link href="app/img/splashscreens/iphoneplus_splash.png" media="(device-width: 621px) and (device-height: 1104px) and (-webkit-device-pixel-ratio: 3)" rel="apple-touch-startup-image" />
-        <link href="app/img/splashscreens/iphonex_splash.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" rel="apple-touch-startup-image" />
-        <link href="app/img/splashscreens/iphonexr_splash.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
-        <link href="app/img/splashscreens/iphonexsmax_splash.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" rel="apple-touch-startup-image" />
-        <link href="app/img/splashscreens/ipad_splash.png" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
-        <link href="app/img/splashscreens/ipadpro1_splash.png" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
-        <link href="app/img/splashscreens/ipadpro3_splash.png" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
-        <link href="app/img/splashscreens/ipadpro2_splash.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
-        <!-- -->
-        <link rel="apple-touch-icon" sizes="57x57" href="app/img/fav/apple-icon-57x57.png">
-        <link rel="apple-touch-icon" sizes="60x60" href="app/img/fav/apple-icon-60x60.png">
-        <link rel="apple-touch-icon" sizes="72x72" href="app/img/fav/apple-icon-72x72.png">
-        <link rel="apple-touch-icon" sizes="76x76" href="app/img/fav/apple-icon-76x76.png">
-        <link rel="apple-touch-icon" sizes="114x114" href="app/img/fav/apple-icon-114x114.png">
-        <link rel="apple-touch-icon" sizes="120x120" href="app/img/fav/apple-icon-120x120.png">
-        <link rel="apple-touch-icon" sizes="144x144" href="app/img/fav/apple-icon-144x144.png">
-        <link rel="apple-touch-icon" sizes="152x152" href="app/img/fav/apple-icon-152x152.png">
-        <link rel="apple-touch-icon" sizes="180x180" href="app/img/fav/apple-icon-180x180.png">
-        <!-- -->
-        <link rel="icon" type="image/png" sizes="57x57" href="app/img/fav/apple-icon-57x57.png">
-        <link rel="icon" type="image/png" sizes="60x60" href="app/img/fav/apple-icon-60x60.png">
-        <link rel="icon" type="image/png" sizes="72x72" href="app/img/fav/apple-icon-72x72.png">
-        <link rel="icon" type="image/png" sizes="76x76" href="app/img/fav/apple-icon-76x76.png">
-        <link rel="icon" type="image/png" sizes="114x114" href="app/img/fav/apple-icon-114x114.png">
-        <link rel="icon" type="image/png" sizes="120x120" href="app/img/fav/apple-icon-120x120.png">
-        <link rel="icon" type="image/png" sizes="144x144" href="app/img/fav/apple-icon-144x144.png">
-        <link rel="icon" type="image/png" sizes="152x152" href="app/img/fav/apple-icon-152x152.png">
-        <link rel="icon" type="image/png" sizes="180x180" href="app/img/fav/apple-icon-180x180.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="app/img/fav/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="96x96" href="app/img/fav/favicon-96x96.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="app/img/fav/favicon-16x16.png">
-        <!-- -->
-        <meta content="#1b1e1f" name="theme-color" />
-        <meta content="#1b1e1f" name="msapplication-TileColor" />
-        <meta name="msapplication-TileImage" content="img/fav/ms-icon-144x144.png">
-        <meta content="fullscreen" name="display" />
-        <link href="manifest.json" rel="manifest" />
-        <!-- -->
-        <link href="app/fonts/fontawesome-free-6.2.0-web/css/fontawesome.min.css" rel="stylesheet" type="text/css" />
-        <link href="app/fonts/fontawesome-free-6.2.0-web/css/solid.css" rel="stylesheet" type="text/css" />
-        <link href="app/css/main.css" rel="stylesheet" type="text/css" />
-        <link href="app/css/list.css" rel="stylesheet" type="text/css" />
-        <link href="app/css/presentation.css" rel="stylesheet" type="text/css" />
-        <script type="text/javascript">
-            if ('serviceWorker' in navigator) {
-                window.addEventListener('load', function() {
-                    window.isUpdateAvailable = new Promise(function(resolve, reject) {
-                        // lazy way of disabling service workers while developing
-                        //&& ['localhost', '127'].indexOf(location.hostname) === -1
-                        if ('serviceWorker' in navigator) {
-                            // register service worker file
-                            navigator.serviceWorker.register('sworker.js').then(reg => {
-                                reg.onupdatefound = () => {
-                                    const installingWorker = reg.installing;
-                                    installingWorker.onstatechange = () => {
-                                        switch (installingWorker.state) {
-                                            case 'installed':
-                                                if (navigator.serviceWorker.controller) {
-                                                    // new update available
-                                                    resolve(true);
-                                                } else {
-                                                    // no update available
-                                                    resolve(false);
-                                                }
-                                                break;
-                                        }
-                                    };
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ProRemote App</title>
+    <meta name="description" content="ProRemote App">
+    <meta content="no-cache, no-store, must-revalidate" http-equiv="Cache-Control" />
+    <meta content="no-cache" http-equiv="Pragma" />
+    <meta content="0" http-equiv="Expires" />
+    <meta
+        content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no, viewport-fit=cover"
+        name="viewport" />
+    <meta content="true" name="HandheldFriendly" />
+    <meta content="ie=edge" http-equiv="X-UA-Compatible" />
+    <!-- -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-touch-fullscreen" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="ProRemote App" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <!-- -->
+    <link href="app/img/splashscreens/iphone5_splash.png"
+        media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)"
+        rel="apple-touch-startup-image" />
+    <link href="app/img/splashscreens/iphone6_splash.png"
+        media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)"
+        rel="apple-touch-startup-image" />
+    <link href="app/img/splashscreens/iphoneplus_splash.png"
+        media="(device-width: 621px) and (device-height: 1104px) and (-webkit-device-pixel-ratio: 3)"
+        rel="apple-touch-startup-image" />
+    <link href="app/img/splashscreens/iphonex_splash.png"
+        media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)"
+        rel="apple-touch-startup-image" />
+    <link href="app/img/splashscreens/iphonexr_splash.png"
+        media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)"
+        rel="apple-touch-startup-image" />
+    <link href="app/img/splashscreens/iphonexsmax_splash.png"
+        media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)"
+        rel="apple-touch-startup-image" />
+    <link href="app/img/splashscreens/ipad_splash.png"
+        media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2)"
+        rel="apple-touch-startup-image" />
+    <link href="app/img/splashscreens/ipadpro1_splash.png"
+        media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2)"
+        rel="apple-touch-startup-image" />
+    <link href="app/img/splashscreens/ipadpro3_splash.png"
+        media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2)"
+        rel="apple-touch-startup-image" />
+    <link href="app/img/splashscreens/ipadpro2_splash.png"
+        media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)"
+        rel="apple-touch-startup-image" />
+    <!-- -->
+    <link rel="apple-touch-icon" sizes="57x57" href="app/img/fav/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="app/img/fav/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="app/img/fav/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="app/img/fav/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="app/img/fav/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="app/img/fav/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="app/img/fav/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="app/img/fav/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="app/img/fav/apple-icon-180x180.png">
+    <!-- -->
+    <link rel="icon" type="image/png" sizes="57x57" href="app/img/fav/apple-icon-57x57.png">
+    <link rel="icon" type="image/png" sizes="60x60" href="app/img/fav/apple-icon-60x60.png">
+    <link rel="icon" type="image/png" sizes="72x72" href="app/img/fav/apple-icon-72x72.png">
+    <link rel="icon" type="image/png" sizes="76x76" href="app/img/fav/apple-icon-76x76.png">
+    <link rel="icon" type="image/png" sizes="114x114" href="app/img/fav/apple-icon-114x114.png">
+    <link rel="icon" type="image/png" sizes="120x120" href="app/img/fav/apple-icon-120x120.png">
+    <link rel="icon" type="image/png" sizes="144x144" href="app/img/fav/apple-icon-144x144.png">
+    <link rel="icon" type="image/png" sizes="152x152" href="app/img/fav/apple-icon-152x152.png">
+    <link rel="icon" type="image/png" sizes="180x180" href="app/img/fav/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="app/img/fav/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="app/img/fav/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="app/img/fav/favicon-16x16.png">
+    <!-- -->
+    <meta content="#1b1e1f" name="theme-color" />
+    <meta content="#1b1e1f" name="msapplication-TileColor" />
+    <meta name="msapplication-TileImage" content="img/fav/ms-icon-144x144.png">
+    <meta content="fullscreen" name="display" />
+    <link href="manifest.json" rel="manifest" />
+    <!-- -->
+    <link href="app/fonts/fontawesome-free-6.2.0-web/css/fontawesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="app/fonts/fontawesome-free-6.2.0-web/css/solid.css" rel="stylesheet" type="text/css" />
+    <link href="app/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="app/css/list.css" rel="stylesheet" type="text/css" />
+    <link href="app/css/presentation.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript">
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                window.isUpdateAvailable = new Promise(function(resolve, reject) {
+                    // lazy way of disabling service workers while developing
+                    //&& ['localhost', '127'].indexOf(location.hostname) === -1
+                    if ('serviceWorker' in navigator) {
+                        // register service worker file
+                        navigator.serviceWorker.register('sworker.js').then(reg => {
+                            reg.onupdatefound = () => {
+                                const installingWorker = reg.installing;
+                                installingWorker.onstatechange = () => {
+                                    switch (installingWorker.state) {
+                                        case 'installed':
+                                            if (navigator.serviceWorker.controller) {
+                                                // new update available
+                                                resolve(true);
+                                            } else {
+                                                // no update available
+                                                resolve(false);
+                                            }
+                                            break;
+                                    }
                                 };
-                            }).catch(err => console.error('[SW ERROR]', err));
-                        }
-                    });
-                    window['isUpdateAvailable'].then(isAvailable => {
-                        if (isAvailable) {
-                            console.log('New Update available! Reload the webapp to see the latest juicy changes.');
-                            window.location.reload(1);
-                        }
-                    });
+                            };
+                        }).catch(err => console.error('[SW ERROR]', err));
+                    }
                 });
-            }
-        </script>
-    </head>
+                window['isUpdateAvailable'].then(isAvailable => {
+                    if (isAvailable) {
+                        console.log('New Update available! Reload the webapp to see the latest juicy changes.');
+                        window.location.reload(1);
+                    }
+                });
+            });
+        }
+    </script>
+</head>
 
-    <body class="_panel_settings_first disconnected safe_mode init">
-        <div id="app">
-            <div id="panel_settings" class="panel">
-                <div class="panel_wrapper">
-                    <div class="panel_header">
-                        <div class="header">
-                            <div class="icon _open if_connected" data-open="_panel_close">
-                                <div class="icon_cont">
-                                    <i class="fa-solid fa-xmark"></i>
+<body class="_panel_settings_first disconnected safe_mode init">
+    <div id="app">
+        <div id="panel_settings" class="panel">
+            <div class="panel_wrapper">
+                <div class="panel_header">
+                    <div class="header">
+                        <div class="icon _open if_connected" data-open="_panel_close">
+                            <div class="icon_cont">
+                                <i class="fa-solid fa-xmark"></i>
+                            </div>
+                        </div>
+                        <div class="panel_title">Settings</div>
+                        <div class="space_holder if_connected"></div>
+                    </div>
+                </div>
+                <div class="panel_content">
+                    <div class="padder">
+                        <div class="logo">
+                            <img src="app/img/fav/apple-icon-144x144.png">
+                        </div>
+                        <div class="settings_section">
+                            <div class="settings_section_title">Connection</div>
+                            <div class="setting">
+                                <label for="setting_id_host" class="setting_label">Host / IP</label>
+                                <div class="setting_value">
+                                    <input id="setting_id_host" type="text" name="_host" value="localhost"
+                                        required="required">
                                 </div>
                             </div>
-                            <div class="panel_title">Settings</div>
-                            <div class="space_holder if_connected"></div>
+                            <div class="setting">
+                                <label for="setting_id_port" class="setting_label">Port</label>
+                                <div class="setting_value">
+                                    <input id="setting_id_port" type="text" name="_port" value="1024"
+                                        required="required">
+                                </div>
+                            </div>
+                            <div class="setting">
+                                <label for="setting_id_pass" class="setting_label">Password</label>
+                                <div class="setting_value">
+                                    <input id="setting_id_pass" type="text" name="_pass" value="control"
+                                        required="required">
+                                </div>
+                            </div>
+                            <div class="setting">
+                                <label for="setting_id_quality" class="setting_label">Quality</label>
+                                <div class="setting_value">
+                                    <select id="setting_id_quality" name="_quality" required="required">
+                                        <option value="200">Low</option>
+                                        <option value="400" selected>Mid</option>
+                                        <option value="600">High</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="button_wrapper">
+                                <div class="button btn _do disconnected_allowed" data-do="_store_connection">
+                                    <div class="inner">Store & Connect</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="settings_section" style="display: none;">
+                            <div class="settings_section_title">Filters</div>
+                            <div class="setting">
+                                <label for="setting_id_filter_a" class="setting_label">Filter A</label>
+                                <div class="setting_value">
+                                    <input id="setting_id_filter_a" type="text" name="_filter_a" value="">
+                                </div>
+                            </div>
+                            <div class="setting">
+                                <label for="setting_id_filter_b" class="setting_label">Filter B</label>
+                                <div class="setting_value">
+                                    <input id="setting_id_filter_b" type="text" name="_filter_b" value="">
+                                </div>
+                            </div>
+                            <div class="setting">
+                                <label for="setting_id_filter_c" class="setting_label">Filter C</label>
+                                <div class="setting_value">
+                                    <input id="setting_id_filter_c" type="text" name="_filter_c" value="">
+                                </div>
+                            </div>
+                            <div class="button_wrapper">
+                                <div class="button btn _do disconnected_allowed" data-do="_store_filters">
+                                    <div class="inner">Store</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="panel_content">
-                        <div class="padder">
+                </div>
+            </div>
+        </div>
+        <div id="panel_library" class="panel">
+            <div class="panel_wrapper">
+                <div class="panel_header">
+                    <div class="header">
+                        <div class="space_holder"></div>
+                        <div class="panel_title">Library</div>
+                        <div class="icon _open disconnected_allowed" data-open="_panel_settings">
+                            <div class="icon_cont">
+                                <i class="fa-solid fa-gears"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="search" id="search" style="display: none;">
+                        <div class="search_input_cont">
+                            <div class="prefix">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </div>
+                            <input class="input" name="spe_search" placeholder="Search ..." type="search" />
+                        </div>
+                    </div>
+                    <div class="filter vertical_slider" id="filter" style="display: none;">
+                        <div class="vertical_slider_cont">
+                            <div class='btn round rounded  _do' data-do="_fill_search" data-fill="">
+                                <i class="fa-solid fa-xmark"></i>
+                            </div>
+                            <div class='btn rounded decent _filter_a_trigger _do' data-do="_fill_search"
+                                data-fill="Change in settings">
+                                <div class="inner">Filter A</div>
+                            </div>
+                            <div class='btn rounded decent _filter_b_trigger _do' data-do="_fill_search"
+                                data-fill="Change in settings">
+                                <div class="inner">Filter B</div>
+                            </div>
+                            <div class='btn rounded decent _filter_c_trigger _do' data-do="_fill_search"
+                                data-fill="Change in settings">
+                                <div class="inner">Filter C</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel_content">
+                    <div class="button_wrapper">
+                        <div class="btn _trigger" data-load="_library">Refresh</div>
+                    </div>
+                    <div id="library_target" class="list padder"></div>
+                </div>
+            </div>
+        </div>
+        <div id="panel_playlists" class="panel">
+            <div class="panel_wrapper">
+                <div class="panel_header">
+                    <div class="header">
+                        <div class="space_holder"></div>
+                        <div class="panel_title">Playlists</div>
+                        <div class="space_holder"></div>
+                    </div>
+                </div>
+                <div class="panel_content">
+                    <div class="button_wrapper">
+                        <div class="btn _trigger" data-load="_playlists">Refresh</div>
+                    </div>
+                    <div id="playlists_target" class="list padder"></div>
+                </div>
+            </div>
+        </div>
+        <div id="panel_control" class="panel">
+            <div class="panel_wrapper">
+                <div class="panel_header">
+                    <div class="header">
+                        <div class="icon _open" data-open="_panel_back" style="visibility: hidden;">
+                            <div class="icon_cont">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </div>
+                        </div>
+                        <div class="panel_title active_presentation_title">Control</div>
+                        <div class="space_holder"></div>
+                    </div>
+                </div>
+                <div id="automove_target" class="panel_content">
+                    <div id="presentation_target"></div>
+                    <div id="no_data_holder">
+                        <div>
                             <div class="logo">
                                 <img src="app/img/fav/apple-icon-144x144.png">
                             </div>
-                            <div class="settings_section">
-                                <div class="settings_section_title">Connection</div>
-                                <div class="setting">
-                                    <label for="setting_id_host" class="setting_label">Host / IP</label>
-                                    <div class="setting_value">
-                                        <input id="setting_id_host" type="text" name="_host" value="localhost" required="required">
-                                    </div>
+                            <div class="title"><b class="guess" style="text-transform: capitalize;">nothing</b> selected
+                                <br><small>in ProPresenter</small>
+                                <br>
+                            </div>
+                            <div class="button_wrapper">
+                                <div class="button btn _trigger if_selected_decent" data-path="current">
+                                    <div class="inner">Open selected</div>
                                 </div>
-                                <div class="setting">
-                                    <label for="setting_id_port" class="setting_label">Port</label>
-                                    <div class="setting_value">
-                                        <input id="setting_id_port" type="text" name="_port" value="1024" required="required">
-                                    </div>
-                                </div>
-                                <div class="setting">
-                                    <label for="setting_id_pass" class="setting_label">Password</label>
-                                    <div class="setting_value">
-                                        <input id="setting_id_pass" type="text" name="_pass" value="control" required="required">
-                                    </div>
-                                </div>
-                                <div class="setting">
-                                    <label for="setting_id_quality" class="setting_label">Quality</label>
-                                    <div class="setting_value">
-                                        <select id="setting_id_quality" name="_quality" required="required">
-                                            <option value="200">Low</option>
-                                            <option value="400" selected>Mid</option>
-                                            <option value="600">High</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="button_wrapper">
-                                    <div class="button btn _do disconnected_allowed" data-do="_store_connection">
-                                        <div class="inner">Store & Connect</div>
-                                    </div>
+                                <div class="decent button btn _open" data-open="_panel_library">
+                                    <div class="inner">Open Library</div>
                                 </div>
                             </div>
-                            <div class="settings_section">
-                                <div class="settings_section_title">Filters</div>
-                                <div class="setting">
-                                    <label for="setting_id_filter_a" class="setting_label">Filter A</label>
-                                    <div class="setting_value">
-                                        <input id="setting_id_filter_a" type="text" name="_filter_a" value="">
-                                    </div>
-                                </div>
-                                <div class="setting">
-                                    <label for="setting_id_filter_b" class="setting_label">Filter B</label>
-                                    <div class="setting_value">
-                                        <input id="setting_id_filter_b" type="text" name="_filter_b" value="">
-                                    </div>
-                                </div>
-                                <div class="setting">
-                                    <label for="setting_id_filter_c" class="setting_label">Filter C</label>
-                                    <div class="setting_value">
-                                        <input id="setting_id_filter_c" type="text" name="_filter_c" value="">
-                                    </div>
-                                </div>
-                                <div class="button_wrapper">
-                                    <div class="button btn _do disconnected_allowed" data-do="_store_filters">
-                                        <div class="inner">Store</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="panel_library" class="panel">
-                <div class="panel_wrapper">
-                    <div class="panel_header">
-                        <div class="header">
-                            <div class="space_holder"></div>
-                            <div class="panel_title">Library</div>
-                            <div class="icon _open disconnected_allowed" data-open="_panel_settings">
-                                <div class="icon_cont">
-                                    <i class="fa-solid fa-gears"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="search" id="search">
-                            <div class="search_input_cont">
-                                <div class="prefix">
-                                    <i class="fa-solid fa-magnifying-glass"></i>
-                                </div>
-                                <input class="input" name="spe_search" placeholder="Search ..." type="search" />
-                            </div>
-                        </div>
-                        <div class="filter vertical_slider" id="filter">
-                            <div class="vertical_slider_cont">
-                                <div class='btn round rounded  _do' data-do="_fill_search" data-fill="">
-                                    <i class="fa-solid fa-xmark"></i>
-                                </div>
-                                <div class='btn rounded decent _filter_a_trigger _do' data-do="_fill_search" data-fill="Change in settings">
-                                    <div class="inner">Filter A</div>
-                                </div>
-                                <div class='btn rounded decent _filter_b_trigger _do' data-do="_fill_search" data-fill="Change in settings">
-                                    <div class="inner">Filter B</div>
-                                </div>
-                                <div class='btn rounded decent _filter_c_trigger _do' data-do="_fill_search" data-fill="Change in settings">
-                                    <div class="inner">Filter C</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="panel_content">
-                        <div class="button_wrapper">
-                            <div class="btn _trigger" data-load="_library">Refresh</div>
-                        </div>
-                        <div id="library_target" class="list padder"></div>
-                    </div>
-                </div>
-            </div>
-            <div id="panel_playlists" class="panel">
-                <div class="panel_wrapper">
-                    <div class="panel_header">
-                        <div class="header">
-                            <div class="space_holder"></div>
-                            <div class="panel_title">Playlists</div>
-                            <div class="space_holder"></div>
-                        </div>
-                    </div>
-                    <div class="panel_content">
-                        <div class="button_wrapper">
-                            <div class="btn _trigger" data-load="_playlists">Refresh</div>
-                        </div>
-                        <div id="playlists_target" class="list padder"></div>
-                    </div>
-                </div>
-            </div>
-            <div id="panel_control" class="panel">
-                <div class="panel_wrapper">
-                    <div class="panel_header">
-                        <div class="header">
-                            <div class="icon _open" data-open="_panel_back">
-                                <div class="icon_cont">
-                                    <i class="fa-solid fa-chevron-left"></i>
-                                </div>
-                            </div>
-                            <div class="panel_title active_presentation_title">Control</div>
-                            <div class="space_holder"></div>
-                        </div>
-                    </div>
-                    <div id="automove_target" class="panel_content">
-                        <div id="presentation_target"></div>
-                        <div id="no_data_holder">
-                            <div>
-                                <div class="logo">
-                                    <img src="app/img/fav/apple-icon-144x144.png">
-                                </div>
-                                <div class="title">ProPresenter
-                                    <br> has <b class="guess">nothing</b> selected
-                                    <br>
-                                    <small>You can <b class="if_not_selected" style="font-style: italic;">NOT </b>auto open current slideshow<span class="if_not_selected">, because nothing is selected in ProPresenter</span>.</small>
-                                </div>
-                                <div class="button_wrapper">
-                                    <div class="button btn _trigger if_selected_decent" data-path="current">
-                                        <div class="inner">Open selected</div>
-                                    </div>
-                                    <div class="decent button btn _open" data-open="_panel_library">
-                                        <div class="inner">Manually</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="bottom_bar" class="bar">
-                <div class="wrapper">
-                    <div class="bottom_bar_button">
-                        <div class="icon _do safe_mode_trigger" data-do="_safe_mode">
-                            <div class="icon_cont">
-                                <i class="fa-solid fa-lock-open"></i>
-                            </div>
-                            <div class="icon_title">Safe mode</div>
-                        </div>
-                    </div>
-                    <div class="bottom_bar_button">
-                        <div class="icon _do follow_mode_trigger" data-do="_follow_mode">
-                            <div class="icon_cont">
-                                <i class="fa-solid fa-link"></i>
-                            </div>
-                            <div class="icon_title">No follow</div>
-                        </div>
-                    </div>
-                    <div class="bottom_bar_button">
-                        <div class="icon _open" data-open="_panel_library">
-                            <div class="icon_cont">
-                                <i class="fa-solid fa-magnifying-glass"></i>
-                            </div>
-                            <div class="icon_title">Library</div>
-                        </div>
-                    </div>
-                    <div class="bottom_bar_button">
-                        <div class="icon _open" data-open="_panel_playlists">
-                            <div class="icon_cont">
-                                <i class="fa-solid fa-list-ol"></i>
-                            </div>
-                            <div class="icon_title">Playlists</div>
-                        </div>
-                    </div>
-                    <div class="bottom_bar_button">
-                        <div class="icon _open" data-open="_panel_control">
-                            <div class="icon_cont">
-                                <i class="fa-solid fa-gamepad"></i>
-                            </div>
-                            <div class="icon_title">Control</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="control_bar" class="bar">
-                <div class="wrapper">
-                    <div class="bottom_bar_button">
-                        <div class="icon _do safe_mode_trigger" data-do="_safe_mode">
-                            <div class="icon_cont">
-                                <i class="fa-solid fa-lock-open"></i>
-                            </div>
-                            <div class="icon_title">Safe mode</div>
-                        </div>
-                    </div>
-                    <div class="bottom_bar_button">
-                        <div class="icon _do follow_mode_trigger" data-do="_follow_mode">
-                            <div class="icon_cont">
-                                <i class="fa-solid fa-link"></i>
-                            </div>
-                            <div class="icon_title">Follow mode</div>
-                        </div>
-                    </div>
-                    <div class="bottom_bar_button">
-                        <div class="icon _trigger" data-index="_prev">
-                            <div class="icon_cont">
-                                <i class="fa-solid fa-arrow-left"></i>
-                            </div>
-                            <div class="icon_title">Prev</div>
-                        </div>
-                    </div>
-                    <div class="bottom_bar_button">
-                        <div class="icon _trigger" data-index="_clear">
-                            <div class="icon_cont">
-                                <i class="fa-solid fa-circle-xmark"></i>
-                            </div>
-                            <div class="icon_title">Clear</div>
-                        </div>
-                    </div>
-                    <div class="bottom_bar_button">
-                        <div class="icon _trigger" data-index="_next">
-                            <div class="icon_cont">
-                                <i class="fa-solid fa-arrow-right"></i>
-                            </div>
-                            <div class="icon_title">Next</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div id="status_message" class="status_message">
+        <div id="bottom_bar" class="bar">
+            <div class="wrapper">
+                <div class="bottom_bar_button" style="display: none;">
+                    <div class="icon _do safe_mode_trigger" data-do="_safe_mode">
+                        <div class="icon_cont">
+                            <i class="fa-solid fa-lock-open"></i>
+                        </div>
+                        <div class="icon_title">Interface lock</div>
+                    </div>
+                </div>
+                <div class="bottom_bar_button" style="display: none;">
+                    <div class="icon _do follow_mode_trigger" data-do="_follow_mode">
+                        <div class="icon_cont">
+                            <i class="fa-solid fa-link"></i>
+                        </div>
+                        <div class="icon_title">No follow</div>
+                    </div>
+                </div>
+                <div class="bottom_bar_button" style="display: none;">
+                    <div class="icon _open" data-open="_panel_library">
+                        <div class="icon_cont">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </div>
+                        <div class="icon_title">Library</div>
+                    </div>
+                </div>
+                <div class="bottom_bar_button" style="display: none;">
+                    <div class="icon _open" data-open="_panel_playlists">
+                        <div class="icon_cont">
+                            <i class="fa-solid fa-list-ol"></i>
+                        </div>
+                        <div class="icon_title">Playlists</div>
+                    </div>
+                </div>
+                <div class="bottom_bar_button">
+                    <div class="icon _open" data-open="_panel_control">
+                        <div class="icon_cont">
+                            <i class="fa-solid fa-gamepad"></i>
+                        </div>
+                        <div class="icon_title">Control</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="control_bar" class="bar">
+            <div class="wrapper">
+                <div class="bottom_bar_button">
+                    <div class="icon _open" data-open="_panel_library">
+                        <div class="icon_cont">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </div>
+                        <div class="icon_title">Library</div>
+                    </div>
+                </div>
+                <div class="bottom_bar_button">
+                    <div class="icon _do safe_mode_trigger" data-do="_safe_mode">
+                        <div class="icon_cont">
+                            <i class="fa-solid fa-lock-open"></i>
+                        </div>
+                        <div class="icon_title">Interface lock</div>
+                    </div>
+                </div>
+                <div class="bottom_bar_button" style="display: none;">
+                    <div class="icon _do follow_mode_trigger" data-do="_follow_mode">
+                        <div class="icon_cont">
+                            <i class="fa-solid fa-link"></i>
+                        </div>
+                        <div class="icon_title">Follow mode</div>
+                    </div>
+                </div>
+                <div class="bottom_bar_button" style="display: none;">
+                    <div class="icon _trigger" data-index="_prev">
+                        <div class="icon_cont">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </div>
+                        <div class="icon_title">Prev</div>
+                    </div>
+                </div>
+                <div class="bottom_bar_button">
+                    <div class="icon _trigger" data-index="_clear">
+                        <div class="icon_cont">
+                            <i class="fa-solid fa-circle-xmark"></i>
+                        </div>
+                        <div class="icon_title">Clear</div>
+                    </div>
+                </div>
+                <div class="bottom_bar_button" style="display: none;">
+                    <div class="icon _trigger" data-index="_next">
+                        <div class="icon_cont">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                        <div class="icon_title">Next</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="status_message" class="status_message">
+        <div class="status_message_wrapper">
+            <div id="warr_message" class="message">Message</div>
+        </div>
+    </div>
+    <div id="loader">
+        <div class="loader fa-3x">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </div>
+        <div id="loader_cancel" class="status_message">
             <div class="status_message_wrapper">
-                <div id="warr_message" class="message">Message</div>
-            </div>
-        </div>
-        <div id="loader">
-            <div class="loader fa-3x">
-                <i class="fa-solid fa-circle-notch fa-spin"></i>
-            </div>
-            <div id="loader_cancel" class="status_message">
-                <div class="status_message_wrapper">
-                    <div class="message">Loading takes too long than usual.</div>
-                    <div class='btn _do' data-do="_clear_loader">
-                        <div class="inner">Cancel</div>
-                    </div>
+                <div class="message">Loading takes too long than usual.</div>
+                <div class='btn _do' data-do="_clear_loader">
+                    <div class="inner">Cancel</div>
                 </div>
             </div>
         </div>
-    </body>
-    <script src="app/js/jquery-3.6.0.min.js" type="text/javascript"></script>
-    <script src="app/js/md5.js" type="text/javascript"></script>
-    <script src="app/js/app.js" type="text/javascript"></script>
-    <script src="app/js/search.js" type="text/javascript"></script>
-    <script src="app/js/api.js" type="text/javascript"></script>
-    <script src="app/js/automove.js" type="text/javascript"></script>
+    </div>
+</body>
+<script src="app/js/jquery-3.6.0.min.js" type="text/javascript"></script>
+<script src="app/js/md5.js" type="text/javascript"></script>
+<script src="app/js/app.js" type="text/javascript"></script>
+<script src="app/js/search.js" type="text/javascript"></script>
+<script src="app/js/api.js" type="text/javascript"></script>
+<script src="app/js/automove.js" type="text/javascript"></script>
 
 </html>

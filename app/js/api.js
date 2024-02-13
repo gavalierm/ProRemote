@@ -87,27 +87,27 @@ async function connect() {
     showWarr('connect');
     //
     if (remoteWebSocket) {
-      if(LOGGING) console.warn('Socket opened before reconnect: Closing socket');
+        if (LOGGING) console.warn('Socket opened before reconnect: Closing socket');
         remoteWebSocket.close();
     }
     wsUri = "ws://" + localStorage.getItem("_host") + ":" + localStorage.getItem("_port");
     remoteWebSocket = new WebSocket(wsUri + "/remote");
-    remoteWebSocket.onopen = function() { onOpen(); };
-    remoteWebSocket.onclose = function() { onClose(); };
-    remoteWebSocket.onmessage = function(evt) { onMessage(JSON.parse(evt.data)); };
-    remoteWebSocket.onerror = function(evt) { onError(evt); };
+    remoteWebSocket.onopen = function () { onOpen(); };
+    remoteWebSocket.onclose = function () { onClose(); };
+    remoteWebSocket.onmessage = function (evt) { onMessage(JSON.parse(evt.data)); };
+    remoteWebSocket.onerror = function (evt) { onError(evt); };
 }
 async function onError(evt) {
     disconnected();
     if (remoteWebSocket) {
-      if(LOGGING) console.error('Socket encountered error: ', evt.message, 'Closing socket');
+        if (LOGGING) console.error('Socket encountered error: ', evt.message, 'Closing socket');
         remoteWebSocket.close();
     }
 }
 async function onClose() {
     disconnected();
     clearTimeout(global_connection_timer);
-    global_connection_timer = setTimeout(function() {
+    global_connection_timer = setTimeout(function () {
         connect();
     }, 5000);
 }
@@ -121,11 +121,11 @@ async function onMessage(obj) {
     signalReceived();
     //
     if (!obj.action) {
-      if(LOGGING) console.log(obj);
+        if (LOGGING) console.log(obj);
         return showWarr('no_action');
     }
     if (!isNa(obj.error)) {
-      if(LOGGING) console.error(obj);
+        if (LOGGING) console.error(obj);
         openPanel("_panel_settings");
         disconnected();
         return showWarr("error", obj.error);
@@ -146,7 +146,7 @@ async function onMessage(obj) {
         if (isNa(global_propresenter.majorVersion)) {
             global_propresenter.majorVersion = 6;
         }
-      if(LOGGING) console.error("Not auth");
+        if (LOGGING) console.error("Not auth");
         return showWarr("login_wrong_credentials");
     } else if (obj.action == "libraryRequest") {
         var data = "";
@@ -155,8 +155,11 @@ async function onMessage(obj) {
             data = library;
         }
         $("#library_target").html(data);
-        return triggerSlide("current");
-        return false;
+        if (!isSafe()) {
+            return triggerSlide("current");
+        } else {
+            return showWarr("Library loaded", "");
+        }
     } else if (obj.action == "playlistRequestAll") {
         var data = "";
         var library = createPlaylists(obj.playlistAll);
@@ -178,10 +181,10 @@ async function onMessage(obj) {
         } else {
             //this is 7 request
             action = "presentationRequest";
-          if(LOGGING) console.log(global_propresenter);
+            if (LOGGING) console.log(global_propresenter);
             if (!isNa(obj.presentationPath) && global_propresenter.majorVersion == 6) {
                 //this is current because 7 alway have path
-              if(LOGGING) console.error("No presentationPath AND version 6 it means Current action");
+                if (LOGGING) console.error("No presentationPath AND version 6 it means Current action");
                 action = "presentationCurrent";
             }
         }
@@ -191,7 +194,7 @@ async function onMessage(obj) {
                 obj.presentationPath_ = parsePath(obj.presentation.presentationName);
                 obj.presentationPath = obj.presentationPath_.path_item.path;
             } else {
-              if(LOGGING) console.error("Not possible parse name", obj.presentation);
+                if (LOGGING) console.error("Not possible parse name", obj.presentation);
                 return false;
             }
         }
@@ -208,15 +211,15 @@ async function onMessage(obj) {
         $('body').data("request-path", null);
         $('body').data("request-index", null);
         if (!isNa(request_index)) {
-          if(LOGGING) console.warn("Fetching index", request_index);
+            if (LOGGING) console.warn("Fetching index", request_index);
             obj.requestIndex = request_index;
         }
-      if(LOGGING) console.warn("Actual action", request_path, obj.action, item_object, obj);
+        if (LOGGING) console.warn("Actual action", request_path, obj.action, item_object, obj);
         if (request == 'playlist') {
-          if(LOGGING) console.log("As playlist", item_object);
+            if (LOGGING) console.log("As playlist", item_object);
             var presentation = createPresentation(obj, request_path); // same as createPresentation but with flag
         } else {
-          if(LOGGING) console.log("As item", item_object);
+            if (LOGGING) console.log("As item", item_object);
             var presentation = createPresentation(obj);
         }
         //console.log(presentation);
@@ -224,17 +227,17 @@ async function onMessage(obj) {
         //prisli mi data su mije?
         //console.log("data", $('body').data("request-title"), item_object.path_item.title);
         if (request_title == item_object.path_item.title || request_title == "current") {
-          if(LOGGING) console.warn("My request");
+            if (LOGGING) console.warn("My request");
             $("#presentation_target").html(presentation);
             return selectPresentation(item_object);
         }
         //
         if (!isFollow()) {
             //blind selection without open widows or regenrate my control
-          if(LOGGING) console.log("Blind select A");
+            if (LOGGING) console.log("Blind select A");
             return selectPresentation(item_object, true); //ture means quiet  
         }
-      if(LOGGING) console.warn("Live mode, filling and executing");
+        if (LOGGING) console.warn("Live mode, filling and executing");
         $("#presentation_target").html(presentation);
         return selectPresentation(item_object);
     } else if (obj.action == "presentationTriggerIndex") {
@@ -248,7 +251,7 @@ async function onMessage(obj) {
         $('body').data("request-title", null);
         $('body').data("request-path", null);
         var actual = $('#presentation_target .presentation');
-      if(LOGGING) console.warn("Actual trigger action", item_object, obj, request);
+        if (LOGGING) console.warn("Actual trigger action", item_object, obj, request);
         // because trigering index we need index, isnt?
         if (isNa(obj.slideIndex)) {
             return console.error("No index in triggerIndex response", obj);
@@ -257,19 +260,20 @@ async function onMessage(obj) {
         item_object.path_item.index = obj.slideIndex;
         //
         $("body").addClass("some_selected");
+        $("#no_data_holder .title .guess").html("something");
         //
         if (actual.data('path') == item_object.path_item.path && actual.data('type') == item_object.path_type) {
-          if(LOGGING) console.log("Same select");
-            return selectSlide(item_object);
+            if (LOGGING) console.log("Same select");
+            return selectSlide(item_object, !isFollow());
         }
         if (!isFollow()) {
-          if(LOGGING) console.log("Blind select B");
+            if (LOGGING) console.log("Blind select B");
             return selectSlide(item_object, true); //ture means quiet
         }
-      if(LOGGING) console.error("LIVE: This is NOT my actual presentation", actual.data('path'), item_object.path_item.path, actual.data('type'));
+        if (LOGGING) console.error("LIVE: This is NOT my actual presentation", actual.data('path'), item_object.path_item.path, actual.data('type'));
         //store actual index before trigger ceration;   
-      if(LOGGING) console.error("FOLLOW: Follow");
-      if(LOGGING) console.warn("Storing index", item_object.path_item.index);
+        if (LOGGING) console.error("FOLLOW: Follow");
+        if (LOGGING) console.warn("Storing index", item_object.path_item.index);
         $('body').data("request-index", item_object.path_item.index);
         return triggerPresentation(obj.presentationPath);
     } else if (obj.action == "presentationSlideIndex") {
@@ -280,7 +284,7 @@ async function onMessage(obj) {
         if (actual.data('path')) {
             var item_object = parsePath(actual.data('path'));
             item_object.path_item.index = obj.slideIndex;
-          if(LOGGING) console.log("presentationSlideIndex", obj, item_object);
+            if (LOGGING) console.log("presentationSlideIndex", obj, item_object);
             return selectSlide(item_object, !isFollow()); //true means quiet
         }
         $("body").addClass("some_selected");
@@ -305,7 +309,7 @@ async function getPlaylists() {
 
 function createLibrary(obj) {
     if (isNa(obj)) {
-      if(LOGGING) console.error("No library data received", obj);
+        if (LOGGING) console.error("No library data received", obj);
         return false;
     }
     obj.sort();
@@ -343,7 +347,7 @@ function createLibrary(obj) {
     //console.log(global_library);
     //return false;
     //global_library = groups;
-  if(LOGGING) console.log('Library', obj, global_library);
+    if (LOGGING) console.log('Library', obj, global_library);
     var library_html = '';
     for (var i = 0; i <= global_library.length - 1; i++) {
         var library = global_library[i];
@@ -362,7 +366,7 @@ function createLibrary(obj) {
 
 function createPlaylists(playlists) {
     if (isNa(playlists)) {
-      if(LOGGING) console.error("No playlists data received", playlists);
+        if (LOGGING) console.error("No playlists data received", playlists);
         return false;
     }
     playlists.sort();
@@ -398,7 +402,7 @@ function createPlaylists(playlists) {
         }
         global_playlists.push(playlist_item);
     }
-  if(LOGGING) console.log(playlists, global_playlists);
+    if (LOGGING) console.log(playlists, global_playlists);
     var global_playlists_html = '';
     for (var i = 0; i <= global_playlists.length - 1; i++) {
         var playlist = global_playlists[i];
@@ -411,7 +415,7 @@ function createPlaylists(playlists) {
             if (item.type !== "playlistItemTypePresentation") {
                 trigger = "disabled _no_trigger";
             }
-            item_html = item_html + `<div class="item playlist_item ${item.type} ${trigger||''} ${item.uuid}" data-path="${item.path}" data-type="playlist"><div class="item_content"><div class="item_title">${item.title}</div><div class="item_group_title">${playlist.title}</div></div></div>`;
+            item_html = item_html + `<div class="item playlist_item ${item.type} ${trigger || ''} ${item.uuid}" data-path="${item.path}" data-type="playlist"><div class="item_content"><div class="item_title">${item.title}</div><div class="item_group_title">${playlist.title}</div></div></div>`;
         }
         global_playlists_html = global_playlists_html + `<div class="group ${item.uuid}"><div class="group_title">${playlist.title}</div><div class="items">${item_html}</div></div>`;
     }
@@ -424,7 +428,7 @@ function createPresentation(obj, playlist = false) {
     var presentation_html = new Array();
     var slideIndex = 0;
     if (isNa(obj.presentationPath)) {
-      if(LOGGING) console.log("createPresentation", "no presentationPath");
+        if (LOGGING) console.log("createPresentation", "no presentationPath");
         return false;
     }
     var request_index = null;
@@ -439,7 +443,7 @@ function createPresentation(obj, playlist = false) {
     var uuid = item_object.path_item.uuid;
     var type = item_object.path_type;
     var presentation = obj.presentation;
-  if(LOGGING) console.warn("createPresentation", presentation, item_object);
+    if (LOGGING) console.warn("createPresentation", presentation, item_object);
     for (var i = 0; i <= presentation.presentationSlideGroups.length - 1; i++) {
         var group = presentation.presentationSlideGroups[i];
         var group_classes = new Array();
@@ -520,7 +524,7 @@ function createPresentation(obj, playlist = false) {
             //
             var slideText = getSlideText(slide.slideText);
             //
-            var item_html = `<div id="index_${slideIndex}" class="presentation_slide item ${slide_classes.join(' ')||''} _trigger" data-index="${slideIndex}"><div class="cont" ${borderColor}><div class="content"><div class="text">${slideText||''}</div><div class="thumb">${image||''}</div></div><div class="label_cont" ${labelColor}><div class="label"><span class="index">${slideIndex + 1}</span><span class="group_label">${groupName || ''}</span><span class="slide_label">${slide.slideLabel || ''}</span></div><div class="slide_actions"><div class="slide_action swap no-prop _do" data-do="_swap"><i class="fa-solid fa-image"></i></div></div></div></div></div>`;
+            var item_html = `<div id="index_${slideIndex}" class="presentation_slide item ${slide_classes.join(' ') || ''} _trigger" data-index="${slideIndex}"><div class="cont" ${borderColor}><div class="content"><div class="text">${slideText || ''}</div><div class="thumb">${image || ''}</div></div><div class="label_cont" ${labelColor}><div class="label"><span class="index">${slideIndex + 1}</span><span class="group_label">${groupName || ''}</span><span class="slide_label">${slide.slideLabel || ''}</span></div><div class="slide_actions"><div class="slide_action swap no-prop _do" data-do="_swap"><i class="fa-solid fa-image"></i></div></div></div></div></div>`;
             presentation_html.push(item_html);
             slideIndex = slideIndex + 1;
         }
@@ -532,10 +536,10 @@ function createPresentation(obj, playlist = false) {
             type = "playlist";
             group_classes.push('in_playlist');
             //
-          if(LOGGING) console.warn("As playlist", playlist);
+            if (LOGGING) console.warn("As playlist", playlist);
             //
         }
-        return `<div id="${uuid}" class="presentation padder ${group_classes.join(' ')||''}" data-path="${item_object.path_item.path}" data-type="${type}">` + presentation_html.join('') + `</div>`;
+        return `<div id="${uuid}" class="presentation padder ${group_classes.join(' ') || ''}" data-path="${item_object.path_item.path}" data-type="${type}">` + presentation_html.join('') + `</div>`;
     }
     return false;
 }
@@ -547,28 +551,28 @@ async function triggerPresentation(path) {
     $('body').data("request-path", item_object.path_item.path);
     $('body').data("request-title", item_object.path_item.title);
     //
-  if(LOGGING) console.warn("triggerPresentation", item_object.path_type, item_object.path_item.title, item_object.path_item.path);
+    if (LOGGING) console.warn("triggerPresentation", item_object.path_type, item_object.path_item.title, item_object.path_item.path);
     //
     if (item_object.path_type === "current") {
         //return getCurrentSlide();
-      if(LOGGING) console.error('{"action": "presentationCurrent", "presentationSlideQuality": "' + localStorage.getItem("_quality") + '"}');
+        if (LOGGING) console.error('{"action": "presentationCurrent", "presentationSlideQuality": "' + localStorage.getItem("_quality") + '"}');
         remoteWebSocket.send('{"action": "presentationCurrent", "presentationSlideQuality": "' + localStorage.getItem("_quality") + '"}');
     } else {
-      if(LOGGING) console.error('{"action": "presentationRequest","presentationPath": "' + item_object.path_item.path.replace(/\//g, "\\/") + '", "presentationSlideQuality": "' + localStorage.getItem("_quality") + '"}');
+        if (LOGGING) console.error('{"action": "presentationRequest","presentationPath": "' + item_object.path_item.path.replace(/\//g, "\\/") + '", "presentationSlideQuality": "' + localStorage.getItem("_quality") + '"}');
         remoteWebSocket.send('{"action": "presentationRequest","presentationPath": "' + item_object.path_item.path.replace(/\//g, "\\/") + '", "presentationSlideQuality": "' + localStorage.getItem("_quality") + '"}');
     }
 }
 async function triggerSlide(path, index = 0) {
     //console.log("triggerSlide", path, index);
     if (isSafe()) {
-        if($("body").hasClass("init")){
+        if ($("body").hasClass("init")) {
             $("body").removeClass("init");
-        }else{
+        } else {
             return showWarr("observe_mode", '');
         }
     }
     if (isNa(path) || isNa(index)) {
-      if(LOGGING) console.error("No path or index in triggerSlide", path, index);
+        if (LOGGING) console.error("No path or index in triggerSlide", path, index);
         return false;
     }
     //loader();
@@ -577,7 +581,7 @@ async function triggerSlide(path, index = 0) {
     item_object = parsePath(path);
     //
     //
-  if(LOGGING) console.warn("triggerSlide", item_object.path_type, item_object.path_item.title, item_object.path_item.path);
+    if (LOGGING) console.warn("triggerSlide", item_object.path_type, item_object.path_item.title, item_object.path_item.path);
     //
     if (item_object.path_type === "current") {
         //return getCurrentSlide();
@@ -586,7 +590,7 @@ async function triggerSlide(path, index = 0) {
         $('body').data('request', item_object.path_type);
         $('body').data("request-path", item_object.path_item.path);
         $('body').data("request-title", item_object.path_item.title);
-      if(LOGGING) console.error('{"action":"presentationTriggerIndex","slideIndex":"' + index + '","presentationPath":"' + item_object.path_item.path.replace(/\//g, "\\/") + '"}');
+        if (LOGGING) console.error('{"action":"presentationTriggerIndex","slideIndex":"' + index + '","presentationPath":"' + item_object.path_item.path.replace(/\//g, "\\/") + '"}');
         remoteWebSocket.send('{"action":"presentationTriggerIndex","slideIndex":"' + index + '","presentationPath":"' + item_object.path_item.path.replace(/\//g, "\\/") + '"}');
     }
     return false;
@@ -605,16 +609,17 @@ async function triggerSlideNav(index) {
         remoteWebSocket.send('{"action":"presentationTriggerNext"}');
         return;
     }
-  if(LOGGING) console.warn("Not valid Nav", index);
+    if (LOGGING) console.warn("Not valid Nav", index);
 }
 async function selectPresentation(item_object, quiet = false) {
+    console.log("Select presentation", quiet)
     var uuid = item_object.path_item.uuid;
     var title = item_object.path_item.title;
     if (isNa(uuid)) {
         return console.warn("no uuid", uuid, title);
     }
     var target = "." + uuid;
-  if(LOGGING) console.log('selectPresentation', target, title);
+    if (LOGGING) console.log('selectPresentation', target, title);
     //
     if (item_object.path_tupe == "playlist") {
         $(".playlist_item").removeClass("selected");
@@ -623,16 +628,17 @@ async function selectPresentation(item_object, quiet = false) {
         $(".library_item").removeClass("selected");
         $(".library_item" + target).addClass("selected");
     }
-    $("body").addClass(["was_selected", "some_selected"]);
     if (quiet) {
-      if(LOGGING) console.log("Selecting presentation quiet");
+        console.log("Selecting presentation quiet");
         return false;
     }
+    $("body").addClass(["was_selected", "some_selected"]);
     $('.active_presentation_title').html(title);
     return openPanel("_panel_control", autoMoveStep); //index will be auto determine by .selected
-    return openPanel("_panel_control", function() { $("#automove_target").scrollTop(0); });
+    return openPanel("_panel_control", function () { $("#automove_target").scrollTop(0); });
 }
 async function selectSlide(item_object, quiet = false) {
+    console.log("Select slide", quiet)
     var uuid = item_object.path_item.uuid;
     var title = item_object.path_item.title;
     var index = item_object.path_item.index;
@@ -640,23 +646,25 @@ async function selectSlide(item_object, quiet = false) {
         return console.warn("no uuid and index", uuid, index);
     }
     var target = "#" + uuid + " #index_" + index;
-  if(LOGGING) console.log('selectSlide', target);
+    if (LOGGING) console.log('selectSlide', target);
     //
     $("#" + uuid + " .presentation_slide").removeClass(["cleared", "selected"]);
     $(target).addClass("selected");
-    $("body").addClass(["was_selected", "some_selected"]);
+    //$("body").addClass(["was_selected", "some_selected"]);
     //with callback
     if (quiet) {
-      if(LOGGING) console.log("Select slide quiet");
+        console.log("Select slide quiet TTT");
         return false;
     }
+    $("body").addClass(["was_selected", "some_selected"]);
+    console.log("WTF")
     return openPanel("_panel_control", autoMoveStep); //index will be auto determine by .selected
-    return openPanel("_panel_control", function() { autoMoveStep("#index_" + index); });
+    return openPanel("_panel_control", function () { autoMoveStep("#index_" + index); });
 }
 
 function parsePath(path, library_only = false) {
     if (isNa(path)) {
-      if(LOGGING) console.log("parsePath", "invalid path", path);
+        if (LOGGING) console.log("parsePath", "invalid path", path);
         return false;
     }
     var item_object = {
@@ -690,7 +698,7 @@ function parsePath(path, library_only = false) {
         }
         item_object.path_item = group.items[song];
         //var item = { 'title': 'item_file', 'filename': '', 'path': path, 'uuid': md5('playlist_item_' + 'item_file'), 'library': 'library' };
-      if(LOGGING) console.warn("PARSE PATH AS PLAYLIST", path, global_playlists, item_object);
+        if (LOGGING) console.warn("PARSE PATH AS PLAYLIST", path, global_playlists, item_object);
     } else {
         //
         item_object.path_type = 'library';
@@ -710,11 +718,11 @@ function parsePath(path, library_only = false) {
         }
     }
     if (item_object.path_type == null || item_object.path_item == null) {
-      if(LOGGING) console.error("No valid item in parsePath", item_object);
-      if(LOGGING) console.error("No valid item in parsePath", item_object);
-      if(LOGGING) console.error("No valid item in parsePath", item_object);
-      if(LOGGING) console.error("No valid item in parsePath", item_object);
-      if(LOGGING) console.error("No valid item in parsePath", item_object);
+        if (LOGGING) console.error("No valid item in parsePath", item_object);
+        if (LOGGING) console.error("No valid item in parsePath", item_object);
+        if (LOGGING) console.error("No valid item in parsePath", item_object);
+        if (LOGGING) console.error("No valid item in parsePath", item_object);
+        if (LOGGING) console.error("No valid item in parsePath", item_object);
         return false;
     }
     return item_object;
@@ -749,9 +757,9 @@ async function loader(clear = false) {
     if (clear) {
         $("body").removeClass(["_loader_cancel", "_loader"]);
     } else {
-        signalTimeout = setTimeout(function() {
+        signalTimeout = setTimeout(function () {
             $("body").addClass("_loader_cancel");
-            signalTimeout = setTimeout(function() {
+            signalTimeout = setTimeout(function () {
                 loader(true);
             }, 10000);
         }, 5000);
@@ -761,7 +769,7 @@ let signalTimeout;
 async function signalReceived() {
     clearTimeout(signalTimeout);
     $("body").addClass("signal");
-    signalTimeout = setTimeout(function() {
+    signalTimeout = setTimeout(function () {
         $("body").removeClass("signal");
     }, 200);
 }
@@ -803,16 +811,16 @@ async function showWarr(warr = null, response = null) {
             $("#warr_message").html('<i class="fa-solid fa-fingerprint"></i>' + ' ' + "Wrong credentials");
             break;
         case "observe_mode":
-            $("#status_message").addClass("blue");
+            $("#status_message").addClass("red");
             $("#warr_message").html('<i class="fa-solid fa-lock"></i>' + ' ' + "Interface is locked");
             break;
         case "safe_mode":
             if (response == 'enabled') {
-                $("#status_message").addClass("red");
+                $("#status_message").addClass("blue");
             } else {
-                $("#status_message").addClass("green");
+                $("#status_message").addClass("orange");
             }
-            $("#warr_message").html('<i class="fa-solid fa-lock"></i>' + ' ' + "Safe mode " + response);
+            $("#warr_message").html('<i class="fa-solid fa-lock"></i>' + ' ' + "Interface lock " + response);
             break;
         case "follow_mode":
             if (response == 'enabled') {
@@ -855,7 +863,7 @@ async function warrDismiss() {
 }
 async function connected() {
     if ($('body').hasClass("_panel_settings_first")) {
-        openPanel("_panel_control");
+        openPanel("_panel_library");
     }
     $("body").removeClass("disconnected");
     $("body").addClass("connected");
@@ -875,7 +883,7 @@ async function authenticated() {
     $("body").addClass("authenticated");
     showWarr("authenticated");
 }
-$(document).ready(function() {
+$(document).ready(function () {
     refillConnection();
     refillFilters();
     connect();
