@@ -132,16 +132,16 @@ async function onMessage(obj) {
     }
     loader(true); //true menas clear
     //console.log(obj.action, obj);
-    if (obj.action == "authenticate" && parseInt(obj.authenticated, 10) == 1) {
+    if (obj.action == "authenticate" && parseInt(obj.authenticated, 10) === 1) {
         global_propresenter = obj;
         if (isNa(global_propresenter.majorVersion)) {
             global_propresenter.majorVersion = 6;
         }
         authenticated();
-        getPlaylists()
+        //getPlaylists()
         getLibrary();
         return false;
-    } else if (obj.action == "authenticate" && parseInt(obj.authenticated, 10) == 0) {
+    } else if (obj.action == "authenticate" && parseInt(obj.authenticated, 10) === 0) {
         global_propresenter = obj;
         if (isNa(global_propresenter.majorVersion)) {
             global_propresenter.majorVersion = 6;
@@ -555,22 +555,21 @@ async function triggerPresentation(path) {
     //
     if (item_object.path_type === "current") {
         //return getCurrentSlide();
-        if (LOGGING) console.error('{"action": "presentationCurrent", "presentationSlideQuality": "' + localStorage.getItem("_quality") + '"}');
+        if (LOGGING) console.warn('{"action": "presentationCurrent", "presentationSlideQuality": "' + localStorage.getItem("_quality") + '"}');
         remoteWebSocket.send('{"action": "presentationCurrent", "presentationSlideQuality": "' + localStorage.getItem("_quality") + '"}');
     } else {
-        if (LOGGING) console.error('{"action": "presentationRequest","presentationPath": "' + item_object.path_item.path.replace(/\//g, "\\/") + '", "presentationSlideQuality": "' + localStorage.getItem("_quality") + '"}');
+        if (LOGGING) console.warn('{"action": "presentationRequest","presentationPath": "' + item_object.path_item.path.replace(/\//g, "\\/") + '", "presentationSlideQuality": "' + localStorage.getItem("_quality") + '"}');
         remoteWebSocket.send('{"action": "presentationRequest","presentationPath": "' + item_object.path_item.path.replace(/\//g, "\\/") + '", "presentationSlideQuality": "' + localStorage.getItem("_quality") + '"}');
     }
 }
 async function triggerSlide(path, index = 0) {
     //console.log("triggerSlide", path, index);
+    $("body").removeClass("init");
     if (isSafe()) {
-        if ($("body").hasClass("init")) {
-            $("body").removeClass("init");
-        } else {
-            return showWarr("observe_mode", '');
-        }
+        return showWarr("observe_mode", '');
     }
+
+    //return false;
     if (isNa(path) || isNa(index)) {
         if (LOGGING) console.error("No path or index in triggerSlide", path, index);
         return false;

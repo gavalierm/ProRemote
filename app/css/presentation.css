@@ -139,7 +139,7 @@
 }
 
 .presentation .item.selected.cleared {
-    border-color: var(--primary) !important;
+    border-color: transparent !important;
 }
 
 @media screen and (min-width: 800px) {

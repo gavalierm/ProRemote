@@ -1,5 +1,5 @@
 //app
-const LOGGING = true;
+const LOGGING = false;
 
 $(document).on("click", "._do", async function(event) {
     event.preventDefault();
