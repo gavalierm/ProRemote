@@ -265,7 +265,10 @@ async function onMessage(obj) {
         if (actual.data('path') == item_object.path_item.path && actual.data('type') == item_object.path_type) {
             if (LOGGING) console.log("Same select");
             return selectSlide(item_object, !isFollow());
+        } else {
+            selectPresentation(item_object, true);
         }
+
         if (!isFollow()) {
             if (LOGGING) console.log("Blind select B");
             return selectSlide(item_object, true); //ture means quiet
@@ -621,15 +624,25 @@ async function selectPresentation(item_object, quiet = false) {
     if (LOGGING) console.log('selectPresentation', target, title);
     //
     if (item_object.path_tupe == "playlist") {
-        $(".playlist_item").removeClass("selected");
-        $(".playlist_item" + target).addClass("selected");
+        if (quiet) {  
+            console.log("Selecting presentation quiet");
+            $(".playlist_item").removeClass("quiet");
+            $(".playlist_item" + target).addClass("quiet");
+            return false;
+        } else {  
+            $(".playlist_item").removeClass("selected");
+            $(".playlist_item" + target).addClass("selected");
+        }
     } else {
-        $(".library_item").removeClass("selected");
-        $(".library_item" + target).addClass("selected");
-    }
-    if (quiet) {
-        console.log("Selecting presentation quiet");
-        return false;
+        if (quiet) {  
+            console.log("Selecting presentation quiet");
+            $(".library_item").removeClass("selected_quiet");
+            $(".library_item" + target).addClass("selected_quiet");
+            return false;
+        } else {  
+            $(".library_item").removeClass("selected");
+            $(".library_item" + target).addClass("selected");
+        }
     }
     $("body").addClass(["was_selected", "some_selected"]);
     $('.active_presentation_title').html(title);
@@ -817,9 +830,9 @@ async function showWarr(warr = null, response = null) {
             if (response == 'enabled') {
                 $("#status_message").addClass("blue");
             } else {
-                $("#status_message").addClass("orange");
+                $("#status_message").addClass("green");
             }
-            $("#warr_message").html('<i class="fa-solid fa-lock"></i>' + ' ' + "Interface lock " + response);
+            $("#warr_message").html('<i class="fa-solid fa-lock"></i>' + ' ' + "Interface lock: " + response);
             break;
         case "follow_mode":
             if (response == 'enabled') {
@@ -827,7 +840,7 @@ async function showWarr(warr = null, response = null) {
             } else {
                 $("#status_message").addClass("white");
             }
-            $("#warr_message").html('<i class="fa-solid fa-link"></i>' + ' ' + "Follow mode " + response);
+            $("#warr_message").html('<i class="fa-solid fa-link"></i>' + ' ' + "Follow mode: " + response);
             break;
         default:
             $("#status_message").addClass("white");

@@ -302,6 +302,14 @@ i.fa-solid {
     justify-content: center;
 }
 
+.only_if_selected {
+    display: none !important;
+}
+
+body.some_selected .only_if_selected {
+    display: flex !important;
+}
+
 body.some_selected .if_selected_decent.btn,
 .btn {
     font-size: 0.8rem;

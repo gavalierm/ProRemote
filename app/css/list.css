@@ -28,17 +28,11 @@
 }
 
 .list .item {
+    border-radius: 13px;
+    overflow: hidden;
+    border: 3px solid transparent;
     background-color: var(--list-item);
     color: var(--list-item-oposit);
-}
-
-.list .item.selected {
-    background-color: var(--selected);
-    border-color: var(--selected);
-    color: var(--selected-oposit);
-}
-
-.list .item {
     position: relative;
     color: white;
     margin: 14px 0;
@@ -48,6 +42,18 @@
     align-items: stretch;
     justify-content: space-between;
     flex-wrap: wrap;
+}
+
+.list .item.selected,
+.list .item.selected.selected_quiet {
+    background-color: var(--selected);
+    border-color: var(--selected);
+    color: var(--selected-oposit);
+}
+
+.list .item.selected_quiet {
+    border-color: var(--slide-selected);
+    color: var(--selected-oposit);
 }
 
 .list .item .item_content {
